@@ -1,0 +1,14 @@
+.env
+.DS_Store
+__pycache__/
+*.pyc
+*.pid
+logs/
+archive/
+envs/
+视频文档/
+下载总结.md
+数据完整性报告.md
+tools/upload/duplicates_report.*
+tools/upload/all_episodes.json
+tools/upload/uploaded_episodes.json
