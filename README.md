@@ -125,6 +125,7 @@ pip install faster-whisper    # CPU/CUDA Whisper
 如果你是在维护 `https://www.lizheng.ai/guests`：
 
 - 嘉宾 roster / 嘉宾-视频映射的唯一权威来源是 [`guests.json`](guests.json)
-- 视频标题等 metadata 的本地权威来源是 `tools/youtube/all_videos_full.json`
-- 更新 `guests.json` 后先跑 `python3 tools/check/validate_guest_data.py`
+- Guest 页面视频 metadata 的权威来源是 [`guest_video_metadata.json`](guest_video_metadata.json)
+- `tools/youtube/all_videos_full.json` 是更大的本地全量视频元数据表，用来生成上面的 guest metadata
+- 更新 `guests.json` 或 guest 相关视频 metadata 后先跑 `python3 tools/check/validate_guest_data.py`
 - 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)
