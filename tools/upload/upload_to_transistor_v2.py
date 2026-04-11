@@ -368,6 +368,7 @@ def create_episode(
     description: str,
     audio_url: str,
     video_url: Optional[str] = None,
+    image_url: Optional[str] = None,
     transcript: Optional[str] = None,
     published_at: Optional[str] = None,
     number: Optional[int] = None
@@ -411,12 +412,13 @@ def create_episode(
         if number:
             episode_data["episode"]["number"] = number
         
-        # video_url可以在创建时设置
+        # video_url 和 image_url 可以在创建时设置
         if video_url:
             episode_data["episode"]["video_url"] = video_url
-        
-        # 注意：transcript 和 published_at 不支持在创建时设置
-        # published_at 可能需要通过网页界面设置，或者等待API支持
+        if image_url:
+            episode_data["episode"]["image_url"] = image_url
+
+        # 注意：published_at 不能在创建时设置，需在 /publish 端点中设置（步骤5）
         
         # 处理速率限制（429）重试
         max_retries = 3
@@ -600,21 +602,26 @@ def update_episode_video_url(episode_id: str, video_url: str) -> bool:
         return False
 
 
-def publish_episode(episode_id: str) -> bool:
+def publish_episode(episode_id: str, published_at: Optional[str] = None) -> bool:
     """
     发布 episode（将状态从draft改为published）
-    
+
     使用特殊的publish端点：
     PATCH /v1/episodes/EPISODE_ID/publish
+
+    注意：published_at 必须通过此端点设置，PATCH /episodes/:id 不支持。
     """
     url = f"{TRANSISTOR_API_BASE}/episodes/{episode_id}/publish"
     headers = {
         "x-api-key": TRANSISTOR_API_KEY,
         "Content-Type": "application/x-www-form-urlencoded"
     }
-    
-    # 使用form-encoded格式
-    data = "episode[status]=published"
+
+    # 包含 published_at（如果提供），否则 Transistor 会使用当前时间
+    if published_at:
+        data = f"episode[status]=published&episode[published_at]={published_at}"
+    else:
+        data = "episode[status]=published"
     
     try:
         # 处理速率限制（429）重试
@@ -692,9 +699,12 @@ def upload_episode_from_folder(
     # 提取YouTube视频ID
     youtube_video_id = extract_youtube_video_id(folder_path)
     youtube_url = None
+    image_url = None
     if youtube_video_id:
         youtube_url = f"https://www.youtube.com/watch?v={youtube_video_id}"
+        image_url = f"https://i.ytimg.com/vi/{youtube_video_id}/hqdefault.jpg"
         print(f"🎥 YouTube视频: {youtube_url}")
+        print(f"🖼️  封面图: {image_url}")
     else:
         print(f"⚠️  未找到YouTube视频ID")
     
@@ -731,7 +741,8 @@ def upload_episode_from_folder(
         title=title,
         description=description,
         audio_url=audio_url,
-        video_url=youtube_url,  # 在创建时设置video_url
+        video_url=youtube_url,
+        image_url=image_url,
         transcript=transcript if transcript else None,
         published_at=published_at,
         number=episode_number
@@ -759,11 +770,11 @@ def upload_episode_from_folder(
             else:
                 print(f"   ⚠️  YouTube Video URL更新失败，但episode已创建")
     
-    # 步骤5: 发布episode（如果状态是draft）
-    # 使用特殊的publish端点来发布
+    # 步骤5: 发布episode（如果状态是draft），同时设置 published_at
+    # published_at 必须在 /publish 端点中设置，不能通过 PATCH /episodes/:id
     if current_status == 'draft' and episode_id:
         print(f"   📢 步骤5: 发布episode...")
-        if publish_episode(episode_id):
+        if publish_episode(episode_id, published_at=published_at):
             print(f"   ✅ Episode已发布!")
         else:
             print(f"   ⚠️  发布失败，episode仍为draft状态")
@@ -1011,7 +1022,7 @@ def main():
     if args.upload_only_new:
         import subprocess
         result = subprocess.run(
-            [sys.executable, str(Path(__file__).parent / "check_upload_candidates.py"), "--json"],
+            [sys.executable, str(Path(__file__).parent.parent / "check" / "check_upload_candidates.py"), "--json"],
             capture_output=True,
             text=True,
             cwd=PROJECT_ROOT,
