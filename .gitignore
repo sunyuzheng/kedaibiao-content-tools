@@ -12,3 +12,9 @@ envs/
 tools/upload/duplicates_report.*
 tools/upload/all_episodes.json
 tools/upload/uploaded_episodes.json
+
+# YouTube automation（敏感数据，不提交）
+tools/youtube/youtube_token.json
+tools/youtube/patch_manifest.json
+tools/youtube/all_videos_ids.json
+tools/youtube/all_videos_full.json
