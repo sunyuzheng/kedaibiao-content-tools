@@ -97,6 +97,12 @@ envs/youtube_env/bin/python3 tools/youtube/apply_patches.py          # 全量
 - 幂等：描述里已含 `lizheng.ai/guests` 的视频自动跳过
 - `--force`：强制重新生成所有条目
 
+补充：
+
+- `guests.json` 是 guest roster / 嘉宾-视频关系的权威来源
+- 视频标题等 metadata 的权威来源是 `tools/youtube/all_videos_full.json`
+- 网站侧的数据流说明见 `docs/网站嘉宾数据说明.md`
+
 ### `dry_run.py`
 预览 before/after diff，不调用 YouTube API。
 - `--n N`：只显示前 N 条

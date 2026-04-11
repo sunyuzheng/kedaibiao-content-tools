@@ -94,6 +94,17 @@ pip install faster-whisper    # CPU/CUDA Whisper
 | 文档 | 内容 |
 |------|------|
 | [docs/嘉宾索引.md](docs/嘉宾索引.md) | 104 位嘉宾完整列表 + 每位嘉宾的 archive 视频索引 |
+| [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md) | `lizheng.ai/guests` 的数据流、权威来源、派生文件说明 |
 | [docs/核心任务说明.md](docs/核心任务说明.md) | 播客工作流（下载→上传）完整说明 |
 | [docs/项目重构复盘.md](docs/项目重构复盘.md) | 2026-03-29 Transistor 元数据大修复盘 |
 | [docs/字幕校对工程复盘.md](docs/字幕校对工程复盘.md) | 2026-04 Qwen+Claude 校对 pipeline 复盘 |
+
+---
+
+## 网站 Guests 页
+
+如果你是在维护 `https://www.lizheng.ai/guests`：
+
+- 嘉宾 roster / 嘉宾-视频映射的唯一权威来源是 [`guests.json`](guests.json)
+- 视频标题等 metadata 的本地权威来源是 `tools/youtube/all_videos_full.json`
+- 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)
