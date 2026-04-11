@@ -23,6 +23,7 @@ GUESTS_JSON = PROJECT_ROOT / "guests.json"
 ALL_VIDEOS_FILE = PROJECT_ROOT / "tools/youtube/all_videos_full.json"
 MANIFEST_FILE = PROJECT_ROOT / "tools/youtube/patch_manifest.json"
 GUESTS_PAGE_URL = "https://www.lizheng.ai/guests"
+COMMUNITY_URL = "https://www.superlinear.academy"
 ALREADY_PATCHED_MARKER = GUESTS_PAGE_URL
 
 
@@ -63,6 +64,7 @@ def make_guest_block(guest: dict) -> str:
         lines.append(company)
 
     lines.append(f"更多嘉宾访谈：{GUESTS_PAGE_URL}")
+    lines.append(f"加入课代表社区：{COMMUNITY_URL}")
     lines.append("─" * 36)
 
     return "\n".join(lines)
