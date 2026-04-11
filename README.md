@@ -128,5 +128,6 @@ pip install faster-whisper    # CPU/CUDA Whisper
 - Guest 页面视频 metadata 的权威来源是 [`guest_video_metadata.json`](guest_video_metadata.json)
 - `tools/youtube/all_videos_full.json` 是更大的本地全量视频元数据表，用来生成上面的 guest metadata
 - 更新 guest 视频 metadata 时先跑 `python3 tools/youtube/build_guest_video_metadata.py`
+- 低频刷新时可直接跑 `./tools/youtube/refresh_guest_page_data.sh`
 - 更新 `guests.json` 或 guest 相关视频 metadata 后先跑 `python3 tools/check/validate_guest_data.py`
 - 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)
