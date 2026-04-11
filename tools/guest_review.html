@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>嘉宾确认 · 课代表立正</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0B0F1A; color: #e4e4e7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding-bottom: 4rem; }
+    a { color: inherit; text-decoration: none; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 { font-size: 1.75rem; font-weight: 700; color: #fff; }
+    header p { color: #71717a; margin-top: 0.5rem; font-size: 0.9rem; }
+
+    .section-label { font-size: 1rem; font-weight: 600; color: #fde68a; margin: 2rem 0 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem; }
+
+    .guests-grid { display: flex; flex-direction: column; gap: 0.875rem; }
+
+    /* Card */
+    .guest-card { background: rgba(255,255,255,0.045); border: 1.5px solid rgba(255,255,255,0.09);
+      border-radius: 1rem; overflow: hidden; transition: border-color 0.2s; }
+    .guest-card.confirmed { border-color: rgba(74,222,128,0.4); }
+    .guest-card.rejected  { border-color: rgba(248,113,113,0.35); opacity: 0.6; }
+    .guest-card.needs-edit { border-color: rgba(251,191,36,0.4); }
+
+    .card-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1rem 1.25rem 0.75rem; gap: 1rem; }
+    .guest-name { font-size: 1rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .guest-role    { font-size: 0.78rem; color: #fbbf24; margin-top: 0.15rem; }
+    .guest-company { font-size: 0.78rem; color: #a1a1aa; }
+    .guest-note    { font-size: 0.72rem; color: #52525b; font-style: italic; margin-top: 0.2rem; }
+
+    .badge { padding: 0.2rem 0.65rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+    .badge-pending   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .badge-confirmed { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    .badge-rejected  { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+    .badge-notfound  { background: rgba(113,113,122,0.12); color: #71717a; border: 1px solid rgba(113,113,122,0.3); }
+    .badge-added     { background: rgba(74,222,128,0.08); color: #86efac; border: 1px solid rgba(74,222,128,0.2); }
+    .badge-needsedit { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+
+    .card-body { padding: 0 1.25rem 1rem; }
+
+    /* Videos */
+    .vids-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.6rem; margin: 0.5rem 0 0.75rem; }
+    .vid-item { border-radius: 0.6rem; overflow: hidden; border: 2px solid rgba(255,255,255,0.1); transition: all 0.15s; cursor: pointer; }
+    .vid-item:hover { border-color: rgba(251,191,36,0.5); }
+    .vid-item.sel { border-color: #4ade80; }
+    .vid-item.excl { border-color: rgba(248,113,113,0.3); opacity: 0.45; }
+
+    .vid-thumb-wrap { position: relative; }
+    .vid-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+    .vid-sel-badge { position: absolute; top: 0.35rem; right: 0.35rem; width: 1.3rem; height: 1.3rem;
+      border-radius: 50%; background: #4ade80; color: #051a05; font-size: 0.7rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; }
+    .vid-title { padding: 0.4rem 0.5rem 0.3rem; font-size: 0.67rem; color: #d4d4d8; line-height: 1.35; }
+    .vid-footer { padding: 0 0.5rem 0.5rem; display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .vid-btn { padding: 0.15rem 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0.375rem; font-size: 0.65rem; color: #a1a1aa; cursor: pointer; text-decoration: none; transition: all 0.1s; }
+    .vid-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .vid-btn.yt { border-color: rgba(248,68,68,0.3); color: #fca5a5; }
+    .vid-btn.yt:hover { background: rgba(248,68,68,0.1); }
+
+    /* No videos */
+    .no-vids { padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: 0.5rem;
+      border: 1px dashed rgba(255,255,255,0.1); margin: 0.5rem 0 0.75rem; }
+    .no-vids p { color: #71717a; font-size: 0.82rem; margin-bottom: 0.5rem; }
+    .manual-row { display: flex; gap: 0.5rem; }
+    .manual-row input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0.4rem; padding: 0.3rem 0.6rem; color: #e4e4e7; font-size: 0.78rem; outline: none; }
+    .manual-row input:focus { border-color: rgba(251,191,36,0.5); }
+    .manual-row button { padding: 0.3rem 0.7rem; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+      border-radius: 0.4rem; color: #fbbf24; font-size: 0.75rem; cursor: pointer; }
+    .manual-row button:hover { background: rgba(251,191,36,0.2); }
+
+    /* Actions */
+    .card-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn { padding: 0.35rem 0.9rem; border-radius: 0.45rem; font-size: 0.78rem; font-weight: 600;
+      cursor: pointer; border: 1px solid; transition: all 0.15s; }
+    .btn-ok  { background: rgba(74,222,128,0.1); border-color: rgba(74,222,128,0.35); color: #4ade80; }
+    .btn-ok:hover { background: rgba(74,222,128,0.2); }
+    .btn-no  { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.35); color: #f87171; }
+    .btn-no:hover { background: rgba(248,113,113,0.2); }
+    .btn-warn { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.35); color: #fbbf24; }
+    .btn-warn:hover { background: rgba(251,191,36,0.2); }
+    .btn-grey { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); color: #71717a; }
+    .btn-grey:hover { background: rgba(255,255,255,0.1); color: #a1a1aa; }
+
+    /* Info editor */
+    .info-editor { display: none; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.5rem; padding: 0.75rem; margin: 0 0 0.75rem; }
+    .info-editor.open { display: block; }
+    .info-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { font-size: 0.7rem; color: #71717a; width: 60px; flex-shrink: 0; }
+    .info-row input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.35rem; padding: 0.28rem 0.5rem; color: #e4e4e7; font-size: 0.78rem; outline: none; }
+    .info-row input:focus { border-color: rgba(251,191,36,0.5); }
+
+    /* Summary */
+    .summary-box { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 1rem; padding: 1.5rem; margin-top: 2.5rem; }
+    .summary-box h3 { color: #fde68a; font-size: 1rem; margin-bottom: 0.9rem; }
+    .summary-stat { font-size: 0.82rem; color: #71717a; margin-bottom: 0.75rem; }
+    .summary-item { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.35rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.82rem; }
+    .summary-item:last-of-type { border-bottom: none; }
+    .summary-name { font-weight: 600; color: #e4e4e7; min-width: 120px; }
+    .summary-detail { color: #71717a; font-size: 0.75rem; }
+
+    .export-btn { margin-top: 1.25rem; padding: 0.55rem 1.5rem; background: rgba(251,191,36,0.12);
+      border: 1px solid rgba(251,191,36,0.4); border-radius: 0.7rem; color: #fbbf24; font-weight: 600;
+      cursor: pointer; font-size: 0.875rem; width: 100%; transition: background 0.15s; }
+    .export-btn:hover { background: rgba(251,191,36,0.22); }
+    .export-output { display: none; margin-top: 0.75rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 0.5rem; padding: 1rem; font-family: monospace; font-size: 0.72rem; color: #a1a1aa;
+      white-space: pre-wrap; word-break: break-all; max-height: 320px; overflow-y: auto; }
+    .copy-note { text-align: center; font-size: 0.72rem; color: #4ade80; margin-top: 0.4rem; display: none; }
+
+    .edit-btn { font-size: 0.67rem; padding: 0.1rem 0.4rem; background: none; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0.3rem; color: #52525b; cursor: pointer; transition: all 0.1s; }
+    .edit-btn:hover { color: #a1a1aa; border-color: rgba(255,255,255,0.25); }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>嘉宾确认 · 课代表立正</h1>
+    <p>点击缩略图 → 跳转 YouTube 验证 · 点击视频旁按钮选中/取消 · 确认后导出 JSON 给 Claude Code 执行</p>
+  </header>
+
+  <div class="section-label">🔍 待确认嘉宾（8 位）— 基于 Bilibili 标题搜索 YouTube 结果，请核实</div>
+  <div class="guests-grid" id="pendingGrid"></div>
+
+  <div class="section-label" style="margin-top:2.5rem">❓ archive 发现的新嘉宾，姓名待确认（7 位）</div>
+  <p style="color:#71717a;font-size:.82rem;margin-bottom:1rem">以下视频在本地 archive 中找到，内容确认是访谈但嘉宾名字未知。请填写真实姓名后点"确认"，或点"不是嘉宾"排除。</p>
+  <div class="guests-grid" id="discoveredGrid"></div>
+
+  <div class="section-label" style="margin-top:2.5rem">✅ 本轮已添加到 guests.json（7 位）— 供核实信息</div>
+  <div class="guests-grid" id="addedGrid"></div>
+
+  <div class="summary-box">
+    <h3>📋 确认摘要</h3>
+    <div id="summaryContent"></div>
+    <button class="export-btn" onclick="exportDecisions()">导出决策 JSON（复制后发给 Claude Code）</button>
+    <div class="export-output" id="exportOutput"></div>
+    <div class="copy-note" id="copyNote">✓ 已复制到剪贴板</div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const PENDING = [
+  {
+    id: 'david_sun',
+    name: 'David Sun', en_name: 'David Sun',
+    role: 'Founding Engineer', company: '',
+    note: 'B站 1期：脸书谷歌跳槽startup体验-下（595播放）',
+    candidates: [
+      { vid: 'NAZoiCYPrqI', title: '在顶配创业公司当前几号员工是什么体验？' },
+      { vid: 'zlHBC-sAv8g', title: '加入的Startup翻十倍有多快乐？' },
+    ]
+  },
+  {
+    id: 'mike_vernal',
+    name: 'Mike Vernal', en_name: 'Mike Vernal',
+    role: 'Former Meta VP · Sequoia Capital Partner', company: 'Sequoia / Conviction',
+    note: 'B站 3期：增长要义聚焦 / 大厂裁员80% / 公司生命周期（共16572播放）',
+    candidates: [
+      { vid: 'iw2QYZeVlOQ', title: 'How to optimize your career for YOU? | ex-Facebook VP' },
+      { vid: 'V9dNLWDhMuE', title: '【硅谷顶级职业建议】怎样想清楚自己的职业目标？｜Facebook副总裁，Statsig创始人' },
+    ]
+  },
+  {
+    id: 'sam_zhang',
+    name: 'Sam Zhang', en_name: 'Sam Zhang',
+    role: '字节早期员工', company: 'ByteDance / Unity',
+    note: 'B站 1期：字节早期，中美体验，创业大厂，元宇宙（1361播放）',
+    candidates: [
+      { vid: 'UKEL3M1MbGM', title: '字节早期，中美体验，创业大厂，元宇宙' },
+    ]
+  },
+  {
+    id: 'yuyu',
+    name: 'Yuyu', en_name: 'Yuyu',
+    role: '前腾讯员工，百万网红', company: 'Tencent (Former)',
+    note: 'B站 1期：一年涨粉百万后从腾讯离职（54718播放）— YouTube 未找到',
+    candidates: []
+  },
+  {
+    id: 'he_dongyang',
+    name: '何冬阳', en_name: 'He Dongyang',
+    role: '前国企金融负责人，卡电宝创始人', company: '卡电宝',
+    note: 'B站 1期：年轻有为的国企老总（13506播放）',
+    candidates: [
+      { vid: '1ZbVBnYHlKI', title: '年轻有为的国企老总，为什么选择从头创业？' },
+    ]
+  },
+  {
+    id: 'yu_yizhou',
+    name: '俞奕舟', en_name: 'Yu Yizhou',
+    role: 'Meta 程序员', company: 'Meta',
+    note: 'B站 2期：挑战自己建立信念 / 坚持观点说服他人（共9380播放）',
+    candidates: [
+      { vid: 'OpF_xP2gC3o', title: '挑战自己观点和说服别人' },
+      { vid: 'vYOogCGsIog', title: '如何坚持自己观点并说服他人？' },
+    ]
+  },
+  {
+    id: 'xinxiya',
+    name: '辛西娅酱', en_name: 'Cynthia',
+    role: 'UX Designer，大龄转行', company: '',
+    note: 'B站 1期：大龄转行Q&A 如何面对不确定性（36521播放）— YouTube 未找到',
+    candidates: []
+  },
+  {
+    id: 'chen_zixin',
+    name: '陈字昕', en_name: 'Chen Zixin',
+    role: 'Stanford 在读 · Oracle 全职', company: 'Oracle / Stanford',
+    note: 'B站 2期：全职工作全职读书（共21311播放）',
+    candidates: [
+      { vid: 'PphnjXFr1SA', title: '全职读研+全职工作，这三招平衡时间精力' },
+    ]
+  },
+];
+
+const ADDED = [
+  { name: '刘若曦', role: 'Investor · Former Product & Engineering', company: 'Facebook (Former)', vids: ['CD3V4Z5hCgM'], note: '' },
+  { name: '菁菁',   role: 'Principal PM', company: 'Microsoft', vids: ['IfpF2e25S4g'], note: '' },
+  { name: 'OE_Ben', role: 'Software Engineer (OE)', company: '', vids: ['7dYNlUai-3A','HW80_6dngvo','8SRhM6SMU1s'], note: '7dYNlUai-3A 公开；后两个会员专属' },
+  { name: '罗超元', role: '腾讯管培生', company: 'Tencent', vids: ['OHnrToPoMyw'], note: '' },
+  { name: 'Francer', role: 'Game Operations & Project Management', company: 'Tencent', vids: ['vx1vx8B-aX4','gZ_428eJutg'], note: '' },
+  { name: '宋明阳', role: 'CEO', company: '美图秀秀 Global', vids: ['pmMlMXBvHxU'], note: '' },
+  { name: '边璐',   role: 'Manager', company: 'ByteDance（前 Meta / 亚马逊）', vids: ['mgQwCTXgoME'], note: '会员专属视频' },
+];
+
+// Guests found in archive but name unknown — need user to fill in
+const DISCOVERED = [
+  {
+    id: 'disc_onlyfans',
+    current_name: 'Onlyfans博主',
+    note: '公开视频 104,536v｜完整版会员专属。目前 guests.json 里用"Onlyfans博主"占位，请告知真实姓名',
+    vids: ['JxKvQttZAhc', 'IcMbpTVX5iY'],
+    vid_notes: ['公开（104,536v）', '会员专属'],
+  },
+  {
+    id: 'disc_dating',
+    current_name: '湾区Dating嘉宾',
+    note: '公开预告 18,262v + 2期会员完整版。目前用"湾区Dating嘉宾"占位',
+    vids: ['eY3ZugdAoVM', 'gm959-Q0Vbw', 'yLKWmYV7MQw'],
+    vid_notes: ['公开预告', '会员 dating_上', '会员 dating_下'],
+  },
+  {
+    id: 'disc_mit',
+    current_name: 'MIT教授',
+    note: '公开 5,063v + 会员完整版。视频标题：MIT教授：为什么聪明人容易犯错？｜完整版：MIT教授采访—科学方法',
+    vids: ['vwoj6fHdxNI', 'I4_OejHnJSU'],
+    vid_notes: ['公开（5,063v）', '会员完整版'],
+  },
+  {
+    id: 'disc_autokeras',
+    current_name: 'AutoKeras嘉宾',
+    note: '公开 6,563v。视频：第一代自动深度学习开源平台，如何被Google招安的？（AutoKeras 作者）',
+    vids: ['GycQBpyazdw'],
+    vid_notes: ['公开（6,563v）'],
+  },
+  {
+    id: 'disc_tencent_director',
+    current_name: '高中辍学腾讯总监',
+    note: '公开 22,619v。视频：高中辍学的腾讯总监教你抓住机会。描述称"XX同学"，真实姓名未知。尚未加入 guests.json',
+    vids: ['ExlzfUFIfrY'],
+    vid_notes: ['公开（22,619v）'],
+  },
+  {
+    id: 'disc_resume',
+    current_name: '简历嘉宾',
+    note: '公开 39,664v。视频：看了才知道，简历竟然应该这么改？描述仅称"嘉宾"。尚未加入 guests.json',
+    vids: ['4eYzTGxZazw'],
+    vid_notes: ['公开（39,664v）'],
+  },
+  {
+    id: 'disc_yc',
+    current_name: 'YC系列嘉宾',
+    note: '公开 23,347v。视频：大厂总监天天靠开会能为公司创造什么价值？描述称"采访YC的最后一期"，"YC"可能是嘉宾昵称缩写。尚未加入 guests.json',
+    vids: ['lhcQkrkTUhc'],
+    vid_notes: ['公开（23,347v）'],
+  },
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let S = {};
+
+function load() {
+  try { const v = localStorage.getItem('grev_v2'); if (v) S = JSON.parse(v); } catch(e) {}
+}
+function save() {
+  try { localStorage.setItem('grev_v2', JSON.stringify(S)); } catch(e) {}
+}
+
+function gs(id, g) {
+  if (!S[id]) S[id] = {
+    status: 'pending',
+    selVids: g ? g.candidates.map(c => c.vid) : [],
+    name: g ? g.name : '', en_name: g ? g.en_name : '',
+    role: g ? g.role : '', company: g ? g.company : '',
+    manualVid: ''
+  };
+  return S[id];
+}
+
+function ga(idx) {
+  const id = 'added_' + idx;
+  if (!S[id]) S[id] = { status: 'ok' };
+  return S[id];
+}
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function cardDiscovered(d) {
+  const sid = 'disc_s_' + d.id;
+  if (!S[sid]) S[sid] = { status: 'pending', real_name: '', role: '', company: '' };
+  const st = S[sid];
+  const badgeTxt = st.status === 'confirmed' ? '✓ 已命名' : st.status === 'rejected' ? '✗ 排除' : '❓ 待命名';
+  const badgeCls = st.status === 'confirmed' ? 'badge-confirmed' : st.status === 'rejected' ? 'badge-rejected' : 'badge-pending';
+  const cardClass = st.status === 'confirmed' ? 'confirmed' : st.status === 'rejected' ? 'rejected' : '';
+
+  const vidHtml = d.vids.map((vid, i) => `
+    <div class="vid-item sel">
+      <div class="vid-thumb-wrap">
+        <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">
+          <img class="vid-thumb" src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" loading="lazy">
+        </a>
+      </div>
+      <div class="vid-title">${d.vid_notes[i] || vid}</div>
+      <div class="vid-footer">
+        <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener" class="vid-btn yt">▶ YouTube</a>
+      </div>
+    </div>`).join('');
+
+  return `<div class="guest-card ${cardClass}" id="card_${d.id}">
+    <div class="card-header">
+      <div>
+        <div class="guest-name">${d.current_name}</div>
+        <div class="guest-note" style="font-size:.78rem;color:#71717a;margin-top:.2rem">${d.note}</div>
+      </div>
+      <span class="badge ${badgeCls}">${badgeTxt}</span>
+    </div>
+    <div class="card-body">
+      <div class="info-editor open" style="margin-bottom:.75rem">
+        <div class="info-row"><span class="info-label">真实姓名</span><input placeholder="填写嘉宾真实姓名" value="${st.real_name}" oninput="updDisc('${d.id}','real_name',this.value)"></div>
+        <div class="info-row"><span class="info-label">职位</span><input placeholder="职位" value="${st.role}" oninput="updDisc('${d.id}','role',this.value)"></div>
+        <div class="info-row"><span class="info-label">公司</span><input placeholder="公司" value="${st.company}" oninput="updDisc('${d.id}','company',this.value)"></div>
+      </div>
+      <div class="vids-grid">${vidHtml}</div>
+      <div class="card-actions">
+        <button class="btn btn-ok" onclick="setDiscStatus('${d.id}','confirmed')">✓ 确认姓名</button>
+        <button class="btn btn-no" onclick="setDiscStatus('${d.id}','rejected')">✗ 不是嘉宾</button>
+        <button class="btn btn-grey" onclick="setDiscStatus('${d.id}','pending')">↺ 重置</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function setDiscStatus(id, status) {
+  S['disc_s_' + id].status = status;
+  save(); render();
+}
+
+function updDisc(id, field, val) {
+  S['disc_s_' + id][field] = val;
+  save();
+}
+
+function render() {
+  document.getElementById('pendingGrid').innerHTML    = PENDING.map(g => cardPending(g)).join('');
+  document.getElementById('discoveredGrid').innerHTML = DISCOVERED.map(d => cardDiscovered(d)).join('');
+  document.getElementById('addedGrid').innerHTML      = ADDED.map((g,i) => cardAdded(g,i)).join('');
+  renderSummary();
+}
+
+function badgeHtml(status, hasCandidates) {
+  if (status === 'confirmed') return `<span class="badge badge-confirmed">✓ 确认添加</span>`;
+  if (status === 'rejected')  return `<span class="badge badge-rejected">✗ 不添加</span>`;
+  if (!hasCandidates)         return `<span class="badge badge-notfound">YouTube 未找到</span>`;
+  return `<span class="badge badge-pending">待确认</span>`;
+}
+
+function cardPending(g) {
+  const st = gs(g.id, g);
+  const allVids = [...g.candidates.map(c => c.vid), ...(st.manualVid ? [st.manualVid] : [])];
+  const hasCandidates = allVids.length > 0;
+  const cardClass = st.status === 'confirmed' ? 'confirmed' : st.status === 'rejected' ? 'rejected' : '';
+
+  const videosHtml = hasCandidates
+    ? `<div class="vids-grid">${allVids.map(vid => {
+        const title = g.candidates.find(c=>c.vid===vid)?.title || vid;
+        const sel = st.selVids.includes(vid);
+        return `<div class="vid-item ${sel?'sel':''}" id="vi_${g.id}_${vid}">
+          <div class="vid-thumb-wrap">
+            <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">
+              <img class="vid-thumb" src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" loading="lazy">
+            </a>
+            ${sel ? '<div class="vid-sel-badge">✓</div>' : ''}
+          </div>
+          <div class="vid-title">${title}</div>
+          <div class="vid-footer">
+            <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener" class="vid-btn yt">▶ YouTube</a>
+            <button class="vid-btn" onclick="toggleVid('${g.id}','${vid}')">${sel?'取消':'选中'}</button>
+          </div>
+        </div>`;
+      }).join('')}</div>`
+    : `<div class="no-vids">
+        <p>⚠ YouTube 频道未找到对应视频（B站有，YouTube 可能未发布 / 已删 / 仅会员）</p>
+        <div class="manual-row">
+          <input type="text" id="mv_${g.id}" placeholder="手动填入 YouTube 视频 ID（11位字符）" value="${st.manualVid}">
+          <button onclick="addManual('${g.id}')">添加</button>
+        </div>
+      </div>`;
+
+  const confirmDisabled = !hasCandidates && !st.manualVid;
+
+  return `<div class="guest-card ${cardClass}" id="card_${g.id}">
+    <div class="card-header">
+      <div>
+        <div class="guest-name">
+          ${st.name}
+          <button class="edit-btn" onclick="toggleEditor('${g.id}')">✏ 编辑信息</button>
+        </div>
+        <div class="guest-role">${st.role}</div>
+        ${st.company ? `<div class="guest-company">${st.company}</div>` : ''}
+        <div class="guest-note">${g.note}</div>
+      </div>
+      ${badgeHtml(st.status, hasCandidates)}
+    </div>
+    <div class="card-body">
+      <div class="info-editor" id="editor_${g.id}">
+        <div class="info-row"><span class="info-label">中文名</span><input value="${st.name}" oninput="updField('${g.id}','name',this.value)"></div>
+        <div class="info-row"><span class="info-label">英文名</span><input value="${st.en_name}" oninput="updField('${g.id}','en_name',this.value)"></div>
+        <div class="info-row"><span class="info-label">职位</span><input value="${st.role}" oninput="updField('${g.id}','role',this.value)"></div>
+        <div class="info-row"><span class="info-label">公司</span><input value="${st.company}" oninput="updField('${g.id}','company',this.value)"></div>
+      </div>
+      ${videosHtml}
+      <div class="card-actions">
+        ${!confirmDisabled ? `<button class="btn btn-ok" onclick="setStatus('${g.id}','confirmed')">✓ 确认添加</button>` : ''}
+        <button class="btn btn-no" onclick="setStatus('${g.id}','rejected')">✗ 不添加</button>
+        <button class="btn btn-grey" onclick="setStatus('${g.id}','pending')">↺ 重置</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function cardAdded(g, i) {
+  const st = ga(i);
+  const badgeCls = st.status === 'needs_edit' ? 'badge-needsedit' : 'badge-added';
+  const badgeTxt = st.status === 'needs_edit' ? '⚠ 需要修正' : '✓ 已添加';
+  const cardClass = st.status === 'needs_edit' ? 'needs-edit' : '';
+
+  return `<div class="guest-card ${cardClass}" id="added_card_${i}">
+    <div class="card-header">
+      <div>
+        <div class="guest-name">${g.name}</div>
+        <div class="guest-role">${g.role}</div>
+        ${g.company ? `<div class="guest-company">${g.company}</div>` : ''}
+        ${g.note ? `<div class="guest-note">${g.note}</div>` : ''}
+      </div>
+      <span class="badge ${badgeCls}">${badgeTxt}</span>
+    </div>
+    <div class="card-body">
+      <div class="vids-grid">${g.vids.map(vid => `
+        <div class="vid-item sel">
+          <div class="vid-thumb-wrap">
+            <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener">
+              <img class="vid-thumb" src="https://img.youtube.com/vi/${vid}/mqdefault.jpg" loading="lazy">
+            </a>
+          </div>
+          <div class="vid-title" style="font-family:monospace">${vid}</div>
+          <div class="vid-footer">
+            <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener" class="vid-btn yt">▶ YouTube</a>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-ok"   onclick="setAddedStatus(${i},'ok')">✓ 信息正确</button>
+        <button class="btn btn-warn" onclick="setAddedStatus(${i},'needs_edit')">⚠ 需要修正</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderSummary() {
+  let confirmed=0, rejected=0, pending=0;
+  let html = '';
+  PENDING.forEach(g => {
+    const st = S[g.id] || { status:'pending', name:g.name };
+    const icon = st.status==='confirmed' ? '✅' : st.status==='rejected' ? '❌' : '⏳';
+    const detail = st.status==='confirmed'
+      ? `添加 [${(st.selVids||[]).join(', ')}]`
+      : st.status==='rejected' ? '跳过' : '待决定';
+    html += `<div class="summary-item"><span class="summary-name">${icon} ${st.name||g.name}</span><span class="summary-detail">${detail}</span></div>`;
+    if (st.status==='confirmed') confirmed++;
+    else if (st.status==='rejected') rejected++;
+    else pending++;
+  });
+  document.getElementById('summaryContent').innerHTML =
+    `<div class="summary-stat">✅ ${confirmed} 确认  ❌ ${rejected} 排除  ⏳ ${pending} 待定（共 ${PENDING.length}）</div>${html}`;
+}
+
+// ─────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────
+function toggleVid(guestId, vid) {
+  const st = S[guestId];
+  const idx = st.selVids.indexOf(vid);
+  if (idx >= 0) st.selVids.splice(idx, 1);
+  else st.selVids.push(vid);
+  save(); render();
+}
+
+function setStatus(guestId, status) {
+  S[guestId].status = status;
+  save(); render();
+}
+
+function setAddedStatus(i, status) {
+  const id = 'added_' + i;
+  if (!S[id]) S[id] = {};
+  S[id].status = status;
+  save(); render();
+}
+
+function toggleEditor(guestId) {
+  const el = document.getElementById('editor_' + guestId);
+  el.classList.toggle('open');
+}
+
+function updField(id, field, val) {
+  S[id][field] = val;
+  save();
+}
+
+function addManual(guestId) {
+  const input = document.getElementById('mv_' + guestId);
+  let vid = (input.value||'').trim();
+  vid = vid.replace(/.*v=/, '').replace(/.*youtu\.be\//, '').split('&')[0].trim();
+  if (!vid || vid.length < 5) return;
+  S[guestId].manualVid = vid;
+  if (!S[guestId].selVids.includes(vid)) S[guestId].selVids.push(vid);
+  save(); render();
+}
+
+function exportDecisions() {
+  const confirmed = PENDING.filter(g => S[g.id]?.status === 'confirmed');
+  const out = confirmed.map(g => {
+    const st = S[g.id];
+    const vids = st.selVids.length ? st.selVids : (st.manualVid ? [st.manualVid] : []);
+    const primary = vids[0] || '';
+    return {
+      guest_name:      st.name    || g.name,
+      guest_en_name:   st.en_name || g.en_name,
+      guest_title:     st.role    || g.role,
+      guest_company:   st.company || g.company,
+      primary_video_id: primary,
+      all_video_ids:   vids,
+      max_views:       0,
+      thumbnail_url:   primary ? `https://img.youtube.com/vi/${primary}/hqdefault.jpg` : '',
+      primary_url:     primary ? `https://www.youtube.com/watch?v=${primary}` : '',
+      episode_count:   vids.length,
+      all_urls:        vids.map(v => `https://www.youtube.com/watch?v=${v}`)
+    };
+  });
+
+  // Also collect "needs_edit" added guests
+  const needsEdit = ADDED.filter((g,i) => S['added_'+i]?.status === 'needs_edit').map(g => g.name);
+
+  const result = {
+    _instructions: `把 add_guests 里的嘉宾添加到 guests.json，然后按 max_views 降序重排。needs_edit 里的嘉宾信息需要修正，请提示用户。`,
+    add_guests: out,
+    needs_edit: needsEdit
+  };
+
+  const json = JSON.stringify(result, null, 2);
+  const el = document.getElementById('exportOutput');
+  el.textContent = json;
+  el.style.display = 'block';
+
+  navigator.clipboard.writeText(json).then(() => {
+    const note = document.getElementById('copyNote');
+    note.style.display = 'block';
+    setTimeout(() => note.style.display = 'none', 3000);
+  }).catch(() => {});
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+load();
+PENDING.forEach(g => gs(g.id, g));
+ADDED.forEach((g,i) => ga(i));
+DISCOVERED.forEach(d => { if (!S['disc_s_'+d.id]) S['disc_s_'+d.id] = {status:'pending',real_name:'',role:'',company:''}; });
+render();
+setInterval(save, 15000);
+</script>
+</body>
+</html>

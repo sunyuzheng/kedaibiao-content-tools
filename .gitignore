@@ -22,3 +22,6 @@ tools/youtube/missing_video_ids.txt
 tools/youtube/channel.db
 tools/youtube/populate_progress.json
 client_secret*.json
+export_for_grapeot/
+export_for_grapeot.zip
+CleanShot*.png

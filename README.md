@@ -46,11 +46,18 @@ tools/
   ├── process_video.py      新视频一键处理（转录 + 校对）
   ├── download/             yt-dlp 下载脚本
   ├── organize/             字幕分类
-  ├── transcribe/           批量转录（旧存量用，Whisper/MLX）
+  ├── transcribe/           批量转录（旧存量用，Whisper/MLX/Qwen）
   ├── correct/              字幕校对引擎（Qwen+Claude pipeline）
+  ├── compare/              校对效果对比评估
   ├── check/                对账 + 诊断（只读）
   ├── upload/               上传 + 排序 + 修复（写远端）
-  └── webapp/               本地 Web 界面（Flask）
+  ├── webapp/               本地 Web 界面（Flask）
+  └── youtube/              YouTube 频道管理自动化
+       ├── fetch_all_videos.py      拉取全量视频元数据
+       ├── build_database.py        构建本地 SQLite 数据库
+       ├── apply_patches.py         批量更新视频描述（嘉宾信息块）
+       ├── classify_playlists.py    AI 分类视频（Claude Haiku）
+       └── create_playlists.py      创建/填充 YouTube playlist
 ```
 
 ---
@@ -98,6 +105,17 @@ pip install faster-whisper    # CPU/CUDA Whisper
 | [docs/核心任务说明.md](docs/核心任务说明.md) | 播客工作流（下载→上传）完整说明 |
 | [docs/项目重构复盘.md](docs/项目重构复盘.md) | 2026-03-29 Transistor 元数据大修复盘 |
 | [docs/字幕校对工程复盘.md](docs/字幕校对工程复盘.md) | 2026-04 Qwen+Claude 校对 pipeline 复盘 |
+
+---
+
+## YouTube 频道管理
+
+详细说明见 [tools/youtube/README.md](tools/youtube/README.md)。
+
+主要工作流：
+- **描述更新**：为嘉宾视频批量追加嘉宾信息块 → `apply_patches.py`
+- **Playlist**：AI 分类 705 个公开视频（11类）→ 在 YouTube 创建/填充 → `classify_playlists.py` + `create_playlists.py`
+- **数据库**：本地 SQLite（`channel.db`）供查询分析 → `build_database.py`
 
 ---
 
