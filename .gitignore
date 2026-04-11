@@ -20,3 +20,5 @@ tools/youtube/all_videos_ids.json
 tools/youtube/all_videos_full.json
 tools/youtube/missing_video_ids.txt
 tools/youtube/channel.db
+tools/youtube/populate_progress.json
+client_secret*.json
