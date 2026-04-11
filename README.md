@@ -24,8 +24,9 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 ```
 1. 下载    → ./tools/download/download_channel.sh
 2. 对账    → python3 tools/check/check_upload_candidates.py
-3. 上传    → python3 tools/upload/upload_to_transistor_v2.py --upload-only-new
-4. 排序    → python3 tools/upload/reorder_episodes_by_date.py
+3. 校验    → python3 tools/check/validate_guest_data.py
+4. 上传    → python3 tools/upload/upload_to_transistor_v2.py --upload-only-new
+5. 排序    → python3 tools/upload/reorder_episodes_by_date.py
 ```
 
 详细说明见 [docs/核心任务说明.md](docs/核心任务说明.md)。
@@ -49,7 +50,7 @@ tools/
   ├── transcribe/           批量转录（旧存量用，Whisper/MLX/Qwen）
   ├── correct/              字幕校对引擎（Qwen+Claude pipeline）
   ├── compare/              校对效果对比评估
-  ├── check/                对账 + 诊断（只读）
+  ├── check/                对账 + 校验 + 诊断（只读）
   ├── upload/               上传 + 排序 + 修复（写远端）
   ├── webapp/               本地 Web 界面（Flask）
   └── youtube/              YouTube 频道管理自动化
@@ -100,7 +101,7 @@ pip install faster-whisper    # CPU/CUDA Whisper
 
 | 文档 | 内容 |
 |------|------|
-| [docs/嘉宾索引.md](docs/嘉宾索引.md) | 104 位嘉宾完整列表 + 每位嘉宾的 archive 视频索引 |
+| [docs/嘉宾索引.md](docs/嘉宾索引.md) | 嘉宾完整列表 + 每位嘉宾的 archive 视频索引 |
 | [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md) | `lizheng.ai/guests` 的数据流、权威来源、派生文件说明 |
 | [docs/核心任务说明.md](docs/核心任务说明.md) | 播客工作流（下载→上传）完整说明 |
 | [docs/项目重构复盘.md](docs/项目重构复盘.md) | 2026-03-29 Transistor 元数据大修复盘 |
@@ -125,4 +126,5 @@ pip install faster-whisper    # CPU/CUDA Whisper
 
 - 嘉宾 roster / 嘉宾-视频映射的唯一权威来源是 [`guests.json`](guests.json)
 - 视频标题等 metadata 的本地权威来源是 `tools/youtube/all_videos_full.json`
+- 更新 `guests.json` 后先跑 `python3 tools/check/validate_guest_data.py`
 - 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)
