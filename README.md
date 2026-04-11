@@ -130,4 +130,5 @@ pip install faster-whisper    # CPU/CUDA Whisper
 - 更新 guest 视频 metadata 时先跑 `python3 tools/youtube/build_guest_video_metadata.py`
 - 低频刷新时可直接跑 `./tools/youtube/refresh_guest_page_data.sh`
 - 更新 `guests.json` 或 guest 相关视频 metadata 后先跑 `python3 tools/check/validate_guest_data.py`
+- GitHub 上也会在 push / PR 时自动跑 `Validate Guest Data`
 - 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)

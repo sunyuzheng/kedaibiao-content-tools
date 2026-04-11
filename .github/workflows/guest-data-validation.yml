@@ -1,0 +1,31 @@
+name: Validate Guest Data
+
+on:
+  push:
+    paths:
+      - "guests.json"
+      - "guest_video_metadata.json"
+      - "tools/check/validate_guest_data.py"
+      - ".github/workflows/guest-data-validation.yml"
+  pull_request:
+    paths:
+      - "guests.json"
+      - "guest_video_metadata.json"
+      - "tools/check/validate_guest_data.py"
+      - ".github/workflows/guest-data-validation.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate guest data
+        run: python3 tools/check/validate_guest_data.py

@@ -36,10 +36,21 @@ def main() -> int:
     guest_video_metadata = json.loads(
         GUEST_VIDEO_METADATA_PATH.read_text(encoding="utf-8")
     )
-    guest_video_metadata_by_id = {
-        video.get("video_id"): video for video in guest_video_metadata
-    }
     errors: list[str] = []
+    referenced_video_ids: set[str] = set()
+    metadata_video_ids: list[str] = []
+    guest_video_metadata_by_id = {}
+
+    for video in guest_video_metadata:
+        video_id = video.get("video_id")
+        if not isinstance(video_id, str) or not VIDEO_ID_RE.match(video_id):
+            errors.append(f"guest_video_metadata: 非法 video_id -> {video_id}")
+            continue
+        metadata_video_ids.append(video_id)
+        if video_id in guest_video_metadata_by_id:
+            errors.append(f"guest_video_metadata: 存在重复 video_id -> {video_id}")
+            continue
+        guest_video_metadata_by_id[video_id] = video
 
     for index, guest in enumerate(guests, start=1):
         guest_name = guest.get("guest_name") or f"guest #{index}"
@@ -88,6 +99,7 @@ def main() -> int:
             )
 
         for video_id in all_video_ids:
+            referenced_video_ids.add(video_id)
             video_meta = guest_video_metadata_by_id.get(video_id)
             if not video_meta:
                 errors.append(
@@ -101,6 +113,14 @@ def main() -> int:
                 errors.append(f"{guest_name}: {video_id} 缺少 published_at")
             if video_meta.get("view_count") is None:
                 errors.append(f"{guest_name}: {video_id} 缺少 view_count")
+
+    extra_metadata_ids = sorted(set(metadata_video_ids) - referenced_video_ids)
+    if extra_metadata_ids:
+        errors.append(
+            "guest_video_metadata: 存在未被 guests.json 引用的陈旧条目 -> "
+            + ", ".join(extra_metadata_ids[:20])
+            + (" ..." if len(extra_metadata_ids) > 20 else "")
+        )
 
     if errors:
         print(f"guest data validation failed: {len(errors)} issue(s)")
