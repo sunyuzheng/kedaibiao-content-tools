@@ -12,6 +12,7 @@ from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 GUESTS_PATH = ROOT / "guests.json"
+GUEST_VIDEO_METADATA_PATH = ROOT / "guest_video_metadata.json"
 VIDEO_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
 
 
@@ -32,6 +33,12 @@ def extract_video_id(url: str) -> str:
 
 def main() -> int:
     guests = json.loads(GUESTS_PATH.read_text(encoding="utf-8"))
+    guest_video_metadata = json.loads(
+        GUEST_VIDEO_METADATA_PATH.read_text(encoding="utf-8")
+    )
+    guest_video_metadata_by_id = {
+        video.get("video_id"): video for video in guest_video_metadata
+    }
     errors: list[str] = []
 
     for index, guest in enumerate(guests, start=1):
@@ -79,6 +86,21 @@ def main() -> int:
                 f"{guest_name}: primary_url 与 primary_video_id 不一致 "
                 f"({primary_url_video_id} != {primary_video_id})"
             )
+
+        for video_id in all_video_ids:
+            video_meta = guest_video_metadata_by_id.get(video_id)
+            if not video_meta:
+                errors.append(
+                    f"{guest_name}: {video_id} 缺少 guest_video_metadata 元数据"
+                )
+                continue
+
+            if not str(video_meta.get("title") or "").strip():
+                errors.append(f"{guest_name}: {video_id} 缺少 title")
+            if not str(video_meta.get("published_at") or "").strip():
+                errors.append(f"{guest_name}: {video_id} 缺少 published_at")
+            if video_meta.get("view_count") is None:
+                errors.append(f"{guest_name}: {video_id} 缺少 view_count")
 
     if errors:
         print(f"guest data validation failed: {len(errors)} issue(s)")
