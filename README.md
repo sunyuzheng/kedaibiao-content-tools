@@ -107,6 +107,7 @@ pip install faster-whisper    # CPU/CUDA Whisper
 | [docs/核心任务说明.md](docs/核心任务说明.md) | 播客工作流（下载→上传）完整说明 |
 | [docs/项目重构复盘.md](docs/项目重构复盘.md) | 2026-03-29 Transistor 元数据大修复盘 |
 | [docs/字幕校对工程复盘.md](docs/字幕校对工程复盘.md) | 2026-04 Qwen+Claude 校对 pipeline 复盘 |
+| [docs/YouTube Playlist 重构复盘.md](docs/YouTube%20Playlist%20重构复盘.md) | 2026-04 11类 playlist 体系重建：分类逻辑、执行过程、经验总结 |
 
 ---
 
