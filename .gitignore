@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 .DS_Store
 __pycache__/
 *.pyc
@@ -6,6 +8,7 @@ __pycache__/
 logs/
 archive/
 envs/
+.venv-podcast/
 视频文档/
 下载总结.md
 数据完整性报告.md
@@ -15,13 +18,31 @@ tools/upload/uploaded_episodes.json
 
 # YouTube automation（敏感数据 / 大文件，不提交）
 tools/youtube/youtube_token.json
+tools/youtube/youtube_token.json.*
 tools/youtube/patch_manifest.json
 tools/youtube/all_videos_ids.json
 tools/youtube/all_videos_full.json
+tools/youtube/public_videos_snapshot.json
+tools/youtube/podcast_candidate_verification.json
 tools/youtube/missing_video_ids.txt
 tools/youtube/channel.db
+channel.db
 tools/youtube/populate_progress.json
+tools/youtube/english_unlisted_upload_results.json
+tools/youtube/english_unlisted_manifest.json
 client_secret*.json
 export_for_grapeot/
 export_for_grapeot.zip
 CleanShot*.png
+twitter_schedule_*.json
+twitter_schedule_*.results.json
+
+# Local decision dashboard build/runtime state
+decision-dashboard/node_modules/
+decision-dashboard/.next/
+decision-dashboard/.vinext/
+decision-dashboard/dist/
+decision-dashboard/.wrangler/
+decision-dashboard/outputs/
+decision-dashboard/work/
+decision-dashboard/scripts/__pycache__/

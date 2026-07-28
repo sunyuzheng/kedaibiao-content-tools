@@ -13,6 +13,7 @@
     envs/youtube_env/bin/python3 tools/youtube/fetch_all_videos.py
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -23,15 +24,23 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from tools.youtube.auth import get_youtube_client
 
 OUT_FILE = Path(__file__).parent / "all_videos_full.json"
+EXPECTED_CHANNEL_ID = "UC_5lJHgnMP_lb_VpIiXV0hQ"
 
 
-def fetch_all_videos():
-    yt = get_youtube_client()
+def fetch_all_videos(*, interactive: bool, expected_channel_id: str):
+    yt = get_youtube_client(interactive=interactive)
 
     # 获取 Uploads 播放列表 ID
     ch = yt.channels().list(
         part="contentDetails,statistics", mine=True
     ).execute()["items"][0]
+    actual_channel_id = ch.get("id")
+    if actual_channel_id != expected_channel_id:
+        raise RuntimeError(
+            "YouTube OAuth channel mismatch: "
+            f"expected={expected_channel_id} actual={actual_channel_id}"
+        )
+    print(f"OAuth 频道校验通过: {actual_channel_id}")
     uploads_id = ch["contentDetails"]["relatedPlaylists"]["uploads"]
     print(f"频道视频数（公开）: {ch['statistics']['videoCount']}")
     print(f"开始从 Uploads 播放列表拉取所有视频 ID...")
@@ -92,7 +101,12 @@ def fetch_all_videos():
 
     clean.sort(key=lambda x: x["published_at"])
 
-    OUT_FILE.write_text(json.dumps(clean, ensure_ascii=False, indent=2))
+    temp_file = OUT_FILE.with_suffix(".json.tmp")
+    temp_file.write_text(
+        json.dumps(clean, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temp_file.replace(OUT_FILE)
 
     from collections import Counter
     privacy = Counter(v["privacy"] for v in clean)
@@ -102,5 +116,25 @@ def fetch_all_videos():
     print(f"最新: {clean[-1]['published_at'][:10]}  {clean[-1]['title'][:50]}")
 
 
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--non-interactive",
+        action="store_true",
+        help="Never launch an OAuth browser; fail if token refresh is unavailable.",
+    )
+    parser.add_argument(
+        "--expected-channel-id",
+        default=EXPECTED_CHANNEL_ID,
+        help="Fail closed if OAuth belongs to another YouTube channel.",
+    )
+    args = parser.parse_args()
+    fetch_all_videos(
+        interactive=not args.non_interactive,
+        expected_channel_id=args.expected_channel_id,
+    )
+    return 0
+
+
 if __name__ == "__main__":
-    fetch_all_videos()
+    raise SystemExit(main())

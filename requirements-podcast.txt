@@ -1,0 +1,9 @@
+# Reproducible dependency set for the scheduled YouTube -> Transistor workflow.
+certifi==2026.7.22
+charset-normalizer==3.4.9
+idna==3.18
+requests==2.32.5
+urllib3==2.7.0
+# Known-good bootstrap baseline. The weekly job advances yt-dlp to the newest
+# PyPI pre-release/nightly after verifying that the installed command runs.
+yt-dlp==2026.7.4

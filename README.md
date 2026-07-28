@@ -22,14 +22,26 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 ### B. YouTube 下载 → 播客上线（存量维护）
 
 ```
-1. 下载    → ./tools/download/download_channel.sh
-2. 对账    → python3 tools/check/check_upload_candidates.py
-3. 校验    → python3 tools/check/validate_guest_data.py
-4. 上传    → python3 tools/upload/upload_to_transistor_v2.py --upload-only-new
-5. 排序    → python3 tools/upload/reorder_episodes_by_date.py
+1. 发现    → .venv-podcast/bin/python tools/youtube/fetch_public_videos.py
+2. 下载    → ./tools/download/download_channel.sh（只处理未见过的增量条目）
+3. 计划    → 候选发现 plan → bounded candidate verification → 最终 plan
+4. 审批    → 检查 logs/podcast_sync/plans/latest.md 与 approval hash
+5. 执行    → .venv-podcast/bin/python tools/upload/apply_podcast_sync_plan.py ...
+6. 质检    → .venv-podcast/bin/python tools/check/check_upload_quality.py --n 10
+7. 重排    → 使用最终 publish payload 中已审核的完整投影
 ```
 
 详细说明见 [docs/核心任务说明.md](docs/核心任务说明.md)。
+
+本地自动化：MacBook 上已通过 launchd 注册每周日 09:15 运行的同步任务
+`com.sunyuzheng.kedaibiao-podcast-sync`，入口是
+`tools/automation/sync_podcast.py`。定时任务只刷新、下载、对账并生成审批计划，
+不会自行修改或发布 Transistor。每次运行会先尝试把项目内 yt-dlp 更新到 PyPI
+最新预发布/nightly；网络或索引故障时继续使用仍可执行的本地已验证版本。
+日志在 `logs/podcast_sync/`。配置 `RESEND_API_KEY`、`RESEND_FROM_EMAIL` 与
+`PODCAST_SYNC_EMAIL_TO` 后，每次周任务会发送一封幂等摘要邮件；失败、待审核和
+健康状态都会报告。邮件发送是 best-effort，Resend 暂时不可用不会反过来令同步任务
+失败。
 
 ---
 
@@ -37,8 +49,8 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 
 ```
 archive/          本地视频资料（音频 + 字幕 + 元数据，gitignored）
-  ├── 有人工字幕/   → 可直接上传 Transistor
-  ├── 无人工字幕/   → 需转录后再上传
+  ├── 有人工字幕/   → 历史物理目录，不是业务状态
+  ├── 无人工字幕/   → 历史物理目录，不是业务状态
   └── 会员视频/     → 会员专属内容
 docs/             工作流文档 + 复盘
 envs/             Python 虚拟环境（gitignored）
@@ -51,6 +63,7 @@ tools/
   ├── correct/              字幕校对引擎（Qwen+Claude pipeline）
   ├── compare/              校对效果对比评估
   ├── check/                对账 + 校验 + 诊断（只读）
+  ├── podcast/              manifest、字幕转换、Transistor client 共享实现
   ├── upload/               上传 + 排序 + 修复（写远端）
   ├── webapp/               本地 Web 界面（Flask）
   └── youtube/              YouTube 频道管理自动化
@@ -73,6 +86,9 @@ cp .env.example .env   # 填入 API keys
 ANTHROPIC_API_KEY=...        # Claude 校对用
 TRANSISTOR_API_KEY=...       # 播客上传用
 TRANSISTOR_SHOW_ID=...
+RESEND_API_KEY=...           # 可选：周任务邮件提醒
+RESEND_FROM_EMAIL=...
+PODCAST_SYNC_EMAIL_TO=...
 ```
 
 ---
@@ -87,8 +103,9 @@ pip install mlx-qwen3-asr    # Qwen3-ASR 转录（Apple Silicon only）
 pip install anthropic         # Claude 校对
 pip install flask             # 本地 Web 界面
 
-# 播客上传
-pip install requests
+# 播客同步（独立、锁定依赖）
+python3 -m venv .venv-podcast
+.venv-podcast/bin/python -m pip install -r requirements-podcast.txt
 
 # 旧存量转录（可选）
 pip install mlx-whisper       # Apple Silicon Whisper
@@ -101,6 +118,9 @@ pip install faster-whisper    # CPU/CUDA Whisper
 
 | 文档 | 内容 |
 |------|------|
+| [AGENTS.md](AGENTS.md) | AI agent 进入本项目时必须遵守的本地规则 |
+| [docs/媒体库维护规则.md](docs/媒体库维护规则.md) | 媒体库 canonical manifest、字幕状态、Transistor 同步规则 |
+| [docs/播客自动化审计与运行手册.md](docs/播客自动化审计与运行手册.md) | 现役/归档索引、审计结论、审批门槛、SRT 与运行手册 |
 | [docs/嘉宾索引.md](docs/嘉宾索引.md) | 嘉宾完整列表 + 每位嘉宾的 archive 视频索引 |
 | [docs/网站嘉宾维护手册.md](docs/网站嘉宾维护手册.md) | Guest 功能维护手册：source of truth、更新顺序、验收清单 |
 | [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md) | `lizheng.ai/guests` 的数据流、权威来源、派生文件说明 |

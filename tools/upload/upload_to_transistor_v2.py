@@ -321,7 +321,7 @@ def upload_audio_file(upload_url: str, content_type: str, audio_file_path: Path)
 
 def srt_to_text(srt_path: Path) -> str:
     """
-    将SRT字幕文件转换为纯文本
+    将 SRT/VTT 字幕文件转换为纯文本
     
     Args:
         srt_path: SRT文件路径
@@ -336,15 +336,19 @@ def srt_to_text(srt_path: Path) -> str:
         with open(srt_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # 移除SRT格式标记（序号、时间戳等）
+        # 移除 SRT/VTT 格式标记（序号、时间戳、WEBVTT 头等）
         # 保留字幕文本内容
         lines = content.split('\n')
         text_lines = []
         
         for line in lines:
             line = line.strip()
-            # 跳过空行、序号、时间戳
+            # 跳过空行、序号、时间戳、VTT 头/注释
             if not line:
+                continue
+            if line in {"WEBVTT", "Kind: captions", "Language: zh"}:
+                continue
+            if line.startswith(("NOTE", "STYLE", "REGION")):
                 continue
             if re.match(r'^\d+$', line):  # 序号
                 continue
@@ -352,6 +356,9 @@ def srt_to_text(srt_path: Path) -> str:
                 continue
             if '-->' in line:  # 时间戳行
                 continue
+
+            # 清理 VTT cue 内可能出现的标签
+            line = re.sub(r"<[^>]+>", "", line)
             
             # 保留字幕文本
             text_lines.append(line)
@@ -417,6 +424,10 @@ def create_episode(
             episode_data["episode"]["video_url"] = video_url
         if image_url:
             episode_data["episode"]["image_url"] = image_url
+        if transcript:
+            # Transistor accepts plain text transcripts through transcript_text.
+            # Keep conversion deterministic; the source SRT/VTT remains local.
+            episode_data["episode"]["transcript_text"] = transcript
 
         # 注意：published_at 不能在创建时设置，需在 /publish 端点中设置（步骤5）
         
@@ -510,8 +521,12 @@ def find_files_in_folder(folder_path: Path) -> Tuple[Optional[Path], Optional[Pa
         description_path = file
         break
     
-    # 优先查找中文字幕（.zh-Hans.srt），如果没有则查找其他.srt文件
-    for pattern in ["*.zh-Hans.srt", "*.zh-Hant.srt", "*.zh.srt", "*.srt"]:
+    # 优先查找中文字幕；yt-dlp 有时会留下 .vtt 而不是转成 .srt
+    for pattern in [
+        "*.zh-Hans.srt", "*.zh-Hant.srt", "*.zh.srt",
+        "*.zh-Hans.vtt", "*.zh-Hant.vtt", "*.zh.vtt",
+        "*.srt", "*.vtt",
+    ]:
         matches = list(folder_path.glob(pattern))
         if matches:
             transcript_path = matches[0]
@@ -756,10 +771,6 @@ def upload_episode_from_folder(
     attrs = episode.get('attributes', {})
     current_status = attrs.get('status', 'unknown')
     
-    # 保存上传记录
-    source_type = "with_subs" if "有人工字幕" in str(folder_path) else "without_subs"
-    save_upload_record(episode, folder_path.name, source_type)
-    
     # 步骤4: 检查是否需要更新video_url（如果创建时没有设置成功）
     if youtube_url and episode_id:
         current_video_url = attrs.get('video_url')
@@ -777,14 +788,29 @@ def upload_episode_from_folder(
         if publish_episode(episode_id, published_at=published_at):
             print(f"   ✅ Episode已发布!")
         else:
-            print(f"   ⚠️  发布失败，episode仍为draft状态")
+            print(f"   ❌ 发布失败，episode仍为draft状态")
             print(f"      Episode URL: {attrs.get('share_url', 'N/A')}")
-    
-    # 步骤6: 关于transcript的说明
-    # 根据API测试，transcript字段不被支持，需要通过网页界面手动上传
-    if transcript:
-        print(f"   ⚠️  提示：transcript需要通过网页界面手动上传（长度: {len(transcript)} 字符）")
-        print(f"      Episode URL: {attrs.get('share_url', 'N/A')}")
+            return False
+
+    # 只有发布成功后才写兼容历史记录。远端 API 仍是 source of truth。
+    readback = requests.get(
+        f"{TRANSISTOR_API_BASE}/episodes/{episode_id}",
+        headers={"x-api-key": TRANSISTOR_API_KEY},
+        timeout=30,
+    )
+    if readback.status_code != 200:
+        print(f"   ❌ 发布后回读失败: HTTP {readback.status_code}")
+        return False
+    final_episode = readback.json().get("data", {})
+    final_attrs = final_episode.get("attributes", {})
+    if final_attrs.get("status") != "published":
+        print(f"   ❌ 发布后状态不是 published: {final_attrs.get('status')}")
+        return False
+    if transcript and (final_attrs.get("transcript_text") or "") != transcript:
+        print("   ❌ 发布后 transcript_text 回读不一致")
+        return False
+    source_type = "with_subs" if "有人工字幕" in str(folder_path) else "without_subs"
+    save_upload_record(final_episode, folder_path.name, source_type)
     
     print(f"✅ 上传完成!")
     return True
@@ -996,6 +1022,19 @@ def main():
     )
     
     args = parser.parse_args()
+
+    if args.upload_only_new:
+        print(
+            "❌ --upload-only-new 已停用。请先运行 "
+            "tools/check/build_podcast_sync_plan.py，再用 "
+            "tools/upload/apply_podcast_sync_plan.py 和已审核的 approval hash。"
+        )
+        raise SystemExit(2)
+    if not args.dry_run and not args.list_shows:
+        print(
+            "❌ 旧版直接写入入口已停用；远端修改必须通过 immutable plan + approval hash。"
+        )
+        raise SystemExit(2)
     
     # 如果只是列出节目
     if args.list_shows:
@@ -1083,4 +1122,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

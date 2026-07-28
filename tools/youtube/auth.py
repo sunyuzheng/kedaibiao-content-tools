@@ -8,22 +8,30 @@ YouTube OAuth 2.0 认证模块
     pip install google-auth-oauthlib google-api-python-client
 """
 
+import os
 from pathlib import Path
 
 from google.auth.transport.requests import Request
+from google.auth.exceptions import RefreshError
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"]
+# Metadata refresh is read-only. Do not request the broader force-ssl scope,
+# which can also manage videos, ratings, and comments.
+SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"]
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 CLIENT_SECRET = PROJECT_ROOT / "client_secret_187061917532-lbrhj238dlr6lm872deh3gnkaoetoio0.apps.googleusercontent.com.json"
 TOKEN_FILE = Path(__file__).parent / "youtube_token.json"
 
 
-def get_youtube_client():
-    """返回已认证的 YouTube API client。首次运行需要浏览器授权。"""
+def get_youtube_client(*, interactive: bool = True):
+    """返回已认证的 YouTube API client。
+
+    Unattended jobs must pass ``interactive=False`` so an expired or revoked
+    token fails clearly instead of launching a browser that nobody can answer.
+    """
     creds = None
 
     if TOKEN_FILE.exists():
@@ -32,8 +40,17 @@ def get_youtube_client():
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             print("Token 已过期，自动刷新...")
-            creds.refresh(Request())
-        else:
+            try:
+                creds.refresh(Request())
+            except RefreshError:
+                print("旧 token 已失效")
+                creds = None
+
+        if not creds or not creds.valid:
+            if not interactive:
+                raise RuntimeError(
+                    "YouTube OAuth token requires interactive re-authorization"
+                )
             if not CLIENT_SECRET.exists():
                 raise FileNotFoundError(f"找不到 client_secret.json：{CLIENT_SECRET}")
             print("首次授权，请在弹出的浏览器页面完成 Google 账号登录...")
@@ -41,6 +58,7 @@ def get_youtube_client():
             creds = flow.run_local_server(port=0)
 
         TOKEN_FILE.write_text(creds.to_json())
+        os.chmod(TOKEN_FILE, 0o600)
         print(f"Token 已保存到 {TOKEN_FILE}")
 
     return build("youtube", "v3", credentials=creds)

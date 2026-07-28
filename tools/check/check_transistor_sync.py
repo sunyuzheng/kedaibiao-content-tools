@@ -47,11 +47,22 @@ def load_local_videos() -> List[Dict]:
                     data = json.load(f)
                 if not list(folder.glob("*.m4a")):
                     continue
+                subtitles = data.get("subtitles") or {}
+                manual_langs = [
+                    lang for lang in subtitles
+                    if lang.startswith(("zh", "en"))
+                ]
+                has_timed_subtitle = bool(
+                    list(folder.glob("*.srt")) or list(folder.glob("*.vtt"))
+                )
                 videos.append({
                     "title": data.get("title", ""),
                     "upload_date": data.get("upload_date", ""),
                     "video_id": data.get("id", ""),
                     "category": subdir,
+                    "has_manual_subtitle": bool(manual_langs),
+                    "manual_langs": manual_langs,
+                    "has_timed_subtitle": has_timed_subtitle,
                 })
             except Exception:
                 pass
@@ -63,17 +74,23 @@ def get_transistor_map() -> Dict[str, Dict]:
     page = 1
     headers = {"x-api-key": TRANSISTOR_API_KEY}
     while True:
-        resp = requests.get(
-            f"{TRANSISTOR_API_BASE}/episodes",
-            headers=headers,
-            params={"show_id": TRANSISTOR_SHOW_ID, "pagination[page]": page, "pagination[per]": 50},
-            timeout=30,
-        )
+        for attempt in range(4):
+            resp = requests.get(
+                f"{TRANSISTOR_API_BASE}/episodes",
+                headers=headers,
+                params={"show_id": TRANSISTOR_SHOW_ID, "pagination[page]": page, "pagination[per]": 50},
+                timeout=30,
+            )
+            if resp.status_code != 429:
+                break
+            wait_time = 60 * (attempt + 1)
+            print(f"   ⏸️  限流，等待 {wait_time}s 后重试 page {page}...")
+            time.sleep(wait_time)
         resp.raise_for_status()
         data = resp.json()
         for ep in data.get("data", []):
             attrs = ep.get("attributes", {})
-            url = attrs.get("video_url", "")
+            url = attrs.get("video_url") or ""
             vid = None
             if "v=" in url:
                 vid = url.split("v=")[-1].split("&")[0].strip()
@@ -114,22 +131,38 @@ def main() -> None:
     not_uploaded = [v for v in videos if v["video_id"] not in tr_map]
     with_subs_missing = [v for v in not_uploaded if v["category"] == "有人工字幕"]
     no_subs_missing = [v for v in not_uploaded if v["category"] == "无人工字幕"]
+    manual_missing = [v for v in not_uploaded if v["has_manual_subtitle"]]
+    timed_missing = [v for v in not_uploaded if v["has_timed_subtitle"] and not v["has_manual_subtitle"]]
+    no_timed_missing = [v for v in not_uploaded if not v["has_timed_subtitle"]]
 
     print(f"\n{'='*60}")
     print(f"本地已下载:       {len(videos):>4} 个")
     print(f"已在 Transistor:  {len(videos) - len(not_uploaded):>4} 个")
     print(f"未上传:           {len(not_uploaded):>4} 个")
-    print(f"  有人工字幕未上传: {len(with_subs_missing):>3} 个  ← 可直接上传")
-    print(f"  无人工字幕未上传: {len(no_subs_missing):>3} 个  ← 需先转录")
+    print(f"  历史 `有人工字幕` 目录未上传: {len(with_subs_missing):>3} 个")
+    print(f"  历史 `无人工字幕` 目录未上传: {len(no_subs_missing):>3} 个")
+    print(f"  真人工字幕未上传: {len(manual_missing):>3} 个  ← 按 info.json.subtitles 判断")
+    print(f"  非人工但有字幕未上传: {len(timed_missing):>3} 个")
+    print(f"  无任何字幕未上传: {len(no_timed_missing):>3} 个")
 
     if with_subs_missing:
         print(f"\n⚠️  有人工字幕但未上传（共 {len(with_subs_missing)} 个）：")
         for v in with_subs_missing:
             print(f"   {fmt(v['upload_date'])}  {v['title'][:55]}  ({v['video_id']})")
 
+    misplaced_manual = [
+        v for v in manual_missing
+        if v["category"] != "有人工字幕"
+    ]
+    if misplaced_manual:
+        print(f"\n⚠️  真人工字幕但目录不在 `有人工字幕`（共 {len(misplaced_manual)} 个）：")
+        for v in misplaced_manual:
+            langs = ",".join(v.get("manual_langs") or [])
+            print(f"   {fmt(v['upload_date'])}  {v['title'][:55]}  ({v['video_id']})  [{langs}]")
+
     recent_no_subs = [v for v in no_subs_missing if v.get("upload_date", "") >= "20250101"]
     if recent_no_subs:
-        print(f"\n📋 无人工字幕未上传（2025 年后，{len(recent_no_subs)} 个，需转录）：")
+        print(f"\n📋 历史 `无人工字幕` 目录未上传（2025 年后，{len(recent_no_subs)} 个）：")
         for v in recent_no_subs:
             print(f"   {fmt(v['upload_date'])}  {v['title'][:55]}  ({v['video_id']})")
 

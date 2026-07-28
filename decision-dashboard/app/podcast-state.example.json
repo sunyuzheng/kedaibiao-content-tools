@@ -1,0 +1,65 @@
+{
+  "generatedAt": "1970-01-01T00:00:00+00:00",
+  "showId": "example",
+  "plan": {
+    "generatedAt": "1970-01-01T00:00:00+00:00",
+    "planHash": "example-plan-not-for-approval",
+    "planPath": "logs/podcast_sync/plans/latest.json",
+    "projectedPublishedCount": 1,
+    "projectedReorderCount": 0,
+    "publishApprovalHash": "example-publish-hash-not-for-approval",
+    "transcriptApprovalHash": "example-transcript-hash-not-for-approval",
+    "youtubeSnapshot": {}
+  },
+  "summary": {
+    "blockedReasonCounts": {
+      "multiple_remote_drafts": 0,
+      "youtube_candidate_not_verified": 0
+    },
+    "metadataGaps": 0,
+    "metadataManual": 0,
+    "metadataRecoverable": 0,
+    "publishBlocked": 0,
+    "publishReady": 0,
+    "publishWarningCounts": {},
+    "remoteDrafts": 0,
+    "remotePublished": 0,
+    "transcriptArtifacts": 0
+  },
+  "transcriptOutcome": {
+    "completedAt": null,
+    "failed": 0,
+    "ledgerPath": "not-available",
+    "skipped": 0,
+    "uniqueEpisodeIds": 0,
+    "uniqueVideoIds": 0,
+    "updated": 0
+  },
+  "publishOutcome": {
+    "completed": false,
+    "completedAt": null,
+    "createdDrafts": 0,
+    "ledgerPath": "not-available",
+    "planHash": null,
+    "published": 0,
+    "reordered": 0,
+    "repairedDrafts": 0
+  },
+  "system": {
+    "candidateEvidence": {
+      "public_count": 0,
+      "unverified_count": 0
+    },
+    "oauthScope": "youtube.readonly",
+    "scheduleLabel": "每周日 09:15（本地时间）",
+    "youtubePrivacy": {
+      "public": 0
+    },
+    "youtubeTotal": 0,
+    "ytDlpVersion": "not-available"
+  },
+  "transcriptExceptions": [],
+  "publishItems": [],
+  "blockedItems": [],
+  "metadataGaps": []
+}
