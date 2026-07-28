@@ -10,7 +10,8 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 
 `packages/youtube-to-podcast/` 是从本项目现役流程抽出的通用、可安装 CLI。
 它面向任意公开视频频道与 Transistor show，默认只做增量 draft，并通过不可变
-plan + approval hash 阻止误发和历史补档变成新发布。
+plan + approval hash 阻止误发和历史补档变成新发布。这也是课代表立正把真实生产
+基础设施打磨成熟后，再开放给更多人检查、改造和拥有的一次实践。
 
 安装、配置和安全边界见
 [packages/youtube-to-podcast/README.md](packages/youtube-to-podcast/README.md)。

@@ -1,15 +1,38 @@
 # YouTube to Podcast
 
-Turn a public YouTube channel into a podcast without turning historical cleanup
-into accidental new releases.
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-1d4ed8)](https://www.python.org/)
+[![MIT License](https://img.shields.io/badge/License-MIT-166534)](LICENSE)
+[![Validate YouTube to Podcast](https://github.com/sunyuzheng/kedaibiao-content-tools/actions/workflows/youtube-to-podcast-validation.yml/badge.svg)](https://github.com/sunyuzheng/kedaibiao-content-tools/actions/workflows/youtube-to-podcast-validation.yml)
 
-YouTube to Podcast is a local, plan-first command-line tool. Version 0.1 uses
-Transistor as its first podcast-host adapter. It discovers public YouTube
-videos, prepares MP3 audio and SRT/VTT transcripts with `yt-dlp`, compares them
-with a Transistor show, and produces an immutable review plan before any remote
+> **From public video to podcast—without rewriting history.**
+
+Built by **Yuzheng Sun（孙煜征 / 课代表立正）** ·
+[lizheng.ai](https://www.lizheng.ai)
+
+YouTube to Podcast is a local-first, plan-first tool that turns a public
+YouTube channel into a podcast. It prepares audio and transcripts, reconciles
+them against an existing show, and gives you a visual review before any remote
 write is allowed.
 
-## Safety model
+Version 0.1 supports Transistor as its first podcast-host adapter. It was
+extracted from the production workflow behind
+[课代表立正](https://www.youtube.com/@kedaibiao): a real archive with years of
+episodes, subtitles, historical gaps, and ordering constraints.
+
+```mermaid
+flowchart LR
+    Y[Public YouTube channel] --> D[Discover and prepare]
+    D --> P[Immutable plan]
+    P --> R[Visual review]
+    R -->|Exact approval hash| A[Apply]
+    A --> T[Transistor]
+    P -->|Historical gap or unsafe state| Q[Quarantine]
+```
+
+The central promise is simple: **automation may prepare the decision, but it
+cannot silently approve its own publication scope.**
+
+## Why this is different
 
 - `plan` is read-only with respect to Transistor.
 - `apply` requires the approval hash printed by that exact plan.
@@ -24,6 +47,9 @@ write is allowed.
 - Existing drafts are surfaced for manual review and never reused automatically.
 - Scheduled jobs should run `plan`, never `apply`.
 
+This makes the tool suitable for channels that already have a podcast history,
+not just empty shows receiving their first upload.
+
 ## Requirements
 
 - Python 3.11 or newer
@@ -31,14 +57,16 @@ write is allowed.
 - A Transistor API key and numeric show ID
 - A public YouTube channel `/videos` URL
 
-## Install for local evaluation
+## Install
+
+YouTube to Podcast is not on PyPI yet. Install the current open-source version
+directly from GitHub:
 
 ```bash
-git clone https://github.com/sunyuzheng/kedaibiao-content-tools.git
-cd kedaibiao-content-tools
 python3 -m venv .venv-youtube-to-podcast
 . .venv-youtube-to-podcast/bin/activate
-pip install -e packages/youtube-to-podcast
+pip install \
+  "youtube-to-podcast @ git+https://github.com/sunyuzheng/kedaibiao-content-tools.git@main#subdirectory=packages/youtube-to-podcast"
 ```
 
 Install `ffmpeg` with your operating system's package manager. Because YouTube
@@ -77,18 +105,23 @@ youtube-to-podcast doctor --online
 youtube-to-podcast plan
 ```
 
-Review:
+The plan command produces three views of the same immutable scope:
 
 ```text
+.youtube-to-podcast/plans/latest.json
 .youtube-to-podcast/plans/latest.md
 .youtube-to-podcast/plans/latest.html
 ```
 
-`plan` creates both files. Open the interactive local review again at any time:
+Open the interactive local review:
 
 ```bash
 youtube-to-podcast review
 ```
+
+The dashboard separates executable actions, non-blocking warnings, and
+quarantined items. It supports keyboard navigation, narrow screens, filtering,
+and search by title, YouTube ID, or block reason.
 
 If the plan is correct, apply only that exact scope:
 
@@ -139,16 +172,36 @@ Modes:
 bounds YouTube metadata checks, so one blocked candidate does not permanently
 starve later valid videos.
 
-## Transcripts
+## What gets preserved
 
 Human and automatic YouTube subtitles are downloaded when available. SRT is
 preferred over VTT, and obvious automatic-caption filenames receive lower
 priority. The selected timed-text file stays local; clean plain text is sent to
 Transistor as `transcript_text`.
 
+New episodes are created oldest first. After writing, the tool reads back the
+episode number, original publication date, audio artifact, thumbnail,
+description, YouTube link, and transcript artifact. A write that cannot be
+verified is treated as a failure and recorded in a local JSONL ledger.
+
 A missing transcript or description is a visible warning, not an automatic
 block. Missing title, publish date, audio, non-public availability, duplicate
 remote matches, an existing draft, or unexpected live content blocks the item.
+
+## Privacy and trust
+
+- The project adds no hosted backend and no telemetry.
+- Downloaded working files stay local. Only `apply` sends the approved audio,
+  metadata, and transcript to your configured Transistor show.
+- The Transistor key is read only from the environment or a gitignored `.env`.
+- `init` automatically gitignores `.env` and `.youtube-to-podcast/`.
+- Plans contain operational metadata—titles, descriptions, show/episode IDs,
+  relative paths, and hashes—but never the API key.
+- The visual review is a self-contained local HTML file with no external
+  JavaScript or analytics.
+
+See [SECURITY.md](SECURITY.md) for the exact execution boundary and disclosure
+guidance.
 
 ## Weekly automation
 
@@ -172,5 +225,24 @@ hash automatically, or publish without review.
 - Podcast hosts other than Transistor
 - A hosted service that stores user API keys
 
-See [SECURITY.md](SECURITY.md) before using real credentials and
-[CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes.
+## Built from real work
+
+This project is maintained by
+[Yuzheng Sun（孙煜征 / 课代表立正）](https://www.lizheng.ai), an
+economist-turned-operator and system builder. His work asks how judgment can
+meet reality early, learn from feedback, and become a system other people can
+use.
+
+YouTube to Podcast is one concrete example: production infrastructure becomes
+open source once it is reliable and general enough for someone else to inspect,
+adapt, and own.
+
+[lizheng.ai](https://www.lizheng.ai) ·
+[YouTube](https://www.youtube.com/@kedaibiao) ·
+[Superlinear Academy](https://www.superlinear.academy) ·
+[AI Builders](https://ai-builders.com) ·
+[Stay Superlinear](https://staysuperlinear.com)
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes.
+
+YouTube to Podcast is not affiliated with YouTube or Transistor.
