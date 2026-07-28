@@ -36,7 +36,14 @@ def load_env(path: Path | None = None) -> None:
         if not line or line.startswith("#") or "=" not in line:
             continue
         key, value = line.split("=", 1)
-        os.environ.setdefault(key.strip(), value.strip())
+        clean_value = value.strip()
+        if (
+            len(clean_value) >= 2
+            and clean_value[0] == clean_value[-1]
+            and clean_value[0] in {"'", '"'}
+        ):
+            clean_value = clean_value[1:-1]
+        os.environ.setdefault(key.strip(), clean_value)
 
 
 def require_transistor_config() -> tuple[str, str]:

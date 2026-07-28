@@ -16,6 +16,7 @@ from tools.podcast.core import (
     PROJECT_ROOT,
     atomic_write_json,
     choose_transcript_path,
+    load_env,
     plan_hash,
     sha256_text,
     timed_text_to_text,
@@ -125,6 +126,39 @@ class EmailNotificationTests(unittest.TestCase):
         self.assertEqual(result["status"], "skipped")
         self.assertEqual(result["reason"], "incomplete_configuration")
         self.assertIn("RESEND_FROM_EMAIL", result["missing"])
+
+
+class EnvironmentConfigTests(unittest.TestCase):
+    def test_load_env_unquotes_single_and_double_quoted_values(self) -> None:
+        keys = (
+            "KEDAIBIAO_TEST_DOUBLE_QUOTED",
+            "KEDAIBIAO_TEST_SINGLE_QUOTED",
+            "KEDAIBIAO_TEST_UNQUOTED",
+        )
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            env_path = Path(directory) / ".env"
+            env_path.write_text(
+                'KEDAIBIAO_TEST_DOUBLE_QUOTED="Sender <sender@example.com>"\n'
+                "KEDAIBIAO_TEST_SINGLE_QUOTED='recipient@example.com'\n"
+                "KEDAIBIAO_TEST_UNQUOTED=plain-value\n",
+                encoding="utf-8",
+            )
+            with mock.patch.dict(os.environ, {}, clear=False):
+                for key in keys:
+                    os.environ.pop(key, None)
+                load_env(env_path)
+                self.assertEqual(
+                    os.environ["KEDAIBIAO_TEST_DOUBLE_QUOTED"],
+                    "Sender <sender@example.com>",
+                )
+                self.assertEqual(
+                    os.environ["KEDAIBIAO_TEST_SINGLE_QUOTED"],
+                    "recipient@example.com",
+                )
+                self.assertEqual(
+                    os.environ["KEDAIBIAO_TEST_UNQUOTED"],
+                    "plain-value",
+                )
 
 
 class TranscriptTests(unittest.TestCase):
