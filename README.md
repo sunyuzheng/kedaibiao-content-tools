@@ -6,6 +6,15 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 
 ## 两条主线工作流
 
+### 可复用开源版：YouTube to Podcast
+
+`packages/youtube-to-podcast/` 是从本项目现役流程抽出的通用、可安装 CLI。
+它面向任意公开视频频道与 Transistor show，默认只做增量 draft，并通过不可变
+plan + approval hash 阻止误发和历史补档变成新发布。
+
+安装、配置和安全边界见
+[packages/youtube-to-podcast/README.md](packages/youtube-to-podcast/README.md)。
+
 ### A. 新视频处理（录制 → 字幕 → 上线）
 
 ```

@@ -1,0 +1,33 @@
+name: Validate YouTube to Podcast
+
+on:
+  push:
+    paths:
+      - "packages/youtube-to-podcast/**"
+      - ".github/workflows/youtube-to-podcast-validation.yml"
+  pull_request:
+    paths:
+      - "packages/youtube-to-podcast/**"
+      - ".github/workflows/youtube-to-podcast-validation.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: python -m pip install -e packages/youtube-to-podcast
+
+      - name: Test
+        run: python -m unittest discover -s packages/youtube-to-podcast/tests -v
+
+      - name: Compile
+        run: python -m compileall -q packages/youtube-to-podcast/src

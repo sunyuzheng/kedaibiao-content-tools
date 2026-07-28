@@ -9,6 +9,11 @@ logs/
 archive/
 envs/
 .venv-podcast/
+.venv-youtube-to-podcast/
+.youtube-to-podcast/
+packages/youtube-to-podcast/build/
+packages/youtube-to-podcast/dist/
+packages/youtube-to-podcast/src/*.egg-info/
 视频文档/
 下载总结.md
 数据完整性报告.md
