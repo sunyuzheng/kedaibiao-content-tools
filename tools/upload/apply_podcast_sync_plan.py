@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from datetime import datetime
@@ -90,6 +91,12 @@ def verify_approval(plan: dict[str, Any], scope: str, supplied: str | None) -> N
             "kind": "transcript_backfill",
             "show_id": plan.get("show_id"),
             "items": plan.get("transcript_actions", []),
+        }
+    elif scope == "description":
+        approval_scope = {
+            "kind": "podcast_description_update",
+            "show_id": plan.get("show_id"),
+            "items": plan.get("description_actions", []),
         }
     elif scope == "publish":
         approval_scope = {
@@ -259,6 +266,98 @@ def apply_transcripts(
             transcript_chars=len(transcript),
             verification=verification,
             transcript_url=readback_attrs.get("transcript_url"),
+        )
+    return updated, skipped
+
+
+def apply_descriptions(
+    client: TransistorClient,
+    plan: dict[str, Any],
+    ledger: Ledger,
+) -> tuple[int, int]:
+    """Update only explicitly sidecar-backed show notes on exact episode IDs."""
+    updated = skipped = 0
+    for item in plan.get("description_actions", []):
+        episode_id = str(item["episode_id"])
+        video_id = item["video_id"]
+        description = read_description(
+            item.get("description_path"),
+            item["description_sha256"],
+        )
+        episode = client.get_episode(episode_id)
+        attrs = verify_episode_video(episode, video_id)
+        if attrs.get("status") != item.get("episode_status"):
+            raise PlanPreconditionError(
+                f"Episode {episode_id} status changed: "
+                f"expected={item.get('episode_status')} observed={attrs.get('status')}"
+            )
+
+        current_raw = str(attrs.get("description") or "")
+        current = current_raw.strip()
+        current_hash = sha256_text(current)
+        if current_hash == item["description_sha256"]:
+            skipped += 1
+            ledger.write(
+                "description_already_current",
+                episode_id=episode_id,
+                video_id=video_id,
+                description_sha256=item["description_sha256"],
+            )
+            continue
+        if current_hash != item.get("remote_description_sha256"):
+            raise PlanPreconditionError(
+                f"Episode {episode_id} description changed since planning: "
+                f"expected={item.get('remote_description_sha256')} observed={current_hash}"
+            )
+
+        client.update_episode(episode_id, {"description": description})
+        dynamic_tags = re.findall(r"\{\{[^{}]+\}\}", description)
+        try:
+            readback = client.get_episode(episode_id)
+            readback_attrs = verify_episode_video(readback, video_id)
+            observed = str(readback_attrs.get("description") or "").strip()
+            if observed != description:
+                raise PlanPreconditionError(
+                    f"Episode {episode_id} description readback mismatch"
+                )
+            if dynamic_tags:
+                formatted = readback_attrs.get("formatted_description")
+                if not isinstance(formatted, str):
+                    raise PlanPreconditionError(
+                        f"Episode {episode_id} did not expose formatted_description "
+                        "for dynamic-tag verification"
+                    )
+                unexpanded = re.findall(r"\{\{[^{}]+\}\}", formatted)
+                if unexpanded:
+                    raise PlanPreconditionError(
+                        f"Episode {episode_id} left dynamic Show Notes tags unexpanded: "
+                        f"{unexpanded}"
+                    )
+        except PlanPreconditionError as exc:
+            client.update_episode(episode_id, {"description": current_raw})
+            rollback = client.get_episode(episode_id)
+            rollback_attrs = verify_episode_video(rollback, video_id)
+            if str(rollback_attrs.get("description") or "") != current_raw:
+                raise PlanPreconditionError(
+                    f"Episode {episode_id} failed verification and rollback readback"
+                ) from exc
+            ledger.write(
+                "description_rolled_back",
+                episode_id=episode_id,
+                video_id=video_id,
+                reason=str(exc),
+                restored_description_sha256=sha256_text(current),
+            )
+            raise
+        updated += 1
+        ledger.write(
+            "description_updated",
+            episode_id=episode_id,
+            video_id=video_id,
+            description_sha256=item["description_sha256"],
+            description_chars=len(description),
+            verification="exact_text_hash",
+            dynamic_tags_verified=bool(dynamic_tags),
         )
     return updated, skipped
 
@@ -527,13 +626,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, default=DEFAULT_PLAN)
     scope = parser.add_mutually_exclusive_group(required=True)
+    scope.add_argument("--apply-descriptions", action="store_true")
     scope.add_argument("--apply-transcripts", action="store_true")
     scope.add_argument("--prepare-and-publish", action="store_true")
     parser.add_argument("--approval-hash")
     args = parser.parse_args()
 
     plan = load_and_verify_plan(args.plan)
-    operation = "transcript" if args.apply_transcripts else "publish"
+    if args.apply_descriptions:
+        operation = "description"
+    elif args.apply_transcripts:
+        operation = "transcript"
+    else:
+        operation = "publish"
     verify_approval(plan, operation, args.approval_hash)
     load_env()
     api_key, show_id = require_transistor_config()
@@ -546,7 +651,10 @@ def main() -> int:
     ledger = Ledger(plan, operation)
     ledger.write("execution_started", plan_path=str(args.plan.resolve()))
     try:
-        if args.apply_transcripts:
+        if args.apply_descriptions:
+            updated, skipped = apply_descriptions(client, plan, ledger)
+            ledger.write("execution_completed", updated=updated, skipped=skipped)
+        elif args.apply_transcripts:
             updated, skipped = apply_transcripts(client, plan, ledger)
             ledger.write("execution_completed", updated=updated, skipped=skipped)
         else:

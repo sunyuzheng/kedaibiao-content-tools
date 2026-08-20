@@ -41,6 +41,10 @@ plan + approval hash 阻止误发和历史补档变成新发布。这也是课�
 7. 重排    → 使用最终 publish payload 中已审核的完整投影
 ```
 
+播客专用 show notes 的版本化权威来源是 `podcast_show_notes/<video_id>.txt`；archive
+目录下的 `*.podcast-description.txt` 仅作兼容回退。它优先于 YouTube `.description`，
+并以独立 description approval hash 更新既有 episode；不会把历史单集重新创建或发布。
+
 详细说明见 [docs/核心任务说明.md](docs/核心任务说明.md)。
 
 本地自动化：MacBook 上已通过 launchd 注册每周日 09:15 运行的同步任务

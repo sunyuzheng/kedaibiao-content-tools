@@ -21,9 +21,11 @@ from tools.podcast.core import (
     sha256_text,
     timed_text_to_text,
 )
+from tools.podcast.show_notes import validate_show_notes
 from tools.podcast.transistor_client import TransistorClient
 from tools.upload.apply_podcast_sync_plan import (
     PlanPreconditionError,
+    apply_descriptions,
     load_and_verify_plan,
     read_description,
     read_transcript,
@@ -204,6 +206,45 @@ class TranscriptTests(unittest.TestCase):
                 read_transcript(relative, expected)
 
 
+class ShowNotesTests(unittest.TestCase):
+    def test_valid_show_notes_accepts_long_minutes_and_transistor_tags(self) -> None:
+        text = (
+            "这是足够长的节目简介。" * 20
+            + "\n\n章节\n\n"
+            + "00:00 — 开场\n"
+            + "64:00 — 深入讨论\n"
+            + "100:19 — 结尾\n\n"
+            + "{{video | title: '观看视频'}}\n"
+            + "{{transcript | title: '阅读文字稿'}}\n"
+            + "https://www.superlinear.academy/"
+        )
+
+        result = validate_show_notes(text)
+
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["warnings"], [])
+        self.assertEqual(result["timestamps"], 3)
+        self.assertEqual(result["last_timestamp_seconds"], 100 * 60 + 19)
+        self.assertEqual(result["placeholders"], ["video", "transcript"])
+
+    def test_show_notes_rejects_out_of_order_timestamps_and_unknown_tag(self) -> None:
+        text = (
+            "内容" * 160
+            + "\n10:00 — 后面\n05:00 — 前面\n"
+            + "{{unknown}}\n"
+            + "https://staysuperlinear.com/"
+        )
+
+        result = validate_show_notes(text)
+
+        self.assertIn("timestamps_not_strictly_increasing", result["errors"])
+        self.assertIn("unsupported_placeholder:unknown", result["errors"])
+        self.assertIn(
+            "legacy_link:staysuperlinear.com",
+            result["warnings"],
+        )
+
+
 class PlanTests(unittest.TestCase):
     def test_modified_plan_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
@@ -286,6 +327,154 @@ class PlanTests(unittest.TestCase):
                 sha256_text("approved"),
                 "changed",
             )
+
+    def test_podcast_description_sidecar_wins_over_youtube_copy(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            folder = Path(directory)
+            (folder / "episode.description").write_text(
+                "Copied YouTube description",
+                encoding="utf-8",
+            )
+            sidecar = folder / "episode.podcast-description.txt"
+            sidecar.write_text("Podcast-first show notes", encoding="utf-8")
+            relative_folder = str(folder.relative_to(PROJECT_ROOT))
+
+            payload, warnings = local_payload(
+                {
+                    "video_id": "video-one",
+                    "folder": relative_folder,
+                    "title": "Episode",
+                    "upload_date": "20260727",
+                    "transcript_status": "missing",
+                },
+                {"description": "YouTube snapshot"},
+            )
+
+            self.assertEqual(payload["description_source"], "podcast_sidecar")
+            self.assertEqual(payload["description_path"], str(sidecar.relative_to(PROJECT_ROOT)))
+            self.assertEqual(
+                read_description(
+                    payload["description_path"],
+                    payload["description_sha256"],
+                ),
+                "Podcast-first show notes",
+            )
+            self.assertNotIn("missing_description", warnings)
+
+    def test_description_apply_updates_exact_episode_and_reads_back(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            source = Path(directory) / "episode.podcast-description.txt"
+            source.write_text("Approved show notes", encoding="utf-8")
+            relative_source = str(source.relative_to(PROJECT_ROOT))
+
+            class FakeDescriptionClient:
+                def __init__(self) -> None:
+                    self.update_calls: list[tuple[str, dict]] = []
+                    self.episode = {
+                        "id": "episode-1",
+                        "attributes": {
+                            "status": "published",
+                            "video_url": "https://www.youtube.com/watch?v=AAAAAAAAAAA",
+                            "description": "Old show notes",
+                        },
+                    }
+
+                def get_episode(self, episode_id: str) -> dict:
+                    self.assert_episode_id(episode_id)
+                    return self.episode
+
+                def update_episode(self, episode_id: str, values: dict) -> dict:
+                    self.assert_episode_id(episode_id)
+                    self.update_calls.append((episode_id, values))
+                    self.episode["attributes"].update(values)
+                    return self.episode
+
+                @staticmethod
+                def assert_episode_id(episode_id: str) -> None:
+                    if episode_id != "episode-1":
+                        raise AssertionError(episode_id)
+
+            plan = {
+                "description_actions": [
+                    {
+                        "episode_id": "episode-1",
+                        "episode_status": "published",
+                        "video_id": "AAAAAAAAAAA",
+                        "description_path": relative_source,
+                        "description_sha256": sha256_text("Approved show notes"),
+                        "remote_description_sha256": sha256_text("Old show notes"),
+                    }
+                ]
+            }
+            client = FakeDescriptionClient()
+            ledger = mock.Mock()
+
+            updated, skipped = apply_descriptions(client, plan, ledger)
+
+            self.assertEqual((updated, skipped), (1, 0))
+            self.assertEqual(
+                client.update_calls,
+                [("episode-1", {"description": "Approved show notes"})],
+            )
+            ledger.write.assert_called_with(
+                "description_updated",
+                episode_id="episode-1",
+                video_id="AAAAAAAAAAA",
+                description_sha256=sha256_text("Approved show notes"),
+                description_chars=len("Approved show notes"),
+                verification="exact_text_hash",
+                dynamic_tags_verified=False,
+            )
+
+    def test_description_apply_rejects_unexpanded_dynamic_tags(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            source = Path(directory) / "episode.podcast-description.txt"
+            description = "Approved {{video | title: 'Watch'}}"
+            source.write_text(description, encoding="utf-8")
+            relative_source = str(source.relative_to(PROJECT_ROOT))
+
+            class FakeDescriptionClient:
+                def __init__(self) -> None:
+                    self.episode = {
+                        "id": "episode-1",
+                        "attributes": {
+                            "status": "published",
+                            "video_url": "https://www.youtube.com/watch?v=AAAAAAAAAAA",
+                            "description": "Old show notes",
+                            "formatted_description": "Old show notes",
+                        },
+                    }
+
+                def get_episode(self, episode_id: str) -> dict:
+                    if episode_id != "episode-1":
+                        raise AssertionError(episode_id)
+                    return self.episode
+
+                def update_episode(self, episode_id: str, values: dict) -> dict:
+                    if episode_id != "episode-1":
+                        raise AssertionError(episode_id)
+                    self.episode["attributes"].update(values)
+                    self.episode["attributes"]["formatted_description"] = description
+                    return self.episode
+
+            plan = {
+                "description_actions": [
+                    {
+                        "episode_id": "episode-1",
+                        "episode_status": "published",
+                        "video_id": "AAAAAAAAAAA",
+                        "description_path": relative_source,
+                        "description_sha256": sha256_text(description),
+                        "remote_description_sha256": sha256_text("Old show notes"),
+                    }
+                ]
+            }
+
+            with self.assertRaisesRegex(
+                PlanPreconditionError,
+                "left dynamic Show Notes tags unexpanded",
+            ):
+                apply_descriptions(FakeDescriptionClient(), plan, mock.Mock())
 
     def test_draft_cleanup_keeps_newest_duplicate_and_quarantines_unique(
         self,

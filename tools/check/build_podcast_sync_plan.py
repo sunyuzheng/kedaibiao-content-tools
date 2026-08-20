@@ -46,6 +46,7 @@ from tools.podcast.core import (  # noqa: E402
     utc_now,
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
+from tools.podcast.show_notes import validate_show_notes  # noqa: E402
 
 
 DEFAULT_OUT_DIR = PROJECT_ROOT / "logs" / "podcast_sync" / "plans"
@@ -59,6 +60,7 @@ CANDIDATE_VERIFICATION_SNAPSHOT = (
 
 def compact_episode(episode: dict[str, Any]) -> dict[str, Any]:
     attrs = episode.get("attributes", {})
+    description = str(attrs.get("description") or "").strip()
     transcript = attrs.get("transcript_text")
     transcript_url = attrs.get("transcript_url")
     transcripts = attrs.get("transcripts") or []
@@ -70,7 +72,10 @@ def compact_episode(episode: dict[str, Any]) -> dict[str, Any]:
         "video_url": attrs.get("video_url"),
         "published_at": attrs.get("published_at"),
         "updated_at": attrs.get("updated_at"),
+        "duration_seconds": attrs.get("duration"),
         "media_url_present": bool(attrs.get("media_url")),
+        "description_chars": len(description),
+        "description_sha256": sha256_text(description),
         "transcript_observed": transcript is not None,
         "transcript_present": bool(transcript or transcript_url or transcripts),
         "transcript_url": transcript_url,
@@ -194,24 +199,51 @@ def local_payload(
     youtube_record: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], list[str]]:
     folder = PROJECT_ROOT / record["folder"]
+    video_id = record["video_id"]
     audio = first_existing(
         folder,
         ("*.m4a", "*.mp3", "*.aac", "*.opus", "*.wav", "*.mp4"),
     )
-    description_path = first_existing(folder, ("*.description",))
+    versioned_podcast_description = (
+        PROJECT_ROOT / "podcast_show_notes" / f"{video_id}.txt"
+    )
+    podcast_description_path = (
+        versioned_podcast_description
+        if versioned_podcast_description.is_file()
+        and versioned_podcast_description.stat().st_size > 0
+        else first_existing(folder, ("*.podcast-description.txt",))
+    )
+    youtube_description_path = first_existing(folder, ("*.description",))
     transcript_path = choose_transcript_path(folder, record)
-    local_description = (
-        description_path.read_text(encoding="utf-8", errors="replace").strip()
-        if description_path
+    podcast_description = (
+        podcast_description_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        ).strip()
+        if podcast_description_path
+        else ""
+    )
+    local_youtube_description = (
+        youtube_description_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        ).strip()
+        if youtube_description_path
         else ""
     )
     youtube_description = str(
         (youtube_record or {}).get("description") or ""
     ).strip()
-    if local_description:
-        description = local_description
-        description_source = "local_file"
+    if podcast_description:
+        description = podcast_description
+        description_source = "podcast_sidecar"
         description_text = None
+        description_path = podcast_description_path
+    elif local_youtube_description:
+        description = local_youtube_description
+        description_source = "local_youtube_file"
+        description_text = None
+        description_path = youtube_description_path
     elif youtube_description:
         description = youtube_description
         description_source = "youtube_snapshot"
@@ -221,14 +253,28 @@ def local_payload(
         description = ""
         description_source = "empty"
         description_text = None
+        description_path = None
     transcript = timed_text_to_text(transcript_path) if transcript_path else ""
-    video_id = record["video_id"]
     base_title = strip_episode_number(record.get("title") or folder.name)
     warnings: list[str] = []
     if not audio:
         warnings.append("missing_audio")
     if not description:
         warnings.append("missing_description")
+    description_quality = (
+        validate_show_notes(description)
+        if description_source == "podcast_sidecar"
+        else None
+    )
+    if description_quality:
+        warnings.extend(
+            f"podcast_description_error:{item}"
+            for item in description_quality["errors"]
+        )
+        warnings.extend(
+            f"podcast_description_warning:{item}"
+            for item in description_quality["warnings"]
+        )
     if not transcript:
         warnings.append("missing_transcript")
     published_at = published_at_from_yyyymmdd(record.get("upload_date") or "")
@@ -246,6 +292,7 @@ def local_payload(
         "description_text": description_text,
         "description_sha256": sha256_text(description),
         "description_chars": len(description),
+        "description_quality": description_quality,
         "transcript_path": relative_to_project(transcript_path),
         "transcript_source_status": record.get("transcript_status"),
         "transcript_sha256": sha256_text(transcript) if transcript else None,
@@ -293,6 +340,7 @@ def build_plan(
         )
     publish_actions: list[dict[str, Any]] = []
     candidate_publish_actions: list[dict[str, Any]] = []
+    description_actions: list[dict[str, Any]] = []
     transcript_actions: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
 
@@ -346,6 +394,62 @@ def build_plan(
                 })
             else:
                 publish_actions.append(item)
+
+        # A podcast-specific sidecar is an explicit request to update the
+        # canonical published episode in place. Ordinary YouTube descriptions
+        # never trigger historical rewrites.
+        if payload["description_source"] == "podcast_sidecar" and published:
+            quality_errors = (payload.get("description_quality") or {}).get(
+                "errors",
+                [],
+            )
+            last_timestamp = (payload.get("description_quality") or {}).get(
+                "last_timestamp_seconds"
+            )
+            remote_duration = published[0].get("duration_seconds") if len(published) == 1 else None
+            if (
+                last_timestamp is not None
+                and remote_duration is not None
+                and last_timestamp > int(remote_duration)
+            ):
+                quality_errors = [
+                    *quality_errors,
+                    "timestamp_after_episode_duration",
+                ]
+            if quality_errors:
+                blocked.append({
+                    "scope": "description",
+                    "video_id": video_id,
+                    "title": payload["base_title"],
+                    "reasons": [
+                        f"invalid_podcast_description:{item}"
+                        for item in quality_errors
+                    ],
+                })
+            elif len(published) != 1:
+                blocked.append({
+                    "scope": "description",
+                    "video_id": video_id,
+                    "title": payload["base_title"],
+                    "reasons": ["multiple_remote_published_episodes"],
+                })
+            else:
+                target = published[0]
+                if target["description_sha256"] != payload["description_sha256"]:
+                    description_actions.append({
+                        "action": "update_description",
+                        "video_id": video_id,
+                        "episode_id": target["episode_id"],
+                        "episode_status": target["status"],
+                        "episode_title": target["title"],
+                        "description_path": payload["description_path"],
+                        "description_source": payload["description_source"],
+                        "description_sha256": payload["description_sha256"],
+                        "description_chars": payload["description_chars"],
+                        "remote_description_sha256": target["description_sha256"],
+                        "remote_description_chars": target["description_chars"],
+                        "remote_updated_at": target["updated_at"],
+                    })
 
         # Existing published episode is the canonical target for transcript backfill.
         # Draft-only episodes get their transcript through the publish action above.
@@ -479,8 +583,13 @@ def build_plan(
         "show_id": show_id,
         "items": transcript_actions,
     }
+    description_scope = {
+        "kind": "podcast_description_update",
+        "show_id": show_id,
+        "items": description_actions,
+    }
     plan: dict[str, Any] = {
-        "schema_version": 1,
+        "schema_version": 2,
         "kind": "kedaibiao_podcast_sync_plan",
         "generated_at": utc_now(),
         "show_id": show_id,
@@ -496,9 +605,11 @@ def build_plan(
         "projected_feed": projected_feed,
         "projected_reorder_actions": projected_reorder_actions,
         "publish_blocked_reasons": publish_blocked_reasons,
+        "description_actions": description_actions,
         "transcript_actions": transcript_actions,
         "blocked": blocked,
         "publish_approval_hash": sha256_text(canonical_json(publish_scope)),
+        "description_approval_hash": sha256_text(canonical_json(description_scope)),
         "transcript_approval_hash": sha256_text(canonical_json(transcript_scope)),
     }
     plan["plan_hash"] = plan_hash(plan)
@@ -518,9 +629,11 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         f"- Publish actions: `{len(plan['publish_actions'])}`",
         f"- Projected reorder actions: `{len(plan['projected_reorder_actions'])}`",
         f"- Publish blocked reasons: `{plan['publish_blocked_reasons']}`",
+        f"- Podcast description actions: `{len(plan['description_actions'])}`",
         f"- Transcript actions: `{len(plan['transcript_actions'])}`",
         f"- Blocked records: `{len(plan['blocked'])}`",
         f"- Publish approval hash: `{plan['publish_approval_hash']}`",
+        f"- Description approval hash: `{plan['description_approval_hash']}`",
         f"- Transcript approval hash: `{plan['transcript_approval_hash']}`",
         "",
         "## Publish payload",
@@ -548,6 +661,20 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
             f"| `{item['video_id']}` | {item['planned_publish']} | "
             f"{item['current_number'] if item['current_number'] is not None else ''} | "
             f"{item['target_number']} | {item['target_title'].replace('|', '\\|')[:100]} |"
+        )
+    lines += [
+        "",
+        "## Podcast show-notes update payload",
+        "",
+        "| episode_id | status | video_id | old chars | new chars | source | title |",
+        "|---|---|---|---:|---:|---|---|",
+    ]
+    for item in plan["description_actions"]:
+        lines.append(
+            f"| `{item['episode_id']}` | {item['episode_status']} | `{item['video_id']}` | "
+            f"{item['remote_description_chars']} | {item['description_chars']} | "
+            f"`{item['description_path']}` | "
+            f"{(item['episode_title'] or '').replace('|', '\\|')[:100]} |"
         )
     lines += [
         "",
@@ -607,10 +734,12 @@ def main() -> int:
         "publish_count": len(plan["publish_actions"]),
         "projected_reorder_count": len(plan["projected_reorder_actions"]),
         "publish_blocked_reasons": plan["publish_blocked_reasons"],
+        "description_count": len(plan["description_actions"]),
         "transcript_count": len(plan["transcript_actions"]),
         "blocked_count": len(plan["blocked"]),
         "youtube_snapshot_fresh": plan["youtube_snapshot"]["fresh"],
         "publish_approval_hash": plan["publish_approval_hash"],
+        "description_approval_hash": plan["description_approval_hash"],
         "transcript_approval_hash": plan["transcript_approval_hash"],
     }
     if args.json:
