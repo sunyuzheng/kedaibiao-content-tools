@@ -101,12 +101,13 @@
       "awaZBWTss-4",
       "F5-isewu-ww",
       "WdYr_sAGJ0k",
-      "0yKwvwtYwMg"
+      "0yKwvwtYwMg",
+      "Tvmmv93FZgc"
     ],
     "max_views": 141041,
     "thumbnail_url": "https://img.youtube.com/vi/R8X4ClBY5tg/hqdefault.jpg",
     "primary_url": "https://www.youtube.com/watch?v=R8X4ClBY5tg",
-    "episode_count": 20,
+    "episode_count": 21,
     "all_urls": [
       "https://www.youtube.com/watch?v=knTP07tE89Y",
       "https://www.youtube.com/watch?v=c93Z3WrmQf0",
@@ -127,7 +128,8 @@
       "https://www.youtube.com/watch?v=awaZBWTss-4",
       "https://www.youtube.com/watch?v=F5-isewu-ww",
       "https://www.youtube.com/watch?v=WdYr_sAGJ0k",
-      "https://www.youtube.com/watch?v=0yKwvwtYwMg"
+      "https://www.youtube.com/watch?v=0yKwvwtYwMg",
+      "https://www.youtube.com/watch?v=Tvmmv93FZgc"
     ]
   },
   {
@@ -380,8 +382,8 @@
   {
     "guest_name": "Kevin Chen",
     "guest_en_name": "Kevin Chen",
-    "guest_title": "MIT Engineering Professor",
-    "guest_company": "MIT SMRL",
+    "guest_title": "Associate Professor, Electrical Engineering and Computer Science",
+    "guest_company": "MIT EECS / Soft and Micro Robotics Laboratory",
     "primary_video_id": "6FvFgTWO9BU",
     "all_video_ids": [
       "UlZJd6XpkAQ",
@@ -1418,23 +1420,29 @@
     ]
   },
   {
-    "guest_name": "周楠 Zhou Nan",
-    "guest_en_name": "Zhou Nan",
-    "guest_title": "Director",
-    "guest_company": "Qualcomm Ventures",
-    "primary_video_id": "VOyAMRk5WE0",
+    "guest_name": "周楠 Nan Zhou",
+    "guest_en_name": "Nan Zhou",
+    "guest_title": "Technology investor; early Cerebras investor",
+    "guest_company": "Qualcomm Ventures (former)",
+    "primary_video_id": "my_lMhlKLVk",
     "all_video_ids": [
       "VOyAMRk5WE0",
-      "0R4hOezhHZo"
+      "0R4hOezhHZo",
+      "my_lMhlKLVk",
+      "ycof5TV2Z00"
     ],
-    "max_views": 8181,
-    "thumbnail_url": "https://img.youtube.com/vi/VOyAMRk5WE0/hqdefault.jpg",
-    "primary_url": "https://www.youtube.com/watch?v=VOyAMRk5WE0",
-    "episode_count": 2,
+    "max_views": 108115,
+    "thumbnail_url": "https://img.youtube.com/vi/my_lMhlKLVk/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=my_lMhlKLVk",
+    "episode_count": 4,
     "all_urls": [
       "https://www.youtube.com/watch?v=VOyAMRk5WE0",
-      "https://www.youtube.com/watch?v=0R4hOezhHZo"
-    ]
+      "https://www.youtube.com/watch?v=0R4hOezhHZo",
+      "https://www.youtube.com/watch?v=my_lMhlKLVk",
+      "https://www.youtube.com/watch?v=ycof5TV2Z00"
+    ],
+    "slug": "zhou-nan",
+    "linkedin_url": "https://www.linkedin.com/in/nan-zhou-3ba97213/"
   },
   {
     "guest_name": "光叔 光芒",
@@ -2595,6 +2603,236 @@
     "episode_count": 1,
     "all_urls": [
       "https://www.youtube.com/watch?v=PphnjXFr1SA"
+    ]
+  },
+  {
+    "guest_name": "魏慧 Wei Manfredi",
+    "guest_en_name": "Wei Manfredi",
+    "guest_title": "Senior Vice President, AI and Architecture",
+    "guest_company": "IHG Hotels & Resorts",
+    "linkedin_url": "https://www.linkedin.com/in/weimanfredi/",
+    "primary_video_id": "99-5ptPiHJ0",
+    "all_video_ids": [
+      "99-5ptPiHJ0"
+    ],
+    "max_views": 113686,
+    "thumbnail_url": "https://img.youtube.com/vi/99-5ptPiHJ0/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=99-5ptPiHJ0",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=99-5ptPiHJ0"
+    ]
+  },
+  {
+    "guest_name": "Mike Vernal",
+    "guest_en_name": "Mike Vernal",
+    "guest_title": "General Partner; former Sequoia partner and Facebook VP",
+    "guest_company": "Conviction",
+    "linkedin_url": "https://www.linkedin.com/in/vernal/",
+    "primary_video_id": "Ody9st7QDlU",
+    "all_video_ids": [
+      "Ody9st7QDlU",
+      "PmEnEfzA0bA"
+    ],
+    "max_views": 2,
+    "thumbnail_url": "https://img.youtube.com/vi/Ody9st7QDlU/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=Ody9st7QDlU",
+    "episode_count": 2,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=Ody9st7QDlU",
+      "https://www.youtube.com/watch?v=PmEnEfzA0bA"
+    ]
+  },
+  {
+    "guest_name": "王路",
+    "guest_en_name": "Wang Lu",
+    "guest_title": "Scholar and author; instructor of 《金刚经50讲》",
+    "guest_company": "",
+    "primary_video_id": "VSX1wxueZPU",
+    "all_video_ids": [
+      "VSX1wxueZPU"
+    ],
+    "max_views": 14163,
+    "thumbnail_url": "https://img.youtube.com/vi/VSX1wxueZPU/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=VSX1wxueZPU",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=VSX1wxueZPU"
+    ]
+  },
+  {
+    "guest_name": "Ethan Zheng",
+    "guest_en_name": "Ethan Zheng",
+    "guest_title": "Co-Founder & CTO",
+    "guest_company": "Jobright.ai",
+    "primary_video_id": "BR3hN7InkmY",
+    "all_video_ids": [
+      "BR3hN7InkmY"
+    ],
+    "max_views": 11073,
+    "thumbnail_url": "https://img.youtube.com/vi/BR3hN7InkmY/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=BR3hN7InkmY",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=BR3hN7InkmY"
+    ]
+  },
+  {
+    "guest_name": "Carina",
+    "guest_en_name": "Carina",
+    "guest_title": "Data Scientist (at time of interview)",
+    "guest_company": "Expedia",
+    "primary_video_id": "BR3hN7InkmY",
+    "all_video_ids": [
+      "BR3hN7InkmY"
+    ],
+    "max_views": 11073,
+    "thumbnail_url": "https://img.youtube.com/vi/BR3hN7InkmY/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=BR3hN7InkmY",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=BR3hN7InkmY"
+    ]
+  },
+  {
+    "guest_name": "Jove Zhong",
+    "guest_en_name": "Jove Zhong",
+    "guest_title": "Head of Forward Deployed Engineering",
+    "guest_company": "Cresta",
+    "primary_video_id": "gsK1UTt0Qiw",
+    "all_video_ids": [
+      "gsK1UTt0Qiw"
+    ],
+    "max_views": 23561,
+    "thumbnail_url": "https://img.youtube.com/vi/gsK1UTt0Qiw/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=gsK1UTt0Qiw",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=gsK1UTt0Qiw"
+    ]
+  },
+  {
+    "guest_name": "The Tech Roast Show（Austin、Jesse、Nikita）",
+    "guest_en_name": "Tech Roast Show",
+    "guest_title": "Comedians and co-creators",
+    "guest_company": "The Tech Roast Show",
+    "primary_video_id": "XoyE0eQZYh0",
+    "all_video_ids": [
+      "XoyE0eQZYh0"
+    ],
+    "max_views": 3205,
+    "thumbnail_url": "https://img.youtube.com/vi/XoyE0eQZYh0/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=XoyE0eQZYh0",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=XoyE0eQZYh0"
+    ]
+  },
+  {
+    "guest_name": "Zero 刘希元",
+    "guest_en_name": "Zero Liu",
+    "guest_title": "AI entrepreneur; former Google engineer",
+    "guest_company": "",
+    "slug": "zero-liu",
+    "primary_video_id": "HTxtDxEo3kQ",
+    "all_video_ids": [
+      "HTxtDxEo3kQ"
+    ],
+    "max_views": 9755,
+    "thumbnail_url": "https://img.youtube.com/vi/HTxtDxEo3kQ/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=HTxtDxEo3kQ",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=HTxtDxEo3kQ"
+    ]
+  },
+  {
+    "guest_name": "张昊阳 seikiko",
+    "guest_en_name": "Haoyang Zhang",
+    "guest_title": "Founder",
+    "guest_company": "EvoMap",
+    "primary_video_id": "2xvXebaqZ_I",
+    "all_video_ids": [
+      "2xvXebaqZ_I"
+    ],
+    "max_views": 10762,
+    "thumbnail_url": "https://img.youtube.com/vi/2xvXebaqZ_I/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=2xvXebaqZ_I",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=2xvXebaqZ_I"
+    ]
+  },
+  {
+    "guest_name": "Wu Kan",
+    "guest_en_name": "Wu Kan",
+    "guest_title": "ChatGPT Growth (at time of interview)",
+    "guest_company": "OpenAI",
+    "primary_video_id": "HCskdzFfl9k",
+    "all_video_ids": [
+      "HCskdzFfl9k"
+    ],
+    "max_views": 6096,
+    "thumbnail_url": "https://img.youtube.com/vi/HCskdzFfl9k/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=HCskdzFfl9k",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=HCskdzFfl9k"
+    ]
+  },
+  {
+    "guest_name": "勤勤",
+    "guest_en_name": "Qinqin",
+    "guest_title": "Individual entrepreneurship coach",
+    "guest_company": "",
+    "primary_video_id": "ynWeoYWUT_0",
+    "all_video_ids": [
+      "ynWeoYWUT_0"
+    ],
+    "max_views": 17913,
+    "thumbnail_url": "https://img.youtube.com/vi/ynWeoYWUT_0/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=ynWeoYWUT_0",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=ynWeoYWUT_0"
+    ]
+  },
+  {
+    "guest_name": "Vera & 粒粒",
+    "guest_en_name": "Vera & Lili",
+    "guest_title": "Pet community creators",
+    "guest_company": "Lumitails（光尾物语）",
+    "slug": "lumitails",
+    "primary_video_id": "ll-X6xP-t8Y",
+    "all_video_ids": [
+      "ll-X6xP-t8Y"
+    ],
+    "max_views": 5631,
+    "thumbnail_url": "https://img.youtube.com/vi/ll-X6xP-t8Y/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=ll-X6xP-t8Y",
+    "episode_count": 1,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=ll-X6xP-t8Y"
+    ]
+  },
+  {
+    "guest_name": "麻省理工长毛兔",
+    "guest_en_name": "",
+    "guest_title": "Content creator",
+    "guest_company": "",
+    "slug": "changmaotu",
+    "primary_video_id": "W4vEix8Ty40",
+    "all_video_ids": [
+      "W4vEix8Ty40",
+      "DuI1H1zSlik"
+    ],
+    "max_views": 3143,
+    "thumbnail_url": "https://img.youtube.com/vi/W4vEix8Ty40/hqdefault.jpg",
+    "primary_url": "https://www.youtube.com/watch?v=W4vEix8Ty40",
+    "episode_count": 2,
+    "all_urls": [
+      "https://www.youtube.com/watch?v=W4vEix8Ty40",
+      "https://www.youtube.com/watch?v=DuI1H1zSlik"
     ]
   }
 ]
