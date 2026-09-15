@@ -138,6 +138,8 @@ pip install faster-whisper    # CPU/CUDA Whisper
 | [docs/嘉宾索引.md](docs/嘉宾索引.md) | 嘉宾完整列表 + 每位嘉宾的 archive 视频索引 |
 | [docs/网站嘉宾维护手册.md](docs/网站嘉宾维护手册.md) | Guest 功能维护手册：source of truth、更新顺序、验收清单 |
 | [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md) | `lizheng.ai/guests` 的数据流、权威来源、派生文件说明 |
+| [docs/guest-sources.md](docs/guest-sources.md) | YouTube 与 Circle 访谈来源字段、空值语义及网站消费约定 |
+| [docs/guest-insights-workflow.md](docs/guest-insights-workflow.md) | 嘉宾英文洞察：立正发 LinkedIn/X 原帖、艾特嘉宾、亲自邀请转发 |
 | [docs/核心任务说明.md](docs/核心任务说明.md) | 播客工作流（下载→上传）完整说明 |
 | [docs/项目重构复盘.md](docs/项目重构复盘.md) | 2026-03-29 Transistor 元数据大修复盘 |
 | [docs/字幕校对工程复盘.md](docs/字幕校对工程复盘.md) | 2026-04 Qwen+Claude 校对 pipeline 复盘 |

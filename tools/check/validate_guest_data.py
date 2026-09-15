@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date, datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -56,6 +57,35 @@ def main() -> int:
         guest_name = guest.get("guest_name") or f"guest #{index}"
         all_urls = guest.get("all_urls") or []
         all_video_ids = guest.get("all_video_ids") or []
+
+        source_type = guest.get("primary_source_type", "youtube")
+        if source_type == "circle":
+            primary_url = guest.get("primary_url") or ""
+            parsed = urlparse(primary_url)
+            if (parsed.scheme != "https" or parsed.netloc != "www.superlinear.academy"
+                    or not parsed.path.startswith("/c/recording/") or parsed.query or parsed.fragment):
+                errors.append(f"{guest_name}: Circle primary_url 必须是真实的 Superlinear recording URL")
+            if guest.get("primary_video_id", "missing") is not None or all_video_ids:
+                errors.append(f"{guest_name}: Circle 来源不得伪造 YouTube video id")
+            if all_urls != [primary_url] or guest.get("episode_count") != 1:
+                errors.append(f"{guest_name}: Circle 来源须保留一条 primary_url 与一期访谈")
+            if guest.get("max_views", "missing") is not None:
+                errors.append(f"{guest_name}: Circle 未核实播放量必须为 null")
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", guest.get("slug", "")):
+                errors.append(f"{guest_name}: Circle 来源必须指定稳定 slug")
+            if not str(guest.get("primary_source_title") or "").strip():
+                errors.append(f"{guest_name}: Circle 来源缺少真实标题")
+            if not str(guest.get("thumbnail_url") or "").startswith("/guest-media/"):
+                errors.append(f"{guest_name}: Circle 缩略图必须指向网站公开 guest-media 资产")
+            try:
+                datetime.fromisoformat(guest["primary_source_published_at"].replace("Z", "+00:00"))
+                date.fromisoformat(guest["interview_date"])
+            except (KeyError, TypeError, ValueError):
+                errors.append(f"{guest_name}: Circle 发布时间和访谈日期必须分别记录真实 ISO 日期")
+            continue
+        if source_type != "youtube":
+            errors.append(f"{guest_name}: 不支持的 primary_source_type -> {source_type}")
+            continue
 
         derived_ids = []
         for url in all_urls:
@@ -129,7 +159,7 @@ def main() -> int:
         return 1
 
     total_guests = len(guests)
-    total_episodes = sum(len(guest.get("all_video_ids") or []) for guest in guests)
+    total_episodes = sum(guest.get("episode_count", 0) for guest in guests)
     print(
         f"guest data validation passed: {total_guests} guests, {total_episodes} episodes"
     )

@@ -23,6 +23,8 @@ def main() -> int:
     missing_ids: list[str] = []
 
     for guest in guests:
+        if guest.get("primary_source_type", "youtube") != "youtube":
+            continue
         for video_id in guest.get("all_video_ids") or []:
             if video_id in seen:
                 continue
