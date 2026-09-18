@@ -6,6 +6,7 @@ import argparse
 import csv
 import html
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -85,6 +86,11 @@ def validate_plan(plan: dict, approval: str) -> None:
             raise ValueError("Incomplete published episode preconditions")
 
 
+def title_matches(actual: str, requested: str) -> bool:
+    """Transistor folds repeated ASCII spaces when saving an episode title."""
+    return actual == requested or actual == re.sub(r" {2,}", " ", requested)
+
+
 def assert_remote(episode: dict, row: dict, show_id: str) -> None:
     if str(episode["id"]) != row["episode_id"] or show_of(episode) != show_id:
         raise ValueError(f"Remote identity drift: {row['episode_id']}")
@@ -92,7 +98,8 @@ def assert_remote(episode: dict, row: dict, show_id: str) -> None:
         raise ValueError(f"Protected episode fields changed: {row['episode_id']}")
     if extract_video_id(episode["attributes"].get("video_url")) != row["video_id"]:
         raise ValueError("Remote video identity drift")
-    if episode["attributes"]["title"] not in (row["before_title"], row["after_title"]):
+    if not any(title_matches(episode["attributes"]["title"], title)
+               for title in (row["before_title"], row["after_title"])):
         raise ValueError(f"Remote title changed since review: {row['episode_id']}")
 
 
@@ -106,24 +113,32 @@ def apply_plan(client, plan: dict, approval: str, ledger: Path) -> dict:
     ledger.parent.mkdir(parents=True, exist_ok=True)
     with ledger.open("a", encoding="utf-8") as log:
         for i, row in enumerate(plan["actions"], 1):
-            current = client.get_episode(row["episode_id"])
+            current = remote[row["episode_id"]]
+            # The fresh collection read is enough for no-op resume entries.
+            # Entries that may need a write get another immediate precondition read.
+            if not title_matches(current["attributes"]["title"], row["after_title"]):
+                current = client.get_episode(row["episode_id"])
             assert_remote(current, row, plan["show_id"])
             status = "already_applied"
-            if current["attributes"]["title"] != row["after_title"]:
+            if not title_matches(current["attributes"]["title"], row["after_title"]):
                 client.update_episode(row["episode_id"], {"title": row["after_title"]})
                 current = client.get_episode(row["episode_id"])
                 assert_remote(current, row, plan["show_id"])
-                if current["attributes"]["title"] != row["after_title"]:
+                if not title_matches(current["attributes"]["title"], row["after_title"]):
                     raise ValueError(f"Title readback mismatch: {row['episode_id']}")
                 status = "updated"
             result = {"at": utc_now(), "episode_id": row["episode_id"], "status": status,
-                "title": row["after_title"], "approval_hash": approval}
+                "title": current["attributes"]["title"], "requested_title": row["after_title"],
+                "spaces_normalized": current["attributes"]["title"] != row["after_title"],
+                "approval_hash": approval}
             log.write(json.dumps(result, ensure_ascii=False) + "\n"); log.flush()
             results.append(result)
             if i % 20 == 0 or i == len(plan["actions"]):
                 print(f"Verified {i}/{len(plan['actions'])}", flush=True)
     return {"status": "completed", "approval_hash": approval, "count": len(results),
-        "counts": dict(Counter(r["status"] for r in results)), "completed_at": utc_now()}
+        "counts": dict(Counter(r["status"] for r in results)),
+        "spaces_normalized": [r for r in results if r["spaces_normalized"]],
+        "completed_at": utc_now()}
 
 
 def write_review(plan: dict, directory: Path) -> None:

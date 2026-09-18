@@ -1,12 +1,13 @@
 """Title migration safety: independently counted series and immutable remote fields."""
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from tools.podcast.core import strip_episode_number
 from tools.podcast.series import episode_series_title, next_assignment, validate_catalog
-from tools.upload.migrate_podcast_series import build_plan, apply_plan, scope_hash
+from tools.upload.migrate_podcast_series import build_plan, apply_plan, scope_hash, title_matches
 
 A, B = "AAAAAAAAAAA", "BBBBBBBBBBB"
 CATALOG = {
@@ -118,6 +119,35 @@ class MigrationTests(unittest.TestCase):
         self.client.damage = True
         with self.assertRaises(ValueError): self.run_plan()
         self.assertEqual(len(self.client.writes), 1)
+
+    def test_platform_space_normalization_is_recorded_and_resumable(self):
+        self.remote[0]["attributes"]["title"] = "E1. Richer  2⧸2"
+        self.plan = build_plan(self.remote, "71709", CATALOG)
+        self.client = MemoryClient(self.remote)
+        original_update = self.client.update_episode
+
+        def normalized_update(eid, payload):
+            original_update(eid, payload)
+            attrs = self.client.data[eid]["attributes"]
+            attrs["title"] = attrs["title"].replace("  ", " ")
+
+        self.client.update_episode = normalized_update
+        result = self.run_plan()
+        self.assertEqual(len(result["spaces_normalized"]), 1)
+        normalized = result["spaces_normalized"][0]
+        self.assertEqual(normalized["title"], "立正说 001｜Richer 2⧸2")
+        self.assertEqual(normalized["requested_title"], "立正说 001｜Richer  2⧸2")
+        self.assertEqual(json.loads(self.ledger.read_text().splitlines()[0]), normalized)
+        result = self.run_plan()
+        self.assertEqual(result["counts"], {"already_applied": 2})
+        self.assertEqual(len(self.client.writes), 2)
+
+    def test_normalization_does_not_allow_wording_punctuation_or_other_whitespace_changes(self):
+        requested = "对话 204｜Richer  2⧸2"
+        self.assertTrue(title_matches("对话 204｜Richer 2⧸2", requested))
+        for actual in ("对话 204｜Richer 2/2", "对话 204｜Richard 2⧸2",
+                       "对话 204｜Richer\t2⧸2", "对话 204｜Richer   2⧸2"):
+            self.assertFalse(title_matches(actual, requested))
 
 
 if __name__ == "__main__":
