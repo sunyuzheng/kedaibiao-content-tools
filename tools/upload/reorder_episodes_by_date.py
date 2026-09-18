@@ -26,12 +26,12 @@ from tools.podcast.core import (  # noqa: E402
     canonical_json,
     extract_video_id,
     load_env,
-    numbered_title,
     require_transistor_config,
     sha256_text,
     utc_now,
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
+from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
 
 
 DEFAULT_OUT_DIR = PROJECT_ROOT / "logs" / "podcast_sync" / "plans" / "reorder"
@@ -58,6 +58,7 @@ def build_reorder_plan(
     show_id: str,
 ) -> dict[str, Any]:
     local_dates = build_local_date_map()
+    series_catalog = load_catalog()
     episodes = [
         episode
         for episode in client.list_episodes(show_id)
@@ -97,10 +98,21 @@ def build_reorder_plan(
         blocked_reasons.append("duplicate_published_video_ids")
 
     actions: list[dict[str, Any]] = []
+    series_errors: list[dict[str, str]] = []
     if not blocked_reasons:
         records.sort(key=lambda item: (item["date"], item["video_id"]))
         for target_number, record in enumerate(records, 1):
-            target_title = numbered_title(record["current_title"], target_number)
+            try:
+                target_title = episode_series_title(
+                    record["current_title"], record["video_id"], catalog=series_catalog
+                )
+            except ValueError as exc:
+                series_errors.append({
+                    "episode_id": record["episode_id"],
+                    "video_id": record["video_id"],
+                    "detail": str(exc),
+                })
+                continue
             if (
                 record["current_number"] == target_number
                 and record["current_title"] == target_title
@@ -111,6 +123,9 @@ def build_reorder_plan(
                 "target_number": target_number,
                 "target_title": target_title,
             })
+    if series_errors:
+        blocked_reasons.append("series_assignment_missing_or_invalid")
+        actions = []
 
     approval_scope = {
         "kind": "transistor_reorder",
@@ -126,6 +141,7 @@ def build_reorder_plan(
         "blocked_reasons": blocked_reasons,
         "missing_local_date": missing,
         "duplicate_video_ids": duplicates,
+        "series_errors": series_errors,
         "actions": actions,
         "approval_hash": sha256_text(canonical_json(approval_scope)),
     }

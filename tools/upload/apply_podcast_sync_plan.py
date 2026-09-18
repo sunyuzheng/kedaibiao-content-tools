@@ -26,7 +26,6 @@ from tools.podcast.core import (  # noqa: E402
     canonical_json,
     extract_video_id,
     load_env,
-    numbered_title,
     plan_hash,
     require_transistor_config,
     resolve_project_path,
@@ -408,12 +407,36 @@ def apply_publish(
             f"Publish plan is blocked: {plan['publish_blocked_reasons']}"
         )
 
+    publish_ids = {item["local"]["video_id"] for item in plan["publish_actions"]}
+    frozen_titles: dict[str, str] = {}
+    for row in plan.get("projected_feed", []):
+        video_id = row.get("video_id")
+        if video_id not in publish_ids:
+            continue
+        title = row.get("target_title")
+        if (
+            video_id in frozen_titles
+            or not row.get("planned_publish")
+            or not isinstance(title, str)
+            or not title.strip()
+        ):
+            raise PlanPreconditionError(
+                f"Invalid or duplicate frozen publish title for {video_id}"
+            )
+        frozen_titles[video_id] = title
+    missing_titles = publish_ids - frozen_titles.keys()
+    if missing_titles:
+        raise PlanPreconditionError(
+            f"Missing frozen publish titles in projected_feed: {sorted(missing_titles)}"
+        )
+
     _, current_by_video = client.episodes_by_video_id(show_id)
     published = repaired = 0
     for item in plan["publish_actions"]:
         local = item["local"]
         video_id = local["video_id"]
         desired = desired_episode_fields(local)
+        desired["title"] = frozen_titles[video_id]
         current = current_by_video.get(video_id, [])
 
         if item["action"] == "create_draft_then_publish":
@@ -439,8 +462,6 @@ def apply_publish(
             if not episode_id:
                 raise TransistorError(f"Create response for {video_id} had no episode id")
             number = episode.get("attributes", {}).get("number")
-            final_title = numbered_title(local["base_title"], int(number)) if number else local["base_title"]
-            desired["title"] = final_title
             episode = client.update_episode(episode_id, desired)
             ledger.write(
                 "draft_created",
@@ -466,11 +487,6 @@ def apply_publish(
                     f"Draft identity changed for {video_id}: expected={expected_id} observed={episode_id}"
                 )
             number = attrs.get("number")
-            desired["title"] = (
-                numbered_title(local["base_title"], int(number))
-                if number
-                else local["base_title"]
-            )
             if not attrs.get("media_url"):
                 audio = verify_audio(local.get("audio_path"), local.get("audio_sha256"))
                 authorization = client.authorize_upload(audio.name)

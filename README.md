@@ -6,6 +6,8 @@ YouTube 频道「课代表立正」的本地内容管理工具集——覆盖下
 
 ## 两条主线工作流
 
+播客采用「对话 / 立正说」两个独立编号系列。分类与序号以 `podcast_series.json` 为准，规则和迁移入口见 [播客系列与编号](docs/播客系列与编号.md)。未分类节目会阻断同步，先核对内容再登记归属。
+
 ### 可复用开源版：YouTube to Podcast
 
 `packages/youtube-to-podcast/` 是从本项目现役流程抽出的通用、可安装 CLI。

@@ -19,7 +19,7 @@ ARCHIVE_DIR = PROJECT_ROOT / "archive"
 YOUTUBE_SNAPSHOT = PROJECT_ROOT / "tools" / "youtube" / "all_videos_full.json"
 TRANSISTOR_API_BASE = "https://api.transistor.fm/v1"
 VIDEO_ID_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
-TITLE_NUMBER_RE = re.compile(r"^E\d+\.\s+")
+TITLE_NUMBER_RE = re.compile(r"^(?:E\d+\.\s+|(?:对话|立正说)\s*\d+\s*[｜|]\s*)")
 TIMESTAMP_RE = re.compile(
     r"^(?:\d{1,2}:)?\d{2}:\d{2}[.,]\d{3}\s+-->\s+"
     r"(?:\d{1,2}:)?\d{2}:\d{2}[.,]\d{3}"

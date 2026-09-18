@@ -1,0 +1,3734 @@
+{
+  "episodes": {
+    "-6CS95pZoIM": {
+      "classification_basis": "嘉宾索引：刘友忠 Richard Liu",
+      "global_number": 136,
+      "series": "dialogue",
+      "series_number": 61,
+      "source_date": "20221025"
+    },
+    "-9xyCAhtlws": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 1,
+      "series": "solo",
+      "series_number": 1,
+      "source_date": "20200520"
+    },
+    "-CtjOzJXWgo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 325,
+      "series": "solo",
+      "series_number": 126,
+      "source_date": "20240520"
+    },
+    "-Et3GJRSI_0": {
+      "classification_basis": "嘉宾索引：刘嘉",
+      "global_number": 488,
+      "series": "dialogue",
+      "series_number": 296,
+      "source_date": "20260328"
+    },
+    "-JjEDPb1xas": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 122,
+      "series": "solo",
+      "series_number": 67,
+      "source_date": "20220704"
+    },
+    "-MuveUTTIJg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 519,
+      "series": "solo",
+      "series_number": 207,
+      "source_date": "20260807"
+    },
+    "-iKKwHIp1Xw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 357,
+      "series": "solo",
+      "series_number": 137,
+      "source_date": "20241003"
+    },
+    "-iLBagRDlUE": {
+      "classification_basis": "嘉宾索引：陈哲",
+      "global_number": 234,
+      "series": "dialogue",
+      "series_number": 133,
+      "source_date": "20230927"
+    },
+    "-nIcaJL1wzU": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 199,
+      "series": "dialogue",
+      "series_number": 105,
+      "source_date": "20230730"
+    },
+    "-s9Oj3koBTc": {
+      "classification_basis": "鸭哥的intake-skill现场演示；按嘉宾内容归入对话系列",
+      "global_number": 499,
+      "series": "dialogue",
+      "series_number": 303,
+      "source_date": "20260518"
+    },
+    "-yjem69C2P4": {
+      "classification_basis": "立正和鸭哥工作实况",
+      "global_number": 503,
+      "series": "dialogue",
+      "series_number": 306,
+      "source_date": "20260529"
+    },
+    "-zIP-0VbJKI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 524,
+      "series": "solo",
+      "series_number": 209,
+      "source_date": "20260824"
+    },
+    "0RzapwIAo6Y": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 218,
+      "series": "dialogue",
+      "series_number": 122,
+      "source_date": "20230912"
+    },
+    "0__vGsiB5yk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 63,
+      "series": "solo",
+      "series_number": 43,
+      "source_date": "20210705"
+    },
+    "0yKwvwtYwMg": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 379,
+      "series": "dialogue",
+      "series_number": 232,
+      "source_date": "20250116"
+    },
+    "11B89hfa-xY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 4,
+      "series": "solo",
+      "series_number": 3,
+      "source_date": "20200608"
+    },
+    "1DDUJQ9Rr3k": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 106,
+      "series": "solo",
+      "series_number": 58,
+      "source_date": "20220331"
+    },
+    "1DsF0MItcp0": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 449,
+      "series": "dialogue",
+      "series_number": 273,
+      "source_date": "20251010"
+    },
+    "1ZbVBnYHlKI": {
+      "classification_basis": "嘉宾索引：何冬阳",
+      "global_number": 212,
+      "series": "dialogue",
+      "series_number": 118,
+      "source_date": "20230821"
+    },
+    "24zRYz1DV_0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 121,
+      "series": "solo",
+      "series_number": 66,
+      "source_date": "20220623"
+    },
+    "2L9ReWu-sZc": {
+      "classification_basis": "嘉宾索引：Vivian Wang",
+      "global_number": 342,
+      "series": "dialogue",
+      "series_number": 209,
+      "source_date": "20240802"
+    },
+    "2dzE4GsFCD8": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 139,
+      "series": "dialogue",
+      "series_number": 63,
+      "source_date": "20221111"
+    },
+    "2fpnJlHPhGA": {
+      "classification_basis": "嘉宾索引：Kevin Chen",
+      "global_number": 305,
+      "series": "dialogue",
+      "series_number": 185,
+      "source_date": "20240308"
+    },
+    "2vZGD67NTzY": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 200,
+      "series": "dialogue",
+      "series_number": 106,
+      "source_date": "20230730"
+    },
+    "2xvXebaqZ_I": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 493,
+      "series": "dialogue",
+      "series_number": 299,
+      "source_date": "20260421"
+    },
+    "38ijD7F_-tY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 432,
+      "series": "solo",
+      "series_number": 168,
+      "source_date": "20250719"
+    },
+    "3ILs3XDcE1I": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 490,
+      "series": "dialogue",
+      "series_number": 297,
+      "source_date": "20260407"
+    },
+    "3R-wxLm3G7M": {
+      "classification_basis": "嘉宾索引：灶爷 (Tianqiang Liu)",
+      "global_number": 426,
+      "series": "dialogue",
+      "series_number": 262,
+      "source_date": "20250625"
+    },
+    "3RgQdcQWOJc": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 510,
+      "series": "solo",
+      "series_number": 202,
+      "source_date": "20260702"
+    },
+    "3UhiLwDxGIk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 496,
+      "series": "solo",
+      "series_number": 195,
+      "source_date": "20260502"
+    },
+    "3YGv34WZhNI": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 91,
+      "series": "dialogue",
+      "series_number": 38,
+      "source_date": "20220104"
+    },
+    "3ddMhzWgMgs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 473,
+      "series": "solo",
+      "series_number": 186,
+      "source_date": "20260114"
+    },
+    "3kTWRH-RT3s": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 273,
+      "series": "dialogue",
+      "series_number": 163,
+      "source_date": "20231213"
+    },
+    "3t2I_BMG9gU": {
+      "classification_basis": "嘉宾索引：戴雨森",
+      "global_number": 425,
+      "series": "dialogue",
+      "series_number": 261,
+      "source_date": "20250620"
+    },
+    "4CtIrFGBN9A": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 53,
+      "series": "solo",
+      "series_number": 38,
+      "source_date": "20210510"
+    },
+    "4GHH4p5OEJg": {
+      "classification_basis": "嘉宾索引：穆潼",
+      "global_number": 81,
+      "series": "dialogue",
+      "series_number": 33,
+      "source_date": "20211015"
+    },
+    "4KvVT76xmsI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 380,
+      "series": "solo",
+      "series_number": 148,
+      "source_date": "20250117"
+    },
+    "4LwKnM7GChE": {
+      "classification_basis": "嘉宾索引：Cooper竹子",
+      "global_number": 397,
+      "series": "dialogue",
+      "series_number": 241,
+      "source_date": "20250327"
+    },
+    "4P8KRyw5oCk": {
+      "classification_basis": "嘉宾索引：陈湘宇 Chen Xiangyu",
+      "global_number": 261,
+      "series": "dialogue",
+      "series_number": 154,
+      "source_date": "20231109"
+    },
+    "4PdNNi_eYKE": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 313,
+      "series": "dialogue",
+      "series_number": 191,
+      "source_date": "20240412"
+    },
+    "4V8aNnJZAJw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 314,
+      "series": "solo",
+      "series_number": 123,
+      "source_date": "20240413"
+    },
+    "4d30OK7-4PM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 191,
+      "series": "solo",
+      "series_number": 92,
+      "source_date": "20230708"
+    },
+    "4eYzTGxZazw": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 96,
+      "series": "dialogue",
+      "series_number": 43,
+      "source_date": "20220201"
+    },
+    "4haSIlR8Fy4": {
+      "classification_basis": "嘉宾索引：老冒",
+      "global_number": 468,
+      "series": "dialogue",
+      "series_number": 285,
+      "source_date": "20251223"
+    },
+    "4iKB7_YH1wc": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 235,
+      "series": "dialogue",
+      "series_number": 134,
+      "source_date": "20230927"
+    },
+    "4xusmN8-zTs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 77,
+      "series": "solo",
+      "series_number": 46,
+      "source_date": "20210918"
+    },
+    "5QcM1X_YMQk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 338,
+      "series": "solo",
+      "series_number": 132,
+      "source_date": "20240724"
+    },
+    "5RXP8Jr68RM": {
+      "classification_basis": "婚礼誓言与个人生活记录，归立正说",
+      "global_number": 248,
+      "series": "solo",
+      "series_number": 104,
+      "source_date": "20231011"
+    },
+    "5S35kzkM6gE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 29,
+      "series": "solo",
+      "series_number": 18,
+      "source_date": "20201116"
+    },
+    "5dq3XxmjTBc": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 141,
+      "series": "dialogue",
+      "series_number": 65,
+      "source_date": "20221125"
+    },
+    "5z_9sF0bNQE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 376,
+      "series": "solo",
+      "series_number": 145,
+      "source_date": "20241227"
+    },
+    "63lFWZRXwuo": {
+      "classification_basis": "嘉宾索引：老冒",
+      "global_number": 469,
+      "series": "dialogue",
+      "series_number": 286,
+      "source_date": "20251225"
+    },
+    "67HgPNSeemE": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 31,
+      "series": "dialogue",
+      "series_number": 12,
+      "source_date": "20201127"
+    },
+    "6BFk_Ru0kMU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 220,
+      "series": "solo",
+      "series_number": 97,
+      "source_date": "20230914"
+    },
+    "6FGf8kmftjc": {
+      "classification_basis": "嘉宾索引：高寒 Cadence Gao",
+      "global_number": 159,
+      "series": "dialogue",
+      "series_number": 78,
+      "source_date": "20230227"
+    },
+    "6FvFgTWO9BU": {
+      "classification_basis": "嘉宾索引：Kevin Chen",
+      "global_number": 287,
+      "series": "dialogue",
+      "series_number": 173,
+      "source_date": "20240118"
+    },
+    "6G7KE0KIwWU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 41,
+      "series": "solo",
+      "series_number": 28,
+      "source_date": "20210211"
+    },
+    "6P6ClAtxa8U": {
+      "classification_basis": "嘉宾索引：张国琪",
+      "global_number": 102,
+      "series": "dialogue",
+      "series_number": 46,
+      "source_date": "20220310"
+    },
+    "6QPju9vbb0c": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 215,
+      "series": "solo",
+      "series_number": 95,
+      "source_date": "20230831"
+    },
+    "6hCRP9bW4II": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 522,
+      "series": "solo",
+      "series_number": 208,
+      "source_date": "20260820"
+    },
+    "6puUPZA0wVs": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 354,
+      "series": "dialogue",
+      "series_number": 218,
+      "source_date": "20240921"
+    },
+    "6rHgvfYn2Mo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 251,
+      "series": "solo",
+      "series_number": 106,
+      "source_date": "20231015"
+    },
+    "77nmgqFMCME": {
+      "classification_basis": "嘉宾索引：Koji & Monica",
+      "global_number": 433,
+      "series": "dialogue",
+      "series_number": 265,
+      "source_date": "20250730"
+    },
+    "77yo5GQr1pQ": {
+      "classification_basis": "嘉宾索引：詹冬业",
+      "global_number": 187,
+      "series": "dialogue",
+      "series_number": 96,
+      "source_date": "20230626"
+    },
+    "7IhS6Qx5gHI": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 272,
+      "series": "dialogue",
+      "series_number": 162,
+      "source_date": "20231212"
+    },
+    "7YhK6XsaijE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 30,
+      "series": "solo",
+      "series_number": 19,
+      "source_date": "20201121"
+    },
+    "7dYNlUai-3A": {
+      "classification_basis": "嘉宾索引：OE_Ben",
+      "global_number": 300,
+      "series": "dialogue",
+      "series_number": 182,
+      "source_date": "20240220"
+    },
+    "7ej2r7XysKc": {
+      "classification_basis": "嘉宾索引：Shuchao Bi",
+      "global_number": 386,
+      "series": "dialogue",
+      "series_number": 235,
+      "source_date": "20250214"
+    },
+    "85nG5tj9h2o": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 34,
+      "series": "solo",
+      "series_number": 22,
+      "source_date": "20201217"
+    },
+    "8E7JHh77h5Y": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 440,
+      "series": "solo",
+      "series_number": 170,
+      "source_date": "20250905"
+    },
+    "8JZMd8KOhaw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 2,
+      "series": "solo",
+      "series_number": 2,
+      "source_date": "20200520"
+    },
+    "8PEnhKMzs0s": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 20,
+      "series": "solo",
+      "series_number": 11,
+      "source_date": "20200928"
+    },
+    "8VRW3J2lzrQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 471,
+      "series": "solo",
+      "series_number": 185,
+      "source_date": "20260101"
+    },
+    "8ZAmt3Bn5fs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 175,
+      "series": "solo",
+      "series_number": 88,
+      "source_date": "20230507"
+    },
+    "8fVg8l9LqlM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 458,
+      "series": "solo",
+      "series_number": 179,
+      "source_date": "20251113"
+    },
+    "8omGQSetKMA": {
+      "classification_basis": "嘉宾索引：刘友忠 Richard Liu",
+      "global_number": 74,
+      "series": "dialogue",
+      "series_number": 31,
+      "source_date": "20210828"
+    },
+    "8tIRmNVTr44": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 130,
+      "series": "solo",
+      "series_number": 75,
+      "source_date": "20220920"
+    },
+    "99-5ptPiHJ0": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 495,
+      "series": "dialogue",
+      "series_number": 301,
+      "source_date": "20260429"
+    },
+    "9A98hWZs5yU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 498,
+      "series": "solo",
+      "series_number": 196,
+      "source_date": "20260514"
+    },
+    "9AOBt5e4fME": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 107,
+      "series": "solo",
+      "series_number": 59,
+      "source_date": "20220401"
+    },
+    "9JdIkWyyOJI": {
+      "classification_basis": "嘉宾索引：孙宇",
+      "global_number": 472,
+      "series": "dialogue",
+      "series_number": 287,
+      "source_date": "20260108"
+    },
+    "9LKJ8JdLtfI": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 69,
+      "series": "dialogue",
+      "series_number": 26,
+      "source_date": "20210806"
+    },
+    "9YN6Sf6mcGk": {
+      "classification_basis": "嘉宾索引：Sean 羊王",
+      "global_number": 394,
+      "series": "dialogue",
+      "series_number": 240,
+      "source_date": "20250322"
+    },
+    "9_JsesmzJ9U": {
+      "classification_basis": "嘉宾索引：边璐",
+      "global_number": 372,
+      "series": "dialogue",
+      "series_number": 230,
+      "source_date": "20241221"
+    },
+    "9kh1YvzZYks": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 444,
+      "series": "solo",
+      "series_number": 174,
+      "source_date": "20250924"
+    },
+    "9opd3YjEr14": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 291,
+      "series": "dialogue",
+      "series_number": 175,
+      "source_date": "20240131"
+    },
+    "9tHdY-LH4Cs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 38,
+      "series": "solo",
+      "series_number": 25,
+      "source_date": "20210121"
+    },
+    "9uUB421L2oo": {
+      "classification_basis": "嘉宾索引：虚汗僧",
+      "global_number": 67,
+      "series": "dialogue",
+      "series_number": 24,
+      "source_date": "20210721"
+    },
+    "9vlSuEgPPec": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 461,
+      "series": "solo",
+      "series_number": 181,
+      "source_date": "20251126"
+    },
+    "A12Z_CHi7PE": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 355,
+      "series": "dialogue",
+      "series_number": 219,
+      "source_date": "20240924"
+    },
+    "A7I0h91Jy-A": {
+      "classification_basis": "嘉宾索引：张国琪",
+      "global_number": 103,
+      "series": "dialogue",
+      "series_number": 47,
+      "source_date": "20220315"
+    },
+    "ACfLoZ92B-g": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 280,
+      "series": "dialogue",
+      "series_number": 168,
+      "source_date": "20231230"
+    },
+    "AHkzE4j-DjY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 506,
+      "series": "solo",
+      "series_number": 200,
+      "source_date": "20260611"
+    },
+    "AMZs0GNwo7I": {
+      "classification_basis": "嘉宾索引：邹昕",
+      "global_number": 132,
+      "series": "dialogue",
+      "series_number": 57,
+      "source_date": "20221002"
+    },
+    "AVsX_s9Sz34": {
+      "classification_basis": "嘉宾索引：Rod",
+      "global_number": 167,
+      "series": "dialogue",
+      "series_number": 81,
+      "source_date": "20230409"
+    },
+    "AcRLM5S-4Bw": {
+      "classification_basis": "嘉宾索引：Ethan Evans",
+      "global_number": 340,
+      "series": "dialogue",
+      "series_number": 207,
+      "source_date": "20240729"
+    },
+    "AkN2RV3X49Q": {
+      "classification_basis": "大会现场报道，含孟颖、Jason、Sophia访谈，归对话",
+      "global_number": 523,
+      "series": "dialogue",
+      "series_number": 315,
+      "source_date": "20260821"
+    },
+    "Anu05u8WH-Y": {
+      "classification_basis": "嘉宾索引：王浩岚",
+      "global_number": 154,
+      "series": "dialogue",
+      "series_number": 73,
+      "source_date": "20230209"
+    },
+    "AqQ6HQXFueE": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 184,
+      "series": "dialogue",
+      "series_number": 93,
+      "source_date": "20230610"
+    },
+    "ArfiQWpihhA": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 201,
+      "series": "dialogue",
+      "series_number": 107,
+      "source_date": "20230730"
+    },
+    "AvBbxbpCCsw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 334,
+      "series": "solo",
+      "series_number": 130,
+      "source_date": "20240704"
+    },
+    "AwqDXfT8C4M": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 33,
+      "series": "solo",
+      "series_number": 21,
+      "source_date": "20201209"
+    },
+    "BR3hN7InkmY": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 520,
+      "series": "dialogue",
+      "series_number": 313,
+      "source_date": "20260812"
+    },
+    "BRr5G2zNJGY": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 464,
+      "series": "dialogue",
+      "series_number": 283,
+      "source_date": "20251204"
+    },
+    "BeX7DdSRihM": {
+      "classification_basis": "Yan Wang（鸭哥）主讲年度AI公开课；按嘉宾内容归入对话系列",
+      "global_number": 373,
+      "series": "dialogue",
+      "series_number": 231,
+      "source_date": "20241221"
+    },
+    "BnL5qaBzmR0": {
+      "classification_basis": "嘉宾索引：Ryo Lu",
+      "global_number": 480,
+      "series": "dialogue",
+      "series_number": 292,
+      "source_date": "20260220"
+    },
+    "Bw6IvZPTs1Q": {
+      "classification_basis": "嘉宾索引：陈昊",
+      "global_number": 21,
+      "series": "dialogue",
+      "series_number": 10,
+      "source_date": "20201003"
+    },
+    "CD3V4Z5hCgM": {
+      "classification_basis": "嘉宾索引：刘若曦",
+      "global_number": 28,
+      "series": "dialogue",
+      "series_number": 11,
+      "source_date": "20201112"
+    },
+    "CTcMvIZFQcw": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 68,
+      "series": "dialogue",
+      "series_number": 25,
+      "source_date": "20210728"
+    },
+    "CU_jBN8gvq8": {
+      "classification_basis": "嘉宾索引：王然",
+      "global_number": 71,
+      "series": "dialogue",
+      "series_number": 28,
+      "source_date": "20210817"
+    },
+    "CUvzoZKdFBk": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 236,
+      "series": "dialogue",
+      "series_number": 135,
+      "source_date": "20230928"
+    },
+    "CeNBLsQ98yE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 50,
+      "series": "solo",
+      "series_number": 35,
+      "source_date": "20210403"
+    },
+    "CfCZeAmsyKM": {
+      "classification_basis": "嘉宾索引：卢易 Lu Yi",
+      "global_number": 229,
+      "series": "dialogue",
+      "series_number": 129,
+      "source_date": "20230922"
+    },
+    "Cj5R_l3jI_Q": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 282,
+      "series": "solo",
+      "series_number": 113,
+      "source_date": "20240104"
+    },
+    "D1HRasV12mE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 160,
+      "series": "solo",
+      "series_number": 82,
+      "source_date": "20230312"
+    },
+    "D4XZqFFQkXI": {
+      "classification_basis": "嘉宾索引：Rod",
+      "global_number": 174,
+      "series": "dialogue",
+      "series_number": 87,
+      "source_date": "20230505"
+    },
+    "D61PK9BdYVA": {
+      "classification_basis": "嘉宾索引：王臻 & Nick",
+      "global_number": 247,
+      "series": "dialogue",
+      "series_number": 144,
+      "source_date": "20231010"
+    },
+    "D9aAmsriEjk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 76,
+      "series": "solo",
+      "series_number": 45,
+      "source_date": "20210911"
+    },
+    "DCwVgje4JZA": {
+      "classification_basis": "嘉宾索引：杨帆",
+      "global_number": 294,
+      "series": "dialogue",
+      "series_number": 177,
+      "source_date": "20240208"
+    },
+    "DICRxsSlCu0": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 163,
+      "series": "dialogue",
+      "series_number": 80,
+      "source_date": "20230324"
+    },
+    "DP3N1YyGmG8": {
+      "classification_basis": "SVTC是活动方；实际为立正的职业讲座现场答疑，归立正说",
+      "global_number": 123,
+      "series": "solo",
+      "series_number": 68,
+      "source_date": "20220719"
+    },
+    "DW24krQCXM4": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 95,
+      "series": "dialogue",
+      "series_number": 42,
+      "source_date": "20220128"
+    },
+    "D_-hU1O7IVw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 37,
+      "series": "solo",
+      "series_number": 24,
+      "source_date": "20210107"
+    },
+    "DdFGgvahbi8": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 443,
+      "series": "solo",
+      "series_number": 173,
+      "source_date": "20250923"
+    },
+    "DmZqpGm6Wdw": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 241,
+      "series": "dialogue",
+      "series_number": 140,
+      "source_date": "20231003"
+    },
+    "E2sF5OqEX9Y": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 369,
+      "series": "solo",
+      "series_number": 141,
+      "source_date": "20241208"
+    },
+    "E3lrA5Ldzx8": {
+      "classification_basis": "嘉宾索引：陈哲",
+      "global_number": 268,
+      "series": "dialogue",
+      "series_number": 159,
+      "source_date": "20231130"
+    },
+    "EFqKAU76Hlg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 302,
+      "series": "solo",
+      "series_number": 119,
+      "source_date": "20240226"
+    },
+    "EHP7JnKBmuA": {
+      "classification_basis": "嘉宾索引：金海峰",
+      "global_number": 83,
+      "series": "dialogue",
+      "series_number": 35,
+      "source_date": "20211113"
+    },
+    "ELShp4XNW5I": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 406,
+      "series": "solo",
+      "series_number": 162,
+      "source_date": "20250427"
+    },
+    "EMhlRsuIr-g": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 405,
+      "series": "solo",
+      "series_number": 161,
+      "source_date": "20250425"
+    },
+    "ET9D_nildHw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 39,
+      "series": "solo",
+      "series_number": 26,
+      "source_date": "20210128"
+    },
+    "E_PhVN-6sn0": {
+      "classification_basis": "嘉宾索引：王浩岚",
+      "global_number": 359,
+      "series": "dialogue",
+      "series_number": 221,
+      "source_date": "20241011"
+    },
+    "EccwFyL8OVM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 377,
+      "series": "solo",
+      "series_number": 146,
+      "source_date": "20250104"
+    },
+    "EdZNyICyl0I": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 92,
+      "series": "dialogue",
+      "series_number": 39,
+      "source_date": "20220110"
+    },
+    "Ee90IijOSMo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 492,
+      "series": "solo",
+      "series_number": 194,
+      "source_date": "20260413"
+    },
+    "ExlzfUFIfrY": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 84,
+      "series": "dialogue",
+      "series_number": 36,
+      "source_date": "20211119"
+    },
+    "F5-isewu-ww": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 465,
+      "series": "dialogue",
+      "series_number": 284,
+      "source_date": "20251206"
+    },
+    "F8udMyNXq88": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 170,
+      "series": "solo",
+      "series_number": 87,
+      "source_date": "20230416"
+    },
+    "FB4KLGPvKv0": {
+      "classification_basis": "嘉宾索引：Indigo",
+      "global_number": 452,
+      "series": "dialogue",
+      "series_number": 275,
+      "source_date": "20251022"
+    },
+    "FBodpxppwfc": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 239,
+      "series": "dialogue",
+      "series_number": 138,
+      "source_date": "20231001"
+    },
+    "FaeRWZOy4r8": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 531,
+      "series": "solo",
+      "series_number": 213,
+      "source_date": "20260915"
+    },
+    "Fn0UxCrmUig": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 119,
+      "series": "solo",
+      "series_number": 65,
+      "source_date": "20220608"
+    },
+    "FsYCf_YuYvs": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 301,
+      "series": "dialogue",
+      "series_number": 183,
+      "source_date": "20240222"
+    },
+    "FvzScxx2baE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 374,
+      "series": "solo",
+      "series_number": 143,
+      "source_date": "20241224"
+    },
+    "FzbkAy0DcQk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 382,
+      "series": "solo",
+      "series_number": 150,
+      "source_date": "20250126"
+    },
+    "G2zPhctkIiA": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 222,
+      "series": "dialogue",
+      "series_number": 124,
+      "source_date": "20230916"
+    },
+    "GI_OGXKUE3g": {
+      "classification_basis": "嘉宾索引：liiisaishere",
+      "global_number": 317,
+      "series": "dialogue",
+      "series_number": 194,
+      "source_date": "20240419"
+    },
+    "GIv0I-34aaI": {
+      "classification_basis": "嘉宾索引：Reynold Xin",
+      "global_number": 366,
+      "series": "dialogue",
+      "series_number": 227,
+      "source_date": "20241119"
+    },
+    "GUOfaIhVQoA": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 202,
+      "series": "dialogue",
+      "series_number": 108,
+      "source_date": "20230730"
+    },
+    "G_tWnkZoSyc": {
+      "classification_basis": "嘉宾索引：刘友忠 Richard Liu",
+      "global_number": 135,
+      "series": "dialogue",
+      "series_number": 60,
+      "source_date": "20221020"
+    },
+    "GitJXKWpB6I": {
+      "classification_basis": "嘉宾索引：卢蔚",
+      "global_number": 9,
+      "series": "dialogue",
+      "series_number": 3,
+      "source_date": "20200802"
+    },
+    "GycQBpyazdw": {
+      "classification_basis": "嘉宾索引：AutoKeras嘉宾",
+      "global_number": 82,
+      "series": "dialogue",
+      "series_number": 34,
+      "source_date": "20211107"
+    },
+    "H7spE0UiGTg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 128,
+      "series": "solo",
+      "series_number": 73,
+      "source_date": "20220902"
+    },
+    "HA57MsB30Zs": {
+      "classification_basis": "嘉宾索引：柯西",
+      "global_number": 56,
+      "series": "dialogue",
+      "series_number": 17,
+      "source_date": "20210531"
+    },
+    "HAQ4p74KbdY": {
+      "classification_basis": "嘉宾索引：Eugene Wang",
+      "global_number": 6,
+      "series": "dialogue",
+      "series_number": 2,
+      "source_date": "20200618"
+    },
+    "HCskdzFfl9k": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 491,
+      "series": "dialogue",
+      "series_number": 298,
+      "source_date": "20260409"
+    },
+    "HTxtDxEo3kQ": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 502,
+      "series": "dialogue",
+      "series_number": 305,
+      "source_date": "20260528"
+    },
+    "Hkn4YtTW02w": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 62,
+      "series": "solo",
+      "series_number": 42,
+      "source_date": "20210703"
+    },
+    "IMuh5Dx4pek": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 153,
+      "series": "solo",
+      "series_number": 81,
+      "source_date": "20230203"
+    },
+    "IVL7lqPg64I": {
+      "classification_basis": "嘉宾索引：陈唱",
+      "global_number": 477,
+      "series": "dialogue",
+      "series_number": 290,
+      "source_date": "20260129"
+    },
+    "IWLo9iLnnfM": {
+      "classification_basis": "嘉宾索引：王晨璐",
+      "global_number": 14,
+      "series": "dialogue",
+      "series_number": 7,
+      "source_date": "20200904"
+    },
+    "IePp4R2GAF8": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 388,
+      "series": "solo",
+      "series_number": 152,
+      "source_date": "20250227"
+    },
+    "IfpF2e25S4g": {
+      "classification_basis": "嘉宾索引：菁菁",
+      "global_number": 256,
+      "series": "dialogue",
+      "series_number": 149,
+      "source_date": "20231023"
+    },
+    "IqDxN0irfIk": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 431,
+      "series": "dialogue",
+      "series_number": 264,
+      "source_date": "20250711"
+    },
+    "Iz41o4-2Vg0": {
+      "classification_basis": "嘉宾索引：张国琪",
+      "global_number": 100,
+      "series": "dialogue",
+      "series_number": 45,
+      "source_date": "20220224"
+    },
+    "J2Yx5DDSNYc": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 243,
+      "series": "dialogue",
+      "series_number": 142,
+      "source_date": "20231006"
+    },
+    "JNRFUGrLhqU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 330,
+      "series": "solo",
+      "series_number": 129,
+      "source_date": "20240620"
+    },
+    "JYEJlvbsUvA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 508,
+      "series": "solo",
+      "series_number": 201,
+      "source_date": "20260623"
+    },
+    "JZCoScCpxL0": {
+      "classification_basis": "飞呀的嘉宾自我介绍；按嘉宾内容归入对话系列",
+      "global_number": 242,
+      "series": "dialogue",
+      "series_number": 141,
+      "source_date": "20231004"
+    },
+    "JclipRXMDzA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 125,
+      "series": "solo",
+      "series_number": 70,
+      "source_date": "20220805"
+    },
+    "JxKvQttZAhc": {
+      "classification_basis": "嘉宾索引：Onlyfans博主",
+      "global_number": 387,
+      "series": "dialogue",
+      "series_number": 236,
+      "source_date": "20250219"
+    },
+    "JyC1qluOzFw": {
+      "classification_basis": "嘉宾索引：赵冠然",
+      "global_number": 189,
+      "series": "dialogue",
+      "series_number": 98,
+      "source_date": "20230703"
+    },
+    "K7DcVWblY7o": {
+      "classification_basis": "嘉宾索引：Terry (Hackbear Terry)",
+      "global_number": 435,
+      "series": "dialogue",
+      "series_number": 267,
+      "source_date": "20250807"
+    },
+    "KL3GMXsXXnw": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 145,
+      "series": "dialogue",
+      "series_number": 68,
+      "source_date": "20221216"
+    },
+    "KLAN6YmP4jM": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 417,
+      "series": "dialogue",
+      "series_number": 253,
+      "source_date": "20250601"
+    },
+    "KYxw-9oWpVo": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 93,
+      "series": "dialogue",
+      "series_number": 40,
+      "source_date": "20220122"
+    },
+    "K_MkSw46VQo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 194,
+      "series": "solo",
+      "series_number": 93,
+      "source_date": "20230716"
+    },
+    "KhV4cItOqYw": {
+      "classification_basis": "嘉宾索引：熊力",
+      "global_number": 364,
+      "series": "dialogue",
+      "series_number": 225,
+      "source_date": "20241106"
+    },
+    "KiJEjPlQlTA": {
+      "classification_basis": "嘉宾索引：杜磊",
+      "global_number": 438,
+      "series": "dialogue",
+      "series_number": 270,
+      "source_date": "20250816"
+    },
+    "KkAuu0JnSvs": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 206,
+      "series": "dialogue",
+      "series_number": 112,
+      "source_date": "20230805"
+    },
+    "KzOymWZc3HY": {
+      "classification_basis": "嘉宾索引：Chef Miles",
+      "global_number": 118,
+      "series": "dialogue",
+      "series_number": 54,
+      "source_date": "20220606"
+    },
+    "L8KmAsfoRz4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 393,
+      "series": "solo",
+      "series_number": 154,
+      "source_date": "20250319"
+    },
+    "LH3nSQE1pfU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 197,
+      "series": "solo",
+      "series_number": 94,
+      "source_date": "20230723"
+    },
+    "LI66ZjrTH2o": {
+      "classification_basis": "嘉宾索引：Oscar",
+      "global_number": 214,
+      "series": "dialogue",
+      "series_number": 120,
+      "source_date": "20230829"
+    },
+    "LNfbomCHeXA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 5,
+      "series": "solo",
+      "series_number": 4,
+      "source_date": "20200613"
+    },
+    "LZlbXApG60E": {
+      "classification_basis": "Orca创始人津晶对话；保留用户2026-09-18指定标题正文",
+      "global_number": 532,
+      "series": "dialogue",
+      "series_number": 319,
+      "source_date": "20260918"
+    },
+    "Lt-lVe957hc": {
+      "classification_basis": "嘉宾索引：贾扬清",
+      "global_number": 494,
+      "series": "dialogue",
+      "series_number": 300,
+      "source_date": "20260421"
+    },
+    "M1Sr-yBzbRY": {
+      "classification_basis": "嘉宾索引：杜磊",
+      "global_number": 437,
+      "series": "dialogue",
+      "series_number": 269,
+      "source_date": "20250814"
+    },
+    "M2Yv3D8NDHY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 51,
+      "series": "solo",
+      "series_number": 36,
+      "source_date": "20210419"
+    },
+    "M6ZsbRhhZys": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 453,
+      "series": "solo",
+      "series_number": 178,
+      "source_date": "20251023"
+    },
+    "MAo0c0oV6Ts": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 375,
+      "series": "solo",
+      "series_number": 144,
+      "source_date": "20241225"
+    },
+    "MBYYFwzskf4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 517,
+      "series": "solo",
+      "series_number": 206,
+      "source_date": "20260801"
+    },
+    "MPpnodqHcWQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 439,
+      "series": "solo",
+      "series_number": 169,
+      "source_date": "20250821"
+    },
+    "MTE6gpw8fqA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 500,
+      "series": "solo",
+      "series_number": 197,
+      "source_date": "20260520"
+    },
+    "MWt3Zo1oC70": {
+      "classification_basis": "嘉宾索引：小露",
+      "global_number": 362,
+      "series": "dialogue",
+      "series_number": 223,
+      "source_date": "20241023"
+    },
+    "McTi0DdKybY": {
+      "classification_basis": "嘉宾索引：Kay",
+      "global_number": 456,
+      "series": "dialogue",
+      "series_number": 278,
+      "source_date": "20251106"
+    },
+    "Mjcbb4wP49g": {
+      "classification_basis": "嘉宾索引：Anna",
+      "global_number": 274,
+      "series": "dialogue",
+      "series_number": 164,
+      "source_date": "20231216"
+    },
+    "N4AI18kDvWI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 182,
+      "series": "solo",
+      "series_number": 90,
+      "source_date": "20230530"
+    },
+    "N7yFSOj3fRo": {
+      "classification_basis": "嘉宾索引：灶爷 (Tianqiang Liu)",
+      "global_number": 427,
+      "series": "dialogue",
+      "series_number": 263,
+      "source_date": "20250628"
+    },
+    "NAZoiCYPrqI": {
+      "classification_basis": "嘉宾索引：Jiakan Wang",
+      "global_number": 66,
+      "series": "dialogue",
+      "series_number": 23,
+      "source_date": "20210718"
+    },
+    "NCmyyqTy3n4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 45,
+      "series": "solo",
+      "series_number": 31,
+      "source_date": "20210313"
+    },
+    "NDBCOPAucvM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 514,
+      "series": "solo",
+      "series_number": 204,
+      "source_date": "20260721"
+    },
+    "NMWqW6z__hQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 311,
+      "series": "solo",
+      "series_number": 122,
+      "source_date": "20240402"
+    },
+    "NV2Xb97CceQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 408,
+      "series": "solo",
+      "series_number": 163,
+      "source_date": "20250506"
+    },
+    "NWe92tuQUTA": {
+      "classification_basis": "嘉宾索引：李梦颖 Mengying",
+      "global_number": 303,
+      "series": "dialogue",
+      "series_number": 184,
+      "source_date": "20240229"
+    },
+    "NibvAnZ6e5s": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 25,
+      "series": "solo",
+      "series_number": 15,
+      "source_date": "20201029"
+    },
+    "NnsidZ2pENU": {
+      "classification_basis": "嘉宾索引：Trystane 崔老师",
+      "global_number": 322,
+      "series": "dialogue",
+      "series_number": 197,
+      "source_date": "20240502"
+    },
+    "Nq5lcXdYZ5c": {
+      "classification_basis": "嘉宾索引：苏总",
+      "global_number": 193,
+      "series": "dialogue",
+      "series_number": 101,
+      "source_date": "20230713"
+    },
+    "NyVd3ZPNNBk": {
+      "classification_basis": "嘉宾索引：王晨璐",
+      "global_number": 15,
+      "series": "dialogue",
+      "series_number": 8,
+      "source_date": "20200908"
+    },
+    "OD88_4SOiG4": {
+      "classification_basis": "立正被采访，按对话形式归类",
+      "global_number": 511,
+      "series": "dialogue",
+      "series_number": 309,
+      "source_date": "20260711"
+    },
+    "OHnrToPoMyw": {
+      "classification_basis": "嘉宾索引：罗超元",
+      "global_number": 112,
+      "series": "dialogue",
+      "series_number": 52,
+      "source_date": "20220427"
+    },
+    "OHrVsgsaq9o": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 371,
+      "series": "solo",
+      "series_number": 142,
+      "source_date": "20241217"
+    },
+    "OR6rikid31g": {
+      "classification_basis": "嘉宾索引：光叔 光芒",
+      "global_number": 196,
+      "series": "dialogue",
+      "series_number": 103,
+      "source_date": "20230720"
+    },
+    "ORW2GE7i6bU": {
+      "classification_basis": "嘉宾索引：王浩岚",
+      "global_number": 360,
+      "series": "dialogue",
+      "series_number": 222,
+      "source_date": "20241012"
+    },
+    "OVDAZUGr8RI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 513,
+      "series": "solo",
+      "series_number": 203,
+      "source_date": "20260718"
+    },
+    "OXJj2DqAtcc": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 23,
+      "series": "solo",
+      "series_number": 13,
+      "source_date": "20201014"
+    },
+    "OZObmzuE9Ho": {
+      "classification_basis": "嘉宾索引：liiisaishere",
+      "global_number": 315,
+      "series": "dialogue",
+      "series_number": 192,
+      "source_date": "20240417"
+    },
+    "P-frv84l3Fk": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 323,
+      "series": "dialogue",
+      "series_number": 198,
+      "source_date": "20240508"
+    },
+    "P1o7NGMDMWQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 396,
+      "series": "solo",
+      "series_number": 156,
+      "source_date": "20250325"
+    },
+    "PCDPin7GySI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 381,
+      "series": "solo",
+      "series_number": 149,
+      "source_date": "20250124"
+    },
+    "PHIhRTl2HHs": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 238,
+      "series": "dialogue",
+      "series_number": 137,
+      "source_date": "20230930"
+    },
+    "PHVRjdUB0rQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 111,
+      "series": "solo",
+      "series_number": 60,
+      "source_date": "20220420"
+    },
+    "PWqmRub9wdI": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 284,
+      "series": "dialogue",
+      "series_number": 171,
+      "source_date": "20240110"
+    },
+    "PjMGJZoczxw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 115,
+      "series": "solo",
+      "series_number": 63,
+      "source_date": "20220519"
+    },
+    "PucrhAhOu74": {
+      "classification_basis": "嘉宾索引：陈茂茂 / 李明 / 沈心洋 / 钟远",
+      "global_number": 72,
+      "series": "dialogue",
+      "series_number": 29,
+      "source_date": "20210819"
+    },
+    "Q0pbq-rrx_M": {
+      "classification_basis": "嘉宾索引：Terry (Hackbear Terry)",
+      "global_number": 436,
+      "series": "dialogue",
+      "series_number": 268,
+      "source_date": "20250809"
+    },
+    "Q31nzYvxl0Y": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 228,
+      "series": "solo",
+      "series_number": 100,
+      "source_date": "20230921"
+    },
+    "Q5pMA3F2npc": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 19,
+      "series": "dialogue",
+      "series_number": 9,
+      "source_date": "20200916"
+    },
+    "Q6c06h2Y4e8": {
+      "classification_basis": "嘉宾索引：Lulu",
+      "global_number": 188,
+      "series": "dialogue",
+      "series_number": 97,
+      "source_date": "20230630"
+    },
+    "QB3GEnduxk4": {
+      "classification_basis": "嘉宾索引：Vijaye Raji",
+      "global_number": 65,
+      "series": "dialogue",
+      "series_number": 22,
+      "source_date": "20210714"
+    },
+    "QIZndjNOltY": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 418,
+      "series": "dialogue",
+      "series_number": 254,
+      "source_date": "20250602"
+    },
+    "QY5-3kl5tPY": {
+      "classification_basis": "嘉宾索引：卢易 Lu Yi",
+      "global_number": 231,
+      "series": "dialogue",
+      "series_number": 130,
+      "source_date": "20230924"
+    },
+    "Qnqecz4Fw5g": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 94,
+      "series": "dialogue",
+      "series_number": 41,
+      "source_date": "20220125"
+    },
+    "Qp61G60wZZA": {
+      "classification_basis": "嘉宾索引：吴晶辰",
+      "global_number": 54,
+      "series": "dialogue",
+      "series_number": 16,
+      "source_date": "20210518"
+    },
+    "R-wEqPs_CEs": {
+      "classification_basis": "嘉宾索引：Howard Li",
+      "global_number": 306,
+      "series": "dialogue",
+      "series_number": 186,
+      "source_date": "20240315"
+    },
+    "R8X4ClBY5tg": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 133,
+      "series": "dialogue",
+      "series_number": 58,
+      "source_date": "20221007"
+    },
+    "R92hV48dENI": {
+      "classification_basis": "嘉宾索引：刘友忠 Richard Liu",
+      "global_number": 73,
+      "series": "dialogue",
+      "series_number": 30,
+      "source_date": "20210822"
+    },
+    "R9LuSOVidKM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 327,
+      "series": "solo",
+      "series_number": 127,
+      "source_date": "20240529"
+    },
+    "RRSMjC_BF8Y": {
+      "classification_basis": "嘉宾索引：Ethan Evans",
+      "global_number": 343,
+      "series": "dialogue",
+      "series_number": 210,
+      "source_date": "20240807"
+    },
+    "R_efH9lWbH0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 24,
+      "series": "solo",
+      "series_number": 14,
+      "source_date": "20201026"
+    },
+    "Ril9owWEHxg": {
+      "classification_basis": "嘉宾索引：Emily",
+      "global_number": 254,
+      "series": "dialogue",
+      "series_number": 147,
+      "source_date": "20231021"
+    },
+    "RknuTsX1Afw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 515,
+      "series": "solo",
+      "series_number": 205,
+      "source_date": "20260722"
+    },
+    "SCh-0MaeC_c": {
+      "classification_basis": "嘉宾索引：Tom",
+      "global_number": 59,
+      "series": "dialogue",
+      "series_number": 19,
+      "source_date": "20210612"
+    },
+    "SDmxC8u1YyA": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 144,
+      "series": "dialogue",
+      "series_number": 67,
+      "source_date": "20221209"
+    },
+    "SEymxNZuZBM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 36,
+      "series": "solo",
+      "series_number": 23,
+      "source_date": "20201231"
+    },
+    "SN_y8HAb90o": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 211,
+      "series": "dialogue",
+      "series_number": 117,
+      "source_date": "20230817"
+    },
+    "SdSRv5qTJgQ": {
+      "classification_basis": "嘉宾索引：Bailu Xu",
+      "global_number": 11,
+      "series": "dialogue",
+      "series_number": 5,
+      "source_date": "20200811"
+    },
+    "TYz7yRvlNkk": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 257,
+      "series": "dialogue",
+      "series_number": 150,
+      "source_date": "20231026"
+    },
+    "Tec54wr1vCc": {
+      "classification_basis": "嘉宾索引：Lulu",
+      "global_number": 370,
+      "series": "dialogue",
+      "series_number": 229,
+      "source_date": "20241211"
+    },
+    "TfKILDZTa2M": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 463,
+      "series": "dialogue",
+      "series_number": 282,
+      "source_date": "20251203"
+    },
+    "Tk49xo6i-04": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 281,
+      "series": "dialogue",
+      "series_number": 169,
+      "source_date": "20240102"
+    },
+    "TqC-zoGI9-A": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 97,
+      "series": "dialogue",
+      "series_number": 44,
+      "source_date": "20220206"
+    },
+    "Tvmmv93FZgc": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 518,
+      "series": "dialogue",
+      "series_number": 312,
+      "source_date": "20260804"
+    },
+    "U7NKYfPLKXo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 401,
+      "series": "solo",
+      "series_number": 159,
+      "source_date": "20250410"
+    },
+    "UBWaRxZYkhU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 348,
+      "series": "dialogue",
+      "series_number": 213,
+      "source_date": "20240822"
+    },
+    "UDRJRTYESRE": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 179,
+      "series": "dialogue",
+      "series_number": 90,
+      "source_date": "20230519"
+    },
+    "UGQKx4QuqsQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 85,
+      "series": "solo",
+      "series_number": 49,
+      "source_date": "20211120"
+    },
+    "UTDLS_T2Ra4": {
+      "classification_basis": "嘉宾索引：石扬",
+      "global_number": 460,
+      "series": "dialogue",
+      "series_number": 280,
+      "source_date": "20251119"
+    },
+    "UU-VfbWbvV0": {
+      "classification_basis": "耶鲁北京中心活动中的立正主讲分享，归立正说",
+      "global_number": 505,
+      "series": "solo",
+      "series_number": 199,
+      "source_date": "20260609"
+    },
+    "Udm2-QezSu0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 230,
+      "series": "solo",
+      "series_number": 101,
+      "source_date": "20230923"
+    },
+    "Uf9uzFLpVEc": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 134,
+      "series": "dialogue",
+      "series_number": 59,
+      "source_date": "20221014"
+    },
+    "UflXpXjVkik": {
+      "classification_basis": "嘉宾索引：赵冠然",
+      "global_number": 198,
+      "series": "dialogue",
+      "series_number": 104,
+      "source_date": "20230728"
+    },
+    "UgbJOPtHfwg": {
+      "classification_basis": "嘉宾索引：邹昕",
+      "global_number": 61,
+      "series": "dialogue",
+      "series_number": 20,
+      "source_date": "20210625"
+    },
+    "Uh0F_suae5Q": {
+      "classification_basis": "嘉宾索引：查晟",
+      "global_number": 483,
+      "series": "dialogue",
+      "series_number": 294,
+      "source_date": "20260304"
+    },
+    "UlZJd6XpkAQ": {
+      "classification_basis": "嘉宾索引：Kevin Chen",
+      "global_number": 310,
+      "series": "dialogue",
+      "series_number": 189,
+      "source_date": "20240328"
+    },
+    "UndcL0uEmYs": {
+      "classification_basis": "嘉宾索引：俞舟 Zhou Yu",
+      "global_number": 402,
+      "series": "dialogue",
+      "series_number": 243,
+      "source_date": "20250417"
+    },
+    "UsMKU7qcywY": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 240,
+      "series": "dialogue",
+      "series_number": 139,
+      "source_date": "20231002"
+    },
+    "VFTf3_sYBms": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 378,
+      "series": "solo",
+      "series_number": 147,
+      "source_date": "20250108"
+    },
+    "VLnNmARqa3Y": {
+      "classification_basis": "嘉宾索引：卢蔚",
+      "global_number": 10,
+      "series": "dialogue",
+      "series_number": 4,
+      "source_date": "20200803"
+    },
+    "VOyAMRk5WE0": {
+      "classification_basis": "嘉宾索引：周楠 Zhou Nan",
+      "global_number": 329,
+      "series": "dialogue",
+      "series_number": 201,
+      "source_date": "20240613"
+    },
+    "VSX1wxueZPU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 525,
+      "series": "dialogue",
+      "series_number": 316,
+      "source_date": "20260828"
+    },
+    "VcJRre-HOzU": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 213,
+      "series": "dialogue",
+      "series_number": 119,
+      "source_date": "20230823"
+    },
+    "VpXcXv9S5ws": {
+      "classification_basis": "嘉宾索引：Newton",
+      "global_number": 326,
+      "series": "dialogue",
+      "series_number": 200,
+      "source_date": "20240524"
+    },
+    "W09mt7WxSas": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 459,
+      "series": "solo",
+      "series_number": 180,
+      "source_date": "20251117"
+    },
+    "W4gA5AdB1_w": {
+      "classification_basis": "嘉宾索引：熊力",
+      "global_number": 365,
+      "series": "dialogue",
+      "series_number": 226,
+      "source_date": "20241112"
+    },
+    "WATIlXkbaLs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 349,
+      "series": "solo",
+      "series_number": 136,
+      "source_date": "20240830"
+    },
+    "WDSPYtv8rXY": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 353,
+      "series": "dialogue",
+      "series_number": 217,
+      "source_date": "20240919"
+    },
+    "WV6QExN58vo": {
+      "classification_basis": "嘉宾索引：Nick Davis",
+      "global_number": 149,
+      "series": "dialogue",
+      "series_number": 71,
+      "source_date": "20230112"
+    },
+    "WaHh7lW4uiI": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 223,
+      "series": "dialogue",
+      "series_number": 125,
+      "source_date": "20230916"
+    },
+    "WdYr_sAGJ0k": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 146,
+      "series": "dialogue",
+      "series_number": 69,
+      "source_date": "20221223"
+    },
+    "Wg7TaFNdHBo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 87,
+      "series": "solo",
+      "series_number": 51,
+      "source_date": "20211130"
+    },
+    "Wk0Ne1kx9rQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 244,
+      "series": "solo",
+      "series_number": 102,
+      "source_date": "20231006"
+    },
+    "WzfDxSCurAY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 412,
+      "series": "solo",
+      "series_number": 164,
+      "source_date": "20250516"
+    },
+    "X6plTdMasPA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 126,
+      "series": "solo",
+      "series_number": 71,
+      "source_date": "20220820"
+    },
+    "XUf5RbqVBUg": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 203,
+      "series": "dialogue",
+      "series_number": 109,
+      "source_date": "20230730"
+    },
+    "XcxVut0cJ84": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 7,
+      "series": "solo",
+      "series_number": 5,
+      "source_date": "20200622"
+    },
+    "XoyE0eQZYh0": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 521,
+      "series": "dialogue",
+      "series_number": 314,
+      "source_date": "20260817"
+    },
+    "XqaLlZVoNFo": {
+      "classification_basis": "嘉宾索引：许辉博士",
+      "global_number": 271,
+      "series": "dialogue",
+      "series_number": 161,
+      "source_date": "20231210"
+    },
+    "Y20_JOyMs3k": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 385,
+      "series": "solo",
+      "series_number": 151,
+      "source_date": "20250211"
+    },
+    "YFYKMbYpcvI": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 447,
+      "series": "dialogue",
+      "series_number": 272,
+      "source_date": "20251002"
+    },
+    "YJ1MP64_mmw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 177,
+      "series": "solo",
+      "series_number": 89,
+      "source_date": "20230515"
+    },
+    "YbCmJJ2SZOE": {
+      "classification_basis": "嘉宾索引：Terry (Hackbear Terry)",
+      "global_number": 283,
+      "series": "dialogue",
+      "series_number": 170,
+      "source_date": "20240106"
+    },
+    "YfKojtSSavg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 470,
+      "series": "solo",
+      "series_number": 184,
+      "source_date": "20251231"
+    },
+    "Yj9XouK-hi0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 88,
+      "series": "solo",
+      "series_number": 52,
+      "source_date": "20211207"
+    },
+    "YjNhoEESO08": {
+      "classification_basis": "婚后生活短片，归立正说",
+      "global_number": 249,
+      "series": "solo",
+      "series_number": 105,
+      "source_date": "20231011"
+    },
+    "Yn6DgCdgsjQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 152,
+      "series": "solo",
+      "series_number": 80,
+      "source_date": "20230131"
+    },
+    "YuR5bNL8uG0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 467,
+      "series": "solo",
+      "series_number": 183,
+      "source_date": "20251218"
+    },
+    "YxJntEwMUfk": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 265,
+      "series": "dialogue",
+      "series_number": 157,
+      "source_date": "20231119"
+    },
+    "Z0BB6SAfpUA": {
+      "classification_basis": "嘉宾索引：Joe",
+      "global_number": 352,
+      "series": "dialogue",
+      "series_number": 216,
+      "source_date": "20240914"
+    },
+    "Z5YSvutAZLQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 263,
+      "series": "solo",
+      "series_number": 108,
+      "source_date": "20231117"
+    },
+    "ZBOMGr3JFXM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 55,
+      "series": "solo",
+      "series_number": 39,
+      "source_date": "20210522"
+    },
+    "ZGXECENR6qU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 262,
+      "series": "dialogue",
+      "series_number": 155,
+      "source_date": "20231113"
+    },
+    "ZIyLgob1ReY": {
+      "classification_basis": "嘉宾索引：光叔 光芒",
+      "global_number": 195,
+      "series": "dialogue",
+      "series_number": 102,
+      "source_date": "20230718"
+    },
+    "ZJzguLBcTos": {
+      "classification_basis": "嘉宾索引：Ethan Zhu 朱一丰",
+      "global_number": 475,
+      "series": "dialogue",
+      "series_number": 288,
+      "source_date": "20260124"
+    },
+    "ZiARi5uJpco": {
+      "classification_basis": "嘉宾索引：Howard Li",
+      "global_number": 286,
+      "series": "dialogue",
+      "series_number": 172,
+      "source_date": "20240114"
+    },
+    "Zm8JbIUgn2I": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 347,
+      "series": "solo",
+      "series_number": 135,
+      "source_date": "20240820"
+    },
+    "_-w5h_55gco": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 275,
+      "series": "solo",
+      "series_number": 111,
+      "source_date": "20231217"
+    },
+    "_8FiYUjdsd4": {
+      "classification_basis": "嘉宾索引：卢易 Lu Yi",
+      "global_number": 233,
+      "series": "dialogue",
+      "series_number": 132,
+      "source_date": "20230926"
+    },
+    "_ADB74ws9MY": {
+      "classification_basis": "嘉宾索引：许博士",
+      "global_number": 258,
+      "series": "dialogue",
+      "series_number": 151,
+      "source_date": "20231102"
+    },
+    "_DFrwyNlu0o": {
+      "classification_basis": "嘉宾索引：刘友忠 Richard Liu",
+      "global_number": 424,
+      "series": "dialogue",
+      "series_number": 260,
+      "source_date": "20250614"
+    },
+    "_PxNWVtjF7w": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 270,
+      "series": "solo",
+      "series_number": 110,
+      "source_date": "20231207"
+    },
+    "_X4aJmOn3AI": {
+      "classification_basis": "嘉宾索引：Ethan Zhu 朱一丰",
+      "global_number": 208,
+      "series": "dialogue",
+      "series_number": 114,
+      "source_date": "20230809"
+    },
+    "_e-ddEj08Ls": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 142,
+      "series": "solo",
+      "series_number": 77,
+      "source_date": "20221127"
+    },
+    "aKsaHFA7WOw": {
+      "classification_basis": "嘉宾索引：Koji & Monica",
+      "global_number": 434,
+      "series": "dialogue",
+      "series_number": 266,
+      "source_date": "20250730"
+    },
+    "aS38m85kUJQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 450,
+      "series": "solo",
+      "series_number": 177,
+      "source_date": "20251016"
+    },
+    "aXjWJh-_DlA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 86,
+      "series": "solo",
+      "series_number": 50,
+      "source_date": "20211125"
+    },
+    "apFYcIzJ1jY": {
+      "classification_basis": "嘉宾索引：光叔 光芒",
+      "global_number": 186,
+      "series": "dialogue",
+      "series_number": 95,
+      "source_date": "20230623"
+    },
+    "awaZBWTss-4": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 277,
+      "series": "dialogue",
+      "series_number": 166,
+      "source_date": "20231223"
+    },
+    "ayC4XXSqeb4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 252,
+      "series": "solo",
+      "series_number": 107,
+      "source_date": "20231019"
+    },
+    "b-SJBCYKOOw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 165,
+      "series": "solo",
+      "series_number": 85,
+      "source_date": "20230405"
+    },
+    "bcWYOkDa66k": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 237,
+      "series": "dialogue",
+      "series_number": 136,
+      "source_date": "20230929"
+    },
+    "c4giCTNeSWU": {
+      "classification_basis": "嘉宾索引：邹昕",
+      "global_number": 131,
+      "series": "dialogue",
+      "series_number": 56,
+      "source_date": "20220930"
+    },
+    "c7M6B2GR5-k": {
+      "classification_basis": "嘉宾索引：Mujtaba",
+      "global_number": 482,
+      "series": "dialogue",
+      "series_number": 293,
+      "source_date": "20260302"
+    },
+    "c7gzBeFYlEI": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 419,
+      "series": "dialogue",
+      "series_number": 255,
+      "source_date": "20250603"
+    },
+    "cM8TlLVEVWU": {
+      "classification_basis": "嘉宾索引：Reynold Xin",
+      "global_number": 367,
+      "series": "dialogue",
+      "series_number": 228,
+      "source_date": "20241126"
+    },
+    "cQxoilIZfTc": {
+      "classification_basis": "嘉宾索引：杨帆",
+      "global_number": 295,
+      "series": "dialogue",
+      "series_number": 178,
+      "source_date": "20240210"
+    },
+    "cVtgJ7KFjgY": {
+      "classification_basis": "嘉宾索引：Ethan Zhu 朱一丰",
+      "global_number": 210,
+      "series": "dialogue",
+      "series_number": 116,
+      "source_date": "20230813"
+    },
+    "cXy3hB__GUo": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 260,
+      "series": "dialogue",
+      "series_number": 153,
+      "source_date": "20231106"
+    },
+    "citn1RZvoqA": {
+      "classification_basis": "嘉宾索引：Rod",
+      "global_number": 168,
+      "series": "dialogue",
+      "series_number": 82,
+      "source_date": "20230411"
+    },
+    "cly9g6DUKkc": {
+      "classification_basis": "嘉宾索引：Vijaye Raji",
+      "global_number": 140,
+      "series": "dialogue",
+      "series_number": 64,
+      "source_date": "20221119"
+    },
+    "cyZeAw8DLew": {
+      "classification_basis": "嘉宾索引：Kay",
+      "global_number": 455,
+      "series": "dialogue",
+      "series_number": 277,
+      "source_date": "20251105"
+    },
+    "d-Mel7dGDGE": {
+      "classification_basis": "嘉宾索引：石扬",
+      "global_number": 457,
+      "series": "dialogue",
+      "series_number": 279,
+      "source_date": "20251112"
+    },
+    "dTNIXJRL0yE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 57,
+      "series": "solo",
+      "series_number": 40,
+      "source_date": "20210603"
+    },
+    "dVIjaZDu6gI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 117,
+      "series": "solo",
+      "series_number": 64,
+      "source_date": "20220530"
+    },
+    "d_t-5hPhBKA": {
+      "classification_basis": "嘉宾索引：俞舟 Zhou Yu",
+      "global_number": 403,
+      "series": "dialogue",
+      "series_number": 244,
+      "source_date": "20250418"
+    },
+    "dbnavqzaTmA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 17,
+      "series": "solo",
+      "series_number": 9,
+      "source_date": "20200911"
+    },
+    "dhYFSLmICVg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 47,
+      "series": "solo",
+      "series_number": 33,
+      "source_date": "20210326"
+    },
+    "djaJm63w8BU": {
+      "classification_basis": "嘉宾索引：赵勇",
+      "global_number": 320,
+      "series": "dialogue",
+      "series_number": 196,
+      "source_date": "20240425"
+    },
+    "dlv97OHFnGY": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 181,
+      "series": "dialogue",
+      "series_number": 92,
+      "source_date": "20230523"
+    },
+    "dmUTGbe6d00": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 176,
+      "series": "dialogue",
+      "series_number": 88,
+      "source_date": "20230509"
+    },
+    "drTNakM9iRA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 489,
+      "series": "solo",
+      "series_number": 193,
+      "source_date": "20260405"
+    },
+    "dymM40bVIhQ": {
+      "classification_basis": "嘉宾索引：田渊栋",
+      "global_number": 454,
+      "series": "dialogue",
+      "series_number": 276,
+      "source_date": "20251030"
+    },
+    "e5B1ZaW0Yjs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 337,
+      "series": "solo",
+      "series_number": 131,
+      "source_date": "20240717"
+    },
+    "e7O4udbuwcw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 486,
+      "series": "solo",
+      "series_number": 191,
+      "source_date": "20260318"
+    },
+    "eRYBE0dXsmU": {
+      "classification_basis": "嘉宾索引：Shuchao Bi",
+      "global_number": 383,
+      "series": "dialogue",
+      "series_number": 233,
+      "source_date": "20250201"
+    },
+    "eXVoZu-UoAM": {
+      "classification_basis": "嘉宾Mike主讲Tableau，穿插多人工作讨论",
+      "global_number": 3,
+      "series": "dialogue",
+      "series_number": 1,
+      "source_date": "20200606"
+    },
+    "eY3ZugdAoVM": {
+      "classification_basis": "嘉宾索引：湾区Dating嘉宾",
+      "global_number": 299,
+      "series": "dialogue",
+      "series_number": 181,
+      "source_date": "20240217"
+    },
+    "eYWAeGpKD6Q": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 290,
+      "series": "dialogue",
+      "series_number": 174,
+      "source_date": "20240129"
+    },
+    "e_h6aIPBXKw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 164,
+      "series": "solo",
+      "series_number": 84,
+      "source_date": "20230402"
+    },
+    "ezMQfmxf31w": {
+      "classification_basis": "嘉宾索引：樊登",
+      "global_number": 410,
+      "series": "dialogue",
+      "series_number": 247,
+      "source_date": "20250510"
+    },
+    "f8IAAxmiU_w": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 285,
+      "series": "solo",
+      "series_number": 114,
+      "source_date": "20240113"
+    },
+    "fJd66ZcnTS8": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 105,
+      "series": "solo",
+      "series_number": 57,
+      "source_date": "20220322"
+    },
+    "fKOvYahwZgw": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 205,
+      "series": "dialogue",
+      "series_number": 111,
+      "source_date": "20230731"
+    },
+    "fM85luVCpPY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 16,
+      "series": "solo",
+      "series_number": 8,
+      "source_date": "20200909"
+    },
+    "fPollnUVitg": {
+      "classification_basis": "嘉宾索引：土汪",
+      "global_number": 414,
+      "series": "dialogue",
+      "series_number": 250,
+      "source_date": "20250523"
+    },
+    "fZVfVLfVphU": {
+      "classification_basis": "课程协作和现场演示；含鸭哥参与，归对话",
+      "global_number": 391,
+      "series": "dialogue",
+      "series_number": 238,
+      "source_date": "20250308"
+    },
+    "fdvk78N3iWo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 267,
+      "series": "solo",
+      "series_number": 109,
+      "source_date": "20231128"
+    },
+    "fy8bpHXqw6Q": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 232,
+      "series": "dialogue",
+      "series_number": 131,
+      "source_date": "20230925"
+    },
+    "gBj0JY7LDpE": {
+      "classification_basis": "嘉宾索引：Rod",
+      "global_number": 178,
+      "series": "dialogue",
+      "series_number": 89,
+      "source_date": "20230517"
+    },
+    "gDPkMR8zNRE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 27,
+      "series": "solo",
+      "series_number": 17,
+      "source_date": "20201107"
+    },
+    "gG6IRuwtmJ4": {
+      "classification_basis": "嘉宾索引：Cooper竹子",
+      "global_number": 137,
+      "series": "dialogue",
+      "series_number": 62,
+      "source_date": "20221031"
+    },
+    "gRwSR0WTWwg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 398,
+      "series": "solo",
+      "series_number": 157,
+      "source_date": "20250402"
+    },
+    "gZ_428eJutg": {
+      "classification_basis": "嘉宾索引：Francer",
+      "global_number": 110,
+      "series": "dialogue",
+      "series_number": 51,
+      "source_date": "20220413"
+    },
+    "gZjE7XtFa8Y": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 400,
+      "series": "solo",
+      "series_number": 158,
+      "source_date": "20250408"
+    },
+    "gaYlfn_EcfM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 245,
+      "series": "solo",
+      "series_number": 103,
+      "source_date": "20231007"
+    },
+    "gsK1UTt0Qiw": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 512,
+      "series": "dialogue",
+      "series_number": 310,
+      "source_date": "20260717"
+    },
+    "h3UY4Jb2uJE": {
+      "classification_basis": "嘉宾索引：Eula 尤拉",
+      "global_number": 157,
+      "series": "dialogue",
+      "series_number": 76,
+      "source_date": "20230217"
+    },
+    "hCh6-lAiabI": {
+      "classification_basis": "嘉宾索引：Yujian",
+      "global_number": 484,
+      "series": "dialogue",
+      "series_number": 295,
+      "source_date": "20260310"
+    },
+    "hNkglVeOLKk": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 150,
+      "series": "dialogue",
+      "series_number": 72,
+      "source_date": "20230119"
+    },
+    "hU1hr7KCyqk": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 446,
+      "series": "dialogue",
+      "series_number": 271,
+      "source_date": "20251001"
+    },
+    "h_yCYBRzbVw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 485,
+      "series": "solo",
+      "series_number": 190,
+      "source_date": "20260311"
+    },
+    "hveZx2CN8Sg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 148,
+      "series": "solo",
+      "series_number": 78,
+      "source_date": "20230105"
+    },
+    "hzUKExYRbnM": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 416,
+      "series": "dialogue",
+      "series_number": 252,
+      "source_date": "20250531"
+    },
+    "iBw7HdfDnuo": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 207,
+      "series": "dialogue",
+      "series_number": 113,
+      "source_date": "20230805"
+    },
+    "iL4UDXKjqz4": {
+      "classification_basis": "嘉宾索引：Paul 保罗在美国",
+      "global_number": 292,
+      "series": "dialogue",
+      "series_number": 176,
+      "source_date": "20240203"
+    },
+    "iLO21o24qCk": {
+      "classification_basis": "嘉宾索引：陈哲",
+      "global_number": 269,
+      "series": "dialogue",
+      "series_number": 160,
+      "source_date": "20231203"
+    },
+    "iSSHmP0ySBY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 478,
+      "series": "solo",
+      "series_number": 188,
+      "source_date": "20260204"
+    },
+    "ieqFc8NZJsE": {
+      "classification_basis": "嘉宾索引：李森",
+      "global_number": 204,
+      "series": "dialogue",
+      "series_number": 110,
+      "source_date": "20230730"
+    },
+    "ijZ9pRW3UOo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 339,
+      "series": "solo",
+      "series_number": 133,
+      "source_date": "20240726"
+    },
+    "iw2QYZeVlOQ": {
+      "classification_basis": "嘉宾索引：Vijaye Raji",
+      "global_number": 64,
+      "series": "dialogue",
+      "series_number": 21,
+      "source_date": "20210710"
+    },
+    "j-N5rnOI5Ts": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 445,
+      "series": "solo",
+      "series_number": 175,
+      "source_date": "20250925"
+    },
+    "jFj2Ij6uY0E": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 22,
+      "series": "solo",
+      "series_number": 12,
+      "source_date": "20201006"
+    },
+    "jYUe-v6unMU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 216,
+      "series": "solo",
+      "series_number": 96,
+      "source_date": "20230902"
+    },
+    "jgEzuc0Le5k": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 368,
+      "series": "solo",
+      "series_number": 140,
+      "source_date": "20241204"
+    },
+    "jpBOHpl0bvw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 481,
+      "series": "solo",
+      "series_number": 189,
+      "source_date": "20260226"
+    },
+    "k11SG-gJzzY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 529,
+      "series": "solo",
+      "series_number": 211,
+      "source_date": "20260908"
+    },
+    "k4ymsRaIUX4": {
+      "classification_basis": "嘉宾索引：灶爷 (Tianqiang Liu)",
+      "global_number": 422,
+      "series": "dialogue",
+      "series_number": 258,
+      "source_date": "20250606"
+    },
+    "k6f9a05U9uY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 358,
+      "series": "solo",
+      "series_number": 138,
+      "source_date": "20241009"
+    },
+    "kL3mt73vfWw": {
+      "classification_basis": "嘉宾索引：Paul 保罗在美国",
+      "global_number": 308,
+      "series": "dialogue",
+      "series_number": 188,
+      "source_date": "20240321"
+    },
+    "kMqd6Tc4X_0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 304,
+      "series": "solo",
+      "series_number": 120,
+      "source_date": "20240302"
+    },
+    "kaBUHQBvK-o": {
+      "classification_basis": "嘉宾索引：Chef Miles",
+      "global_number": 120,
+      "series": "dialogue",
+      "series_number": 55,
+      "source_date": "20220620"
+    },
+    "kc4sey7gFLQ": {
+      "classification_basis": "嘉宾索引：Joe",
+      "global_number": 351,
+      "series": "dialogue",
+      "series_number": 215,
+      "source_date": "20240912"
+    },
+    "kmn4n6K5TkY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 430,
+      "series": "solo",
+      "series_number": 167,
+      "source_date": "20250706"
+    },
+    "knTP07tE89Y": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 462,
+      "series": "dialogue",
+      "series_number": 281,
+      "source_date": "20251202"
+    },
+    "knYtrRDxl9I": {
+      "classification_basis": "嘉宾索引：苏总",
+      "global_number": 192,
+      "series": "dialogue",
+      "series_number": 100,
+      "source_date": "20230711"
+    },
+    "koBMtqL5KnE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 221,
+      "series": "solo",
+      "series_number": 98,
+      "source_date": "20230914"
+    },
+    "krYyRVdZ34Y": {
+      "classification_basis": "嘉宾索引：Ethan Zhu 朱一丰",
+      "global_number": 476,
+      "series": "dialogue",
+      "series_number": 289,
+      "source_date": "20260125"
+    },
+    "kwwjR6HHJPM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 395,
+      "series": "solo",
+      "series_number": 155,
+      "source_date": "20250323"
+    },
+    "l9RmiySrwXM": {
+      "classification_basis": "嘉宾索引：陈然",
+      "global_number": 413,
+      "series": "dialogue",
+      "series_number": 249,
+      "source_date": "20250518"
+    },
+    "lEbofD9fmGo": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 264,
+      "series": "dialogue",
+      "series_number": 156,
+      "source_date": "20231117"
+    },
+    "lIkdu0MOfFo": {
+      "classification_basis": "嘉宾索引：刘佳科",
+      "global_number": 43,
+      "series": "dialogue",
+      "series_number": 14,
+      "source_date": "20210228"
+    },
+    "lQC3gy09TI8": {
+      "classification_basis": "嘉宾索引：柯西",
+      "global_number": 58,
+      "series": "dialogue",
+      "series_number": 18,
+      "source_date": "20210611"
+    },
+    "lQPavb89kpk": {
+      "classification_basis": "嘉宾索引：Daliana Liu",
+      "global_number": 399,
+      "series": "dialogue",
+      "series_number": 242,
+      "source_date": "20250404"
+    },
+    "lhaDz3xne2k": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 32,
+      "series": "solo",
+      "series_number": 20,
+      "source_date": "20201203"
+    },
+    "lhcQkrkTUhc": {
+      "classification_basis": "嘉宾索引：Devin Dong 董有超",
+      "global_number": 104,
+      "series": "dialogue",
+      "series_number": 48,
+      "source_date": "20220318"
+    },
+    "ll-X6xP-t8Y": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 516,
+      "series": "dialogue",
+      "series_number": 311,
+      "source_date": "20260725"
+    },
+    "m2uajEnYEU0": {
+      "classification_basis": "嘉宾索引：Oscar",
+      "global_number": 217,
+      "series": "dialogue",
+      "series_number": 121,
+      "source_date": "20230911"
+    },
+    "mCpQ3XCt9JQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 162,
+      "series": "solo",
+      "series_number": 83,
+      "source_date": "20230318"
+    },
+    "mDFC-7dVHSY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 429,
+      "series": "solo",
+      "series_number": 166,
+      "source_date": "20250701"
+    },
+    "mD_sggZxTtE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 225,
+      "series": "solo",
+      "series_number": 99,
+      "source_date": "20230918"
+    },
+    "mEVk5i6BL9o": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 350,
+      "series": "dialogue",
+      "series_number": 214,
+      "source_date": "20240906"
+    },
+    "mMx19YS4l9o": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 227,
+      "series": "dialogue",
+      "series_number": 128,
+      "source_date": "20230920"
+    },
+    "mQveBlevbZo": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 166,
+      "series": "solo",
+      "series_number": 86,
+      "source_date": "20230406"
+    },
+    "mRhsuF4wf3Q": {
+      "classification_basis": "嘉宾索引：Ethan Evans",
+      "global_number": 363,
+      "series": "dialogue",
+      "series_number": 224,
+      "source_date": "20241030"
+    },
+    "m_71LZju6BU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 172,
+      "series": "dialogue",
+      "series_number": 85,
+      "source_date": "20230501"
+    },
+    "mf13n8Fl7FM": {
+      "classification_basis": "嘉宾索引：郭宇",
+      "global_number": 392,
+      "series": "dialogue",
+      "series_number": 239,
+      "source_date": "20250312"
+    },
+    "minCtoiRHG8": {
+      "classification_basis": "嘉宾索引：Shuchao Bi",
+      "global_number": 390,
+      "series": "dialogue",
+      "series_number": 237,
+      "source_date": "20250306"
+    },
+    "mkcGlF3oobc": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 384,
+      "series": "dialogue",
+      "series_number": 234,
+      "source_date": "20250208"
+    },
+    "mtfNvuOPXiU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 169,
+      "series": "dialogue",
+      "series_number": 83,
+      "source_date": "20230414"
+    },
+    "my_lMhlKLVk": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 527,
+      "series": "dialogue",
+      "series_number": 317,
+      "source_date": "20260902"
+    },
+    "myincnnSj8c": {
+      "classification_basis": "嘉宾索引：Indigo",
+      "global_number": 407,
+      "series": "dialogue",
+      "series_number": 245,
+      "source_date": "20250502"
+    },
+    "n3pkU4Fr9ls": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 46,
+      "series": "solo",
+      "series_number": 32,
+      "source_date": "20210322"
+    },
+    "n5OyotTLx-o": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 497,
+      "series": "dialogue",
+      "series_number": 302,
+      "source_date": "20260509"
+    },
+    "nBQ-fcPkZG0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 75,
+      "series": "solo",
+      "series_number": 44,
+      "source_date": "20210830"
+    },
+    "nCBIotZzPEM": {
+      "classification_basis": "立正英文独立讲解；团队共同制作不改变主讲形式",
+      "global_number": 526,
+      "series": "solo",
+      "series_number": 210,
+      "source_date": "20260829"
+    },
+    "nTTj3z3QiyU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 335,
+      "series": "dialogue",
+      "series_number": 205,
+      "source_date": "20240710"
+    },
+    "nfMZEn_ZV5w": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 487,
+      "series": "solo",
+      "series_number": 192,
+      "source_date": "20260323"
+    },
+    "o-RlaLqTdLQ": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 226,
+      "series": "dialogue",
+      "series_number": 127,
+      "source_date": "20230919"
+    },
+    "o4W3WhKatxE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 8,
+      "series": "solo",
+      "series_number": 6,
+      "source_date": "20200719"
+    },
+    "oC3vARGRX3E": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 60,
+      "series": "solo",
+      "series_number": 41,
+      "source_date": "20210621"
+    },
+    "oGDlQ1n1ZcE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 466,
+      "series": "solo",
+      "series_number": 182,
+      "source_date": "20251209"
+    },
+    "oHse9wwVNSE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 474,
+      "series": "solo",
+      "series_number": 187,
+      "source_date": "20260122"
+    },
+    "oVeIjW-ScfU": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 312,
+      "series": "dialogue",
+      "series_number": 190,
+      "source_date": "20240406"
+    },
+    "oWOtqSA8kAA": {
+      "classification_basis": "嘉宾索引：高寒 Cadence Gao",
+      "global_number": 158,
+      "series": "dialogue",
+      "series_number": 77,
+      "source_date": "20230220"
+    },
+    "omAUYRo3Fvc": {
+      "classification_basis": "嘉宾索引：硅谷徐老师（Howie Xu）",
+      "global_number": 345,
+      "series": "dialogue",
+      "series_number": 211,
+      "source_date": "20240814"
+    },
+    "osZDEDx8fyE": {
+      "classification_basis": "嘉宾索引：王臻 & Nick",
+      "global_number": 246,
+      "series": "dialogue",
+      "series_number": 143,
+      "source_date": "20231009"
+    },
+    "oue4lPnsY74": {
+      "classification_basis": "嘉宾索引：Teri 张雅缇",
+      "global_number": 89,
+      "series": "dialogue",
+      "series_number": 37,
+      "source_date": "20211217"
+    },
+    "p3qgu4yx2_o": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 124,
+      "series": "solo",
+      "series_number": 69,
+      "source_date": "20220728"
+    },
+    "pANssHiZT8I": {
+      "classification_basis": "嘉宾索引：王浩岚",
+      "global_number": 155,
+      "series": "dialogue",
+      "series_number": 74,
+      "source_date": "20230211"
+    },
+    "pNqU-LiiZsM": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 420,
+      "series": "dialogue",
+      "series_number": 256,
+      "source_date": "20250604"
+    },
+    "pPOxFM4XWD0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 448,
+      "series": "solo",
+      "series_number": 176,
+      "source_date": "20251008"
+    },
+    "pPPGa3x7zBM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 18,
+      "series": "solo",
+      "series_number": 10,
+      "source_date": "20200912"
+    },
+    "pZtubarL0KA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 328,
+      "series": "solo",
+      "series_number": 128,
+      "source_date": "20240606"
+    },
+    "pimbKzfM9DY": {
+      "classification_basis": "鸭哥独立讲解；按嘉宾内容归入对话系列",
+      "global_number": 49,
+      "series": "dialogue",
+      "series_number": 15,
+      "source_date": "20210402"
+    },
+    "pmMlMXBvHxU": {
+      "classification_basis": "嘉宾索引：宋明阳",
+      "global_number": 266,
+      "series": "dialogue",
+      "series_number": 158,
+      "source_date": "20231122"
+    },
+    "pnrovCRn3R8": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 279,
+      "series": "dialogue",
+      "series_number": 167,
+      "source_date": "20231228"
+    },
+    "prQCLH9x7OI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 90,
+      "series": "solo",
+      "series_number": 53,
+      "source_date": "20211230"
+    },
+    "pxgF4mgcxqo": {
+      "classification_basis": "嘉宾索引：樊登",
+      "global_number": 415,
+      "series": "dialogue",
+      "series_number": 251,
+      "source_date": "20250530"
+    },
+    "q7t4_UM8J74": {
+      "classification_basis": "嘉宾索引：Vivian Wang",
+      "global_number": 341,
+      "series": "dialogue",
+      "series_number": 208,
+      "source_date": "20240731"
+    },
+    "q9l686Css_w": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 219,
+      "series": "dialogue",
+      "series_number": 123,
+      "source_date": "20230913"
+    },
+    "qDRJDK64gJk": {
+      "classification_basis": "嘉宾索引：Lulu",
+      "global_number": 346,
+      "series": "dialogue",
+      "series_number": 212,
+      "source_date": "20240816"
+    },
+    "qNXkqghRMEM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 138,
+      "series": "solo",
+      "series_number": 76,
+      "source_date": "20221105"
+    },
+    "qNuCmwWPWUE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 127,
+      "series": "solo",
+      "series_number": 72,
+      "source_date": "20220826"
+    },
+    "qa_GEsLqTtQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 298,
+      "series": "solo",
+      "series_number": 118,
+      "source_date": "20240215"
+    },
+    "qazg9OZDp6o": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 344,
+      "series": "solo",
+      "series_number": 134,
+      "source_date": "20240811"
+    },
+    "qgtijiTjfgw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 79,
+      "series": "solo",
+      "series_number": 48,
+      "source_date": "20211002"
+    },
+    "r0nsW3nIFgk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 361,
+      "series": "solo",
+      "series_number": 139,
+      "source_date": "20241016"
+    },
+    "r3r6c3f8kvs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 389,
+      "series": "solo",
+      "series_number": 153,
+      "source_date": "20250302"
+    },
+    "r5I6nnrOHs4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 504,
+      "series": "solo",
+      "series_number": 198,
+      "source_date": "20260601"
+    },
+    "rCYw13Ad2ig": {
+      "classification_basis": "嘉宾索引：Ethan Zhu 朱一丰",
+      "global_number": 209,
+      "series": "dialogue",
+      "series_number": 115,
+      "source_date": "20230811"
+    },
+    "rVnrixEfNMM": {
+      "classification_basis": "嘉宾索引：Richer",
+      "global_number": 332,
+      "series": "dialogue",
+      "series_number": 203,
+      "source_date": "20240626"
+    },
+    "rWWzeNhokFU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 442,
+      "series": "solo",
+      "series_number": 172,
+      "source_date": "20250918"
+    },
+    "sFefn6R6jYY": {
+      "classification_basis": "鸭哥独立演示；按嘉宾内容归入对话系列",
+      "global_number": 423,
+      "series": "dialogue",
+      "series_number": 259,
+      "source_date": "20250609"
+    },
+    "sNJ09NOqBXk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 52,
+      "series": "solo",
+      "series_number": 37,
+      "source_date": "20210429"
+    },
+    "sOS4c8K9fwI": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 113,
+      "series": "solo",
+      "series_number": 61,
+      "source_date": "20220501"
+    },
+    "sazQDw9bdt4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 278,
+      "series": "solo",
+      "series_number": 112,
+      "source_date": "20231225"
+    },
+    "svVlURiehQw": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 530,
+      "series": "solo",
+      "series_number": 212,
+      "source_date": "20260911"
+    },
+    "t4Ay1Xdgpx4": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 428,
+      "series": "solo",
+      "series_number": 165,
+      "source_date": "20250630"
+    },
+    "t8IBO-1TaHs": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 78,
+      "series": "solo",
+      "series_number": 47,
+      "source_date": "20210926"
+    },
+    "t9opGmGaJAI": {
+      "classification_basis": "嘉宾索引：杨帆",
+      "global_number": 297,
+      "series": "dialogue",
+      "series_number": 180,
+      "source_date": "20240214"
+    },
+    "tEbm8tuNlfY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 26,
+      "series": "solo",
+      "series_number": 16,
+      "source_date": "20201101"
+    },
+    "tGB9IbZhEO0": {
+      "classification_basis": "嘉宾索引：杨帆",
+      "global_number": 296,
+      "series": "dialogue",
+      "series_number": 179,
+      "source_date": "20240212"
+    },
+    "tJBv3kHZtzg": {
+      "classification_basis": "嘉宾索引：Riley Shu",
+      "global_number": 451,
+      "series": "dialogue",
+      "series_number": 274,
+      "source_date": "20251018"
+    },
+    "tJXIGeu6wXQ": {
+      "classification_basis": "嘉宾索引：Angelina Yang",
+      "global_number": 331,
+      "series": "dialogue",
+      "series_number": 202,
+      "source_date": "20240620"
+    },
+    "tO37xpGIroc": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 441,
+      "series": "solo",
+      "series_number": 171,
+      "source_date": "20250912"
+    },
+    "tPKp4Y90HZM": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 259,
+      "series": "dialogue",
+      "series_number": 152,
+      "source_date": "20231104"
+    },
+    "tQ7MvzhdUtc": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 289,
+      "series": "solo",
+      "series_number": 116,
+      "source_date": "20240127"
+    },
+    "tv1DJDMxjIA": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 288,
+      "series": "solo",
+      "series_number": 115,
+      "source_date": "20240118"
+    },
+    "tx2sB8vrUEQ": {
+      "classification_basis": "嘉宾索引：Clare",
+      "global_number": 35,
+      "series": "dialogue",
+      "series_number": 13,
+      "source_date": "20201224"
+    },
+    "tzdNnmsfpBY": {
+      "classification_basis": "嘉宾索引：Bailu Xu",
+      "global_number": 12,
+      "series": "dialogue",
+      "series_number": 6,
+      "source_date": "20200814"
+    },
+    "u4DpfGx-9i0": {
+      "classification_basis": "嘉宾索引：Leon",
+      "global_number": 185,
+      "series": "dialogue",
+      "series_number": 94,
+      "source_date": "20230615"
+    },
+    "uAIeLutRuYc": {
+      "classification_basis": "嘉宾索引：Anna",
+      "global_number": 307,
+      "series": "dialogue",
+      "series_number": 187,
+      "source_date": "20240317"
+    },
+    "uBuqj5Cejbg": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 42,
+      "series": "solo",
+      "series_number": 29,
+      "source_date": "20210216"
+    },
+    "uO8LTlmyfGk": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 183,
+      "series": "solo",
+      "series_number": 91,
+      "source_date": "20230605"
+    },
+    "uQNbl6RgC3M": {
+      "classification_basis": "嘉宾索引：响歌歌 Stacy Li",
+      "global_number": 411,
+      "series": "dialogue",
+      "series_number": 248,
+      "source_date": "20250510"
+    },
+    "ua_K9Tno09U": {
+      "classification_basis": "鸭哥主讲Maven课程；按嘉宾内容归入对话系列",
+      "global_number": 318,
+      "series": "dialogue",
+      "series_number": 195,
+      "source_date": "20240422"
+    },
+    "uw04oIWdzTo": {
+      "classification_basis": "嘉宾索引：Timothy Chan",
+      "global_number": 147,
+      "series": "dialogue",
+      "series_number": 70,
+      "source_date": "20221229"
+    },
+    "v34hs70jnVY": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 356,
+      "series": "dialogue",
+      "series_number": 220,
+      "source_date": "20240928"
+    },
+    "v3xQNSsHA8c": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 293,
+      "series": "solo",
+      "series_number": 117,
+      "source_date": "20240205"
+    },
+    "v4eu9vY75KY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 44,
+      "series": "solo",
+      "series_number": 30,
+      "source_date": "20210305"
+    },
+    "vCzj0Fth_8A": {
+      "classification_basis": "嘉宾索引：Shang Shu",
+      "global_number": 276,
+      "series": "dialogue",
+      "series_number": 165,
+      "source_date": "20231220"
+    },
+    "vD2BGwvjkLI": {
+      "classification_basis": "嘉宾索引：Rod",
+      "global_number": 173,
+      "series": "dialogue",
+      "series_number": 86,
+      "source_date": "20230503"
+    },
+    "vPVgz_cAlV4": {
+      "classification_basis": "嘉宾索引：郭浩宇",
+      "global_number": 108,
+      "series": "dialogue",
+      "series_number": 49,
+      "source_date": "20220404"
+    },
+    "vQrKc2J8x1o": {
+      "classification_basis": "嘉宾索引：响歌歌 Stacy Li",
+      "global_number": 409,
+      "series": "dialogue",
+      "series_number": 246,
+      "source_date": "20250508"
+    },
+    "vYOogCGsIog": {
+      "classification_basis": "嘉宾索引：俞奕舟",
+      "global_number": 324,
+      "series": "dialogue",
+      "series_number": 199,
+      "source_date": "20240516"
+    },
+    "vbKppX43_cs": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 421,
+      "series": "dialogue",
+      "series_number": 257,
+      "source_date": "20250605"
+    },
+    "vd_oYgwQSBM": {
+      "classification_basis": "嘉宾索引：杨滢（屠龙大实话）",
+      "global_number": 509,
+      "series": "dialogue",
+      "series_number": 308,
+      "source_date": "20260625"
+    },
+    "vfc69akPBgM": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 98,
+      "series": "solo",
+      "series_number": 54,
+      "source_date": "20220208"
+    },
+    "vmtHbWyg2oU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 321,
+      "series": "solo",
+      "series_number": 125,
+      "source_date": "20240428"
+    },
+    "vwdSOrEp-mg": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 180,
+      "series": "dialogue",
+      "series_number": 91,
+      "source_date": "20230521"
+    },
+    "vwoj6fHdxNI": {
+      "classification_basis": "嘉宾索引：Kevin Chen",
+      "global_number": 253,
+      "series": "dialogue",
+      "series_number": 146,
+      "source_date": "20231020"
+    },
+    "vx15aj-ah1c": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 13,
+      "series": "solo",
+      "series_number": 7,
+      "source_date": "20200824"
+    },
+    "vx1vx8B-aX4": {
+      "classification_basis": "嘉宾索引：Francer",
+      "global_number": 109,
+      "series": "dialogue",
+      "series_number": 50,
+      "source_date": "20220409"
+    },
+    "w091n34lBuE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 114,
+      "series": "solo",
+      "series_number": 62,
+      "source_date": "20220511"
+    },
+    "w0QB45tLDM8": {
+      "classification_basis": "嘉宾索引：Chase",
+      "global_number": 479,
+      "series": "dialogue",
+      "series_number": 291,
+      "source_date": "20260209"
+    },
+    "wFHoVeycV2k": {
+      "classification_basis": "嘉宾索引：Rachel",
+      "global_number": 70,
+      "series": "dialogue",
+      "series_number": 27,
+      "source_date": "20210811"
+    },
+    "wUBsA5x3o44": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 224,
+      "series": "dialogue",
+      "series_number": 126,
+      "source_date": "20230916"
+    },
+    "wjxQ2bhGB8k": {
+      "classification_basis": "嘉宾索引：穆潼",
+      "global_number": 80,
+      "series": "dialogue",
+      "series_number": 32,
+      "source_date": "20211007"
+    },
+    "wkjV6Sa10JY": {
+      "classification_basis": "嘉宾索引：liiisaishere",
+      "global_number": 316,
+      "series": "dialogue",
+      "series_number": 193,
+      "source_date": "20240418"
+    },
+    "wo_DPVH89os": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 99,
+      "series": "solo",
+      "series_number": 55,
+      "source_date": "20220217"
+    },
+    "x3tzOuTG1IQ": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 129,
+      "series": "solo",
+      "series_number": 74,
+      "source_date": "20220909"
+    },
+    "xRbNOgT__5I": {
+      "classification_basis": "嘉宾索引：王浩岚",
+      "global_number": 156,
+      "series": "dialogue",
+      "series_number": 75,
+      "source_date": "20230213"
+    },
+    "x_NiQHffddY": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 151,
+      "series": "solo",
+      "series_number": 79,
+      "source_date": "20230127"
+    },
+    "xrBlVBhl7WI": {
+      "classification_basis": "嘉宾索引：Emily",
+      "global_number": 255,
+      "series": "dialogue",
+      "series_number": 148,
+      "source_date": "20231022"
+    },
+    "y3UuCqmLJYk": {
+      "classification_basis": "嘉宾索引：Lulu",
+      "global_number": 190,
+      "series": "dialogue",
+      "series_number": 99,
+      "source_date": "20230707"
+    },
+    "y5V8wrmp09I": {
+      "classification_basis": "嘉宾索引：Richer",
+      "global_number": 333,
+      "series": "dialogue",
+      "series_number": 204,
+      "source_date": "20240628"
+    },
+    "y6lFVM5djiE": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 40,
+      "series": "solo",
+      "series_number": 27,
+      "source_date": "20210202"
+    },
+    "yBAqlG4-pg0": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 48,
+      "series": "solo",
+      "series_number": 34,
+      "source_date": "20210330"
+    },
+    "yEjvPBCxPeE": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 161,
+      "series": "dialogue",
+      "series_number": 79,
+      "source_date": "20230317"
+    },
+    "yHgktd99hbU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 309,
+      "series": "solo",
+      "series_number": 121,
+      "source_date": "20240322"
+    },
+    "yQHaRpBbymw": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 336,
+      "series": "dialogue",
+      "series_number": 206,
+      "source_date": "20240713"
+    },
+    "yWTjrqx8SJE": {
+      "classification_basis": "新书发布，多位作者和主持人圆桌",
+      "global_number": 501,
+      "series": "dialogue",
+      "series_number": 304,
+      "source_date": "20260526"
+    },
+    "yjcJFJb8VMU": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 404,
+      "series": "solo",
+      "series_number": 160,
+      "source_date": "20250422"
+    },
+    "ynWeoYWUT_0": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 507,
+      "series": "dialogue",
+      "series_number": 307,
+      "source_date": "20260616"
+    },
+    "z77JFTjccxQ": {
+      "classification_basis": "嘉宾索引：詹冬业",
+      "global_number": 171,
+      "series": "dialogue",
+      "series_number": 84,
+      "source_date": "20230426"
+    },
+    "z8eCqWGr-pE": {
+      "classification_basis": "嘉宾索引：Chef Miles",
+      "global_number": 116,
+      "series": "dialogue",
+      "series_number": 53,
+      "source_date": "20220523"
+    },
+    "zVp2uXHic8s": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 101,
+      "series": "solo",
+      "series_number": 56,
+      "source_date": "20220227"
+    },
+    "zXeIAOuACz0": {
+      "classification_basis": "徐老师大师课对谈片段，归对话",
+      "global_number": 528,
+      "series": "dialogue",
+      "series_number": 318,
+      "source_date": "20260904"
+    },
+    "zhgEfWs6Eo8": {
+      "classification_basis": "标题及字幕核对：立正个人讲解、演讲、分享或生活记录",
+      "global_number": 319,
+      "series": "solo",
+      "series_number": 124,
+      "source_date": "20240423"
+    },
+    "zlHBC-sAv8g": {
+      "classification_basis": "嘉宾索引：Jiakan Wang",
+      "global_number": 143,
+      "series": "dialogue",
+      "series_number": 66,
+      "source_date": "20221202"
+    },
+    "zsPixiIa0Ew": {
+      "classification_basis": "简介及字幕核对：多人对谈/嘉宾参与内容",
+      "global_number": 250,
+      "series": "dialogue",
+      "series_number": 145,
+      "source_date": "20231012"
+    }
+  },
+  "initial_order": "original YouTube upload_date, then video_id; fixed after migration",
+  "schema_version": 1,
+  "series_labels": {
+    "dialogue": "对话",
+    "solo": "立正说"
+  }
+}

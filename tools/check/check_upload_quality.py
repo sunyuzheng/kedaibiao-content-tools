@@ -21,12 +21,17 @@ from tools.podcast.core import (  # noqa: E402
     published_at_from_yyyymmdd,
     require_transistor_config,
     sha256_text,
+    strip_episode_number,
     timed_text_to_text,
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
+from tools.podcast.series import (  # noqa: E402
+    episode_series_title,
+    get_assignment,
+    load_catalog,
+)
 
 
-TITLE_RE = re.compile(r"^E(\d+)\.\s+.+")
 YOUTUBE_URL_RE = re.compile(
     r"^https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]{11}"
 )
@@ -55,6 +60,7 @@ def check_episode(
     expected: dict[str, Any] | None,
     *,
     require_published: bool,
+    catalog: dict[str, Any] | None = None,
 ) -> list[str]:
     attrs = episode.get("attributes", {})
     title = attrs.get("title") or ""
@@ -67,13 +73,21 @@ def check_episode(
     transcript = attrs.get("transcript_text")
     issues: list[str] = []
 
-    match = TITLE_RE.match(title)
-    if not match:
-        issues.append(f"标题格式错误，期望 E{{N}}. 标题：{title!r}")
-    elif number is None:
-        issues.append("episode.number 为空")
-    elif int(match.group(1)) != int(number):
-        issues.append(f"标题 E{match.group(1)} 与 episode.number={number} 不一致")
+    if isinstance(number, bool) or not isinstance(number, int) or number <= 0:
+        issues.append(f"episode.number 必须为正整数：{number!r}")
+    video_id = extract_video_id(video_url) or ""
+    try:
+        assignment = get_assignment(video_id, catalog=catalog)
+        expected_title = episode_series_title(title, video_id, catalog=catalog)
+        if title != expected_title or not strip_episode_number(title):
+            issues.append(f"系列标题前缀错误，期望：{expected_title!r}，实际：{title!r}")
+        expected_number = assignment.get("global_number")
+        if expected_number is not None and number != expected_number:
+            issues.append(
+                f"episode.number 与目录全局编号不一致：expected={expected_number} actual={number}"
+            )
+    except ValueError as exc:
+        issues.append(f"系列分类缺失或无效（video_id={video_id}）：{exc}")
 
     if require_published and status != "published":
         issues.append(f"状态不是 published：{status!r}")
@@ -134,6 +148,7 @@ def main() -> int:
     api_key, show_id = require_transistor_config()
     client = TransistorClient(api_key)
     expectations = local_expectations()
+    series_catalog = load_catalog()
 
     if args.episode_id:
         episodes = [client.get_episode(args.episode_id)]
@@ -173,6 +188,7 @@ def main() -> int:
             exact,
             expectations.get(video_id or ""),
             require_published=not args.allow_draft,
+            catalog=series_catalog,
         )
         icon = "✅" if not issues else "❌"
         if issues or not args.only_failures:

@@ -33,6 +33,8 @@ python3 tools/check/build_library_manifest.py
 
 ## Transistor Sync Policy
 
+Title series assignments live in `podcast_series.json`; follow `docs/播客系列与编号.md`. Titles use separately numbered `对话 001｜…` / `立正说 001｜…`; RSS `episode.number` remains the global number. Missing classification blocks publishing. Never automatically sweep historical title migrations into a new-episode run.
+
 Only publish automatically when all are true:
 
 - YouTube privacy is `public`.

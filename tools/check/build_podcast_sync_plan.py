@@ -34,7 +34,6 @@ from tools.podcast.core import (  # noqa: E402
     choose_transcript_path,
     first_existing,
     load_env,
-    numbered_title,
     plan_hash,
     published_at_from_yyyymmdd,
     relative_to_project,
@@ -46,6 +45,7 @@ from tools.podcast.core import (  # noqa: E402
     utc_now,
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
+from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
 from tools.podcast.show_notes import validate_show_notes  # noqa: E402
 
 
@@ -315,6 +315,7 @@ def build_plan(
     client = TransistorClient(api_key)
     episodes, episodes_by_video = client.episodes_by_video_id(show_id)
     remote_map = manifest_remote_map(episodes_by_video)
+    series_catalog = load_catalog()
 
     youtube_state, youtube_snapshot = current_youtube_state(max_snapshot_age_hours)
     candidate_verifications, candidate_verification_info = (
@@ -370,6 +371,10 @@ def build_plan(
                 reasons.append("no_audio_for_create_or_repair")
             if not payload["published_at"]:
                 reasons.append("missing_publish_date")
+            try:
+                episode_series_title(payload["base_title"], video_id, catalog=series_catalog)
+            except ValueError:
+                reasons.append("series_assignment_missing_or_invalid")
 
             item = {
                 "action": "update_draft_then_publish" if len(drafts) == 1 else "create_draft_then_publish",
@@ -553,7 +558,20 @@ def build_plan(
     if not publish_blocked_reasons:
         projected_rows.sort(key=lambda row: (row["date"], row["video_id"]))
         for target_number, row in enumerate(projected_rows, 1):
-            target_title = numbered_title(row["base_title"], target_number)
+            try:
+                target_title = episode_series_title(
+                    row["base_title"], row["video_id"], catalog=series_catalog
+                )
+            except ValueError as exc:
+                publish_blocked_reasons.append("series_assignment_missing_or_invalid")
+                blocked.append({
+                    "scope": "publish",
+                    "video_id": row["video_id"],
+                    "title": row["base_title"],
+                    "reasons": ["series_assignment_missing_or_invalid"],
+                    "detail": str(exc),
+                })
+                continue
             target_row = {
                 **row,
                 "target_number": target_number,
@@ -567,6 +585,10 @@ def build_plan(
             ):
                 continue
             projected_reorder_actions.append(target_row)
+    if publish_blocked_reasons:
+        # A partial projection must never become an executable reorder scope.
+        projected_feed = []
+        projected_reorder_actions = []
     publish_blocked_reasons = sorted(set(publish_blocked_reasons))
 
     publish_scope = {
