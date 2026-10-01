@@ -2,14 +2,18 @@
 
 这套入口把「课代表立正」的增量同步放到 GitHub 托管的 Linux 运行器。代码留在公开仓库，状态、分类目录、当前音频和执行记录放在私有运行仓库。Mac 关机后，已启用的云端流程仍可执行。
 
-**当前交付状态：代码与工作流已在本地实现；尚未推送、创建私有仓库、配置密钥或启用云端调度。** 本文的上线步骤由当前 Codex 任务执行；Dot 的职责见[交接说明](Transistor云端同步与Dot交接方案.md)。
+**当前状态：GitHub 基础设施已部署，端到端同步仍被 YouTube 云端验证阻断。** 公开代码、私有运行仓库、Transistor secret 和每两小时调度均已上线；policy 仍关闭，本机 writer 未切换。2026-09-30 两次真实云端 plan 运行均停止在 YouTube 探测，未发布节目。
+
+最新执行代码固定为 `e743ba840046fdaf7aba241fc0865aa9422311ff`；[Linux CI](https://github.com/sunyuzheng/kedaibiao-content-tools/actions/runs/36812056337) 的 122 项测试和编译通过。[实际同步试跑](https://github.com/sunyuzheng/kedaibiao-podcast-ops/actions/runs/36812144199) 在配置 Python 3.11、Deno 2.9.7 和 `yt-dlp-ejs==0.8.0` 后，仍返回 `diagnostic=bot_or_sign_in_challenge`。Transistor 读取、私有状态提交与 receipt artifact 保存成功；不能据此声称音频已上传或同步成功。
+
+接下来由 Dot 验证其云端电脑或原始素材来源能否稳定提供音频；当前 Codex 任务再据此接入合适的素材入口。Dot 的具体任务见[交接说明](Transistor云端同步与Dot交接方案.md)。
 
 ## 组成与权威来源
 
 | 内容 | 位置 |
 | --- | --- |
 | 公开源码 | `sunyuzheng/kedaibiao-content-tools` |
-| 私有运行仓库，待创建 | `sunyuzheng/kedaibiao-podcast-ops`，`main` |
+| 私有运行仓库 | `sunyuzheng/kedaibiao-podcast-ops`，`main` |
 | 工作流模板 | `deployment/podcast-ops/.github/workflows/podcast-sync.yml` |
 | Linux 入口 | `tools/automation/cloud_podcast.py` |
 | 私有运行仓库中的固定代码版本 | `code-version.txt`，完整 Git commit SHA |
@@ -78,12 +82,12 @@ gh workflow run podcast-sync.yml \
 - 自动流程不清理草稿、不修历史标题/编号、不回填历史 Show Notes。需要这些操作时另建具体计划。
 - Actions 使用一个 show 级并发组，拒绝取消正在发布的运行；Git 状态更新不强推、不自动合并冲突。本机必须在正式切换前退出写入。
 
-## 上线清单，由 Codex 执行
+## 上线清单与剩余验证
 
-1. 审阅本次精确源码 diff、私有状态包、两个仓库的目的地及读者范围后，批准外部写入。
-2. 推送公开源码，等待 source CI 通过；用该 commit 填写私有 `code-version.txt`。
-3. 创建 **private** 运行仓库，放入模板与已审阅的状态包。只配置一个 secret：`TRANSISTOR_API_KEY`。`TRANSISTOR_SHOW_ID` 固定为 `71709`。不上传 `.env` 文件。
-4. 先手动 `mode=plan`，检查真实 GitHub Linux runner 的发现、状态保存和 artifact。至少完成一个候选音频的云端下载验证；本地测试不能代替这一步。
+1. 已完成：立正批准精确源码 diff、私有状态包、仓库目的地及受众；兼容修复均保持原部署范围。
+2. 已完成：公开源码推送、source CI 通过；私有 `code-version.txt` 固定到已验证代码。
+3. 已完成：创建 **private** 运行仓库并放入经审阅的状态包，只配置 `TRANSISTOR_API_KEY`；show 固定 `71709`，未上传 `.env`。
+4. 已试跑，尚未通过：云端可发现频道列表、读取 Transistor 和保存状态；第一个候选遇到 YouTube 登录/人机验证，未完成音频下载。先解决素材来源，再取得成功的云端 plan。
 5. 对具体首批计划完成批准并切换本机 writer，再执行；确认历史节目未变、重跑无重复、RSS可见或明确记为传播中。
 6. 只有取得持续发布授权后才启用 policy。把分类目录权威位置、调度状态与已验证 run URL 写回交接说明。
 
@@ -93,8 +97,10 @@ gh workflow run podcast-sync.yml \
 
 GitHub cron 可能延迟或丢弃排队事件，因此 Dot 检查最近成功时间，并在长时间无成功运行时手动触发或报告。[GitHub 官方说明](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
 
-YouTube 可能拒绝数据中心 IP 下载。首次云端测试尚未完成；若出现机器人验证或 403，应记录受影响视频与运行 ID，选择用户原始音频或经授权的稳定下载来源，不把个人浏览器 cookies 随意复制进 Actions。[yt-dlp 官方说明](https://github.com/yt-dlp/yt-dlp/wiki/Extractors)
+本次 GitHub 托管运行器实际遇到了 YouTube 登录/人机验证，目标为 `gwPfRhi4lzo`；补齐 JS 运行依赖后结果相同。后续先验证 Dot 环境或原始音频来源，不通过改变发布条件把失败伪装成成功，也不把个人浏览器 cookies 复制进 Actions。[yt-dlp 官方说明](https://github.com/yt-dlp/yt-dlp/wiki/Extractors)
 
 依赖固定为 `requirements-cloud-podcast.txt`，不在发布时自动升级 yt-dlp。更新先跑离线测试和云端 plan，再更新私有代码 SHA。当前不迁移 MLX 字幕模型，也不接 Resend 发信；Dot 读取回执后按授权通知。
 
 私有仓库的协作者能读取私有 artifact；不要把运行仓库改为 public，不要把音频或计划粘到公开 issue。[GitHub artifact 访问规则](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts)
+
+已配置的 JavaScript 组件按 [yt-dlp 官方 EJS 文档](https://github.com/yt-dlp/yt-dlp/wiki/EJS) 安装；它解决播放器脚本执行需求，不保证 YouTube 接受托管运行器的请求。

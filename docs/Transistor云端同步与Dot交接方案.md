@@ -6,12 +6,16 @@
 
 ## 当前交付状态
 
-截至 2026-09-30，云端入口、私有工作流模板、状态恢复与发布校验已在本地实现并测试。**尚未推送上线，私有运行仓库、云端密钥与调度尚未创建。** 第一次收到本文件时，先检查下表中的私有仓库和 Actions 是否已存在；不存在则请立正让原 Codex 任务完成上线，不能把本文件当成“已经跑起来”的证明。
+截至 2026-09-30，GitHub Actions 已上线：私有仓库已创建，密钥已配置，调度 active，源码固定为 `e743ba840046fdaf7aba241fc0865aa9422311ff`。[真实 Linux CI 的 122 项测试通过](https://github.com/sunyuzheng/kedaibiao-content-tools/actions/runs/36812056337)。
+
+**完整同步尚未成功。你的第一项工作是验证可用的音频来源。** [最新云端试跑](https://github.com/sunyuzheng/kedaibiao-podcast-ops/actions/runs/36812144199) 已连接 Transistor、保存私有状态和回执，但 YouTube 对 GitHub 托管运行器返回 `bot_or_sign_in_challenge`。Python 版本、测试初始目录和 JS 依赖问题已经修复；这个结果出现在 Deno 与匹配 EJS 都安装成功之后。
+
+目前 policy `enabled: false`、`local_writer_disabled: false`，没有发布新节目或切换本机 writer。不要把 CI 全绿、调度 active 或 receipt 成功保存等同于节目同步成功。
 
 | 对象 | 固定位置 |
 | --- | --- |
 | 公开代码 | `sunyuzheng/kedaibiao-content-tools` |
-| 私有运行仓库，待创建 | `sunyuzheng/kedaibiao-podcast-ops` |
+| 私有运行仓库 | `sunyuzheng/kedaibiao-podcast-ops` |
 | 固定工作流 | `podcast-sync.yml`，显示名 `Private Podcast Sync` |
 | YouTube 频道 | `UC_5lJHgnMP_lb_VpIiXV0hQ`，课代表立正 |
 | Transistor show | `71709` |
@@ -19,6 +23,26 @@
 | 操作依据 | 私有 `runtime/state.json`、指定运行的 `podcast-receipt` 和 `podcast-plan` |
 
 官方文档说明，Dot 有自己的云端电脑和持续保存的工作状态，但不会继承立正 Mac 的登录。请先核实你自己的 GitHub 连接能否读取私有仓库、查看 Actions、写入经授权的分类记录和触发工作流；缺权限时只报告具体缺项。[Dot 的电脑与应用](https://learn.chatgpt.com/docs/dots/computers-and-apps)
+
+## 优先处理：验证音频能否在你的云端取得
+
+请在你自己的云端电脑先做一次有明确结果的验证，不需要重写 GitHub Actions：
+
+1. 确认能够读取上述私有仓库、最新失败回执和固定版本源码。不要索取或回显 Transistor secret 值。
+2. 核实你的电脑可运行项目固定的 yt-dlp、配套 EJS 与支持的 JavaScript runtime。对公开测试视频 `https://www.youtube.com/watch?v=gwPfRhi4lzo` 做匿名元数据检查，只记录 ID、频道 ID、公开状态和直播状态，不把完整下载器响应贴到聊天或公开仓库。
+3. 若元数据检查成功，实际取得该视频音频，检查文件可读性、大小、时长并计算 SHA-256。记录使用的来源、验证时间，以及你的云端文件是否能稳定保留。
+4. 若同样出现登录/人机验证，记录具体结果；转而确认立正是否已有可供自动化读取的原始录音或导出音频位置。不要盲目重试，也不要把浏览器 cookies 移到 GitHub。
+5. 把验证结果、素材访问方式及环境限制交回立正和当前 Codex 任务。当前工作流仍会自行探测 YouTube；**仅在 Dot 电脑下载一个文件不会让现有 GitHub 工作流自动消费它。** 素材传递入口或运行器切换由原 Codex 任务基于实际结果接入，不要求你另写上传器。
+
+本地只读演练发现的待处理内容可用于核对，但云端必须重新验证：
+
+| 视频 ID | 标题 | 原始日期 |
+| --- | --- | --- |
+| `_h0ZHgeujpM` | 2026年了，大多数人仍然不理解自媒体的真正价值 | 2026-09-24 |
+| `kYuolIPDeRQ` | 如何炒作一个AI概念？以Jev为例… | 2026-09-25 |
+| `gwPfRhi4lzo` | 别人眼中的死局，他如何反复做成大生意？｜宝二爷 | 2026-09-29 |
+
+后续稳定运行时，你仍负责以下三项工作。
 
 ## 你的三项工作
 
@@ -74,7 +98,7 @@ gh workflow run podcast-sync.yml \
 
 排错时优先遵循这些边界：
 
-- **下载失败**：区分会员拒绝、限流、机器人验证和网络问题。GitHub 云端取音频尚待上线验证；如果持续失败，提供具体运行和视频信息给 Codex，考虑原始录音来源。
+- **下载失败**：区分会员拒绝、限流、机器人验证和网络问题。GitHub 托管环境已实际遇到登录/人机验证；优先完成上面的来源验证，把运行和素材访问信息交给 Codex。
 - **发布超时**：先看 `pending_execution` 和远端同一 video ID 的实际状态。不要重新建一集；执行器已支持草稿恢复和已发布回读。
 - **重复草稿**：只处理当前候选对应的冲突，交给 Codex 做单独清理计划。后台 112 条历史草稿不属于本次自动清理范围。
 - **部分批次已发布**：保留剩余目标。落到最新发布边界之后的条目需要明确恢复计划，不能把它当成“没有更新”。
