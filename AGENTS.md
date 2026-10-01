@@ -45,7 +45,13 @@ Do not automatically publish unlisted, private, member/course/internal/demo vide
 
 Use transcript status to prioritize subtitle cleanup and report quality, not to exclude otherwise eligible public normal videos from Transistor.
 
-All scheduled runs are plan-only. Any Transistor mutation must use an immutable plan and its exact reviewed approval hash.
+The scheduled task may automatically publish at most three genuinely new episodes when every strict gate passes: immutable plan and publish-scope hashes are valid; fresh public and per-candidate YouTube evidence agree; canonical policy is `public + normal_video + ready_public_normal`; each candidate is ahead of the latest published playlist baseline; audio, date, title, YouTube identity, description, local hashes, and remote preconditions are complete; no global publish blocker exists; and every projected reorder action belongs to a newly published episode. Unknown warnings fail closed. Missing transcripts and explicitly allowlisted Show Notes quality warnings are non-blocking receipt items.
+
+The executor's existing scope hash remains an integrity lock, not a claim of per-run human approval. Existing-episode Show Notes/transcript updates, historical backfills, duplicate-draft cleanup, and any change to a historical episode number/title remain separate reviewable scopes and must never be swept into scheduled auto-publish.
+
+All plain-text descriptions, including the YouTube/local fallback, must use the deterministic `portable_html_v1` renderer before publication so RSS clients do not collapse raw newlines. A versioned `podcast_show_notes/<video_id>.txt` sidecar remains the preferred high-quality source; its absence alone does not block a new episode.
+
+Scheduled owner notifications send completion receipts only after all post-publish checks pass. New or changed real blockers must include human context, impact, exact action, and location. Maintenance uses a separate fingerprint. Quarantined historical gaps and unchanged blockers stay silent.
 
 After any Transistor publish, run:
 
@@ -62,3 +68,13 @@ After any Transistor publish, run:
 - Prefer fixing tools to read manifest semantics before moving archive folders.
 - Keep generated audits and logs under `logs/`; do not commit them unless explicitly requested.
 - Never persist API keys, OAuth tokens, or Transistor credentials in scripts, docs, logs, or committed files.
+
+## Cloud entry point
+
+The private GitHub Actions entry is `tools/automation/cloud_podcast.py`; it defaults
+to plan-only. Use `docs/GitHub-Actions播客同步运行手册.md` for setup/cutover and
+`docs/Transistor云端同步与Dot交接方案.md` for Dot responsibilities. The template under
+`deployment/podcast-ops/` is deployed only to the private operations repository.
+After an approved cutover, that repository's `podcast_series.json` owns new
+assignments; the public catalog remains a migration baseline. Never run both
+local and cloud publication writers concurrently.

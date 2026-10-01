@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 import re
+import sys
 import time
 from collections import Counter, defaultdict
 from datetime import datetime
@@ -28,6 +29,10 @@ import requests
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from tools.podcast.core import episode_video_id  # noqa: E402
+
 ARCHIVE_DIR = PROJECT_ROOT / "archive"
 YOUTUBE_SNAPSHOT = PROJECT_ROOT / "tools" / "youtube" / "all_videos_full.json"
 OUT_DIR = PROJECT_ROOT / "logs" / "library_manifest"
@@ -134,12 +139,7 @@ def fetch_transistor_map() -> dict[str, list[dict[str, Any]]]:
         data = resp.json()
         for ep in data.get("data", []):
             attrs = ep.get("attributes", {})
-            url = attrs.get("video_url") or ""
-            vid = None
-            if "v=" in url:
-                vid = url.split("v=")[-1].split("&")[0].strip()
-            elif "youtu.be/" in url:
-                vid = url.split("youtu.be/")[-1].split("?")[0].strip()
+            vid = episode_video_id(attrs)
             if not vid:
                 continue
             result[vid].append({

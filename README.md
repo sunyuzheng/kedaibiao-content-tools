@@ -49,15 +49,16 @@ plan + approval hash 阻止误发和历史补档变成新发布。这也是课�
 
 详细说明见 [docs/核心任务说明.md](docs/核心任务说明.md)。
 
-本地自动化：MacBook 上已通过 launchd 注册每周日 09:15 运行的同步任务
-`com.sunyuzheng.kedaibiao-podcast-sync`，入口是
-`tools/automation/sync_podcast.py`。定时任务只刷新、下载、对账并生成审批计划，
-不会自行修改或发布 Transistor。每次运行会先尝试把项目内 yt-dlp 更新到 PyPI
-最新预发布/nightly；网络或索引故障时继续使用仍可执行的本地已验证版本。
-日志在 `logs/podcast_sync/`。配置 `RESEND_API_KEY`、`RESEND_FROM_EMAIL` 与
-`PODCAST_SYNC_EMAIL_TO` 后，每次周任务会发送一封幂等摘要邮件；失败、待审核和
-健康状态都会报告。邮件发送是 best-effort，Resend 暂时不可用不会反过来令同步任务
-失败。
+本地自动化的 launchd 配置为每周日 09:15，入口是
+`tools/automation/sync_podcast.py`；是否已加载需在本机核实。现役入口在严格条件下
+可自动发布最多 3 期，使用 `--dry-run` 才停在计划阶段；历史内容修改不在自动范围。
+本地入口保留 yt-dlp 更新与现有通知逻辑，详见项目 `AGENTS.md`。
+
+GitHub Actions 云端入口为 `tools/automation/cloud_podcast.py`，默认 plan-only，
+私有运行工作流模板在 `deployment/podcast-ops/`。上线与本机 writer 切换见
+[GitHub Actions 运行手册](docs/GitHub-Actions播客同步运行手册.md)，Dot 的内容分类和
+巡检职责见 [Dot 交接说明](docs/Transistor云端同步与Dot交接方案.md)。模板进入源码
+不等于已启用云端调度；部署状态以运行手册和实际 Actions 记录为准。
 
 ---
 

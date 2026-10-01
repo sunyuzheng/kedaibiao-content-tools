@@ -222,10 +222,11 @@ class FrozenPublishTitleTests(unittest.TestCase):
                 self.assertEqual(client.episode["attributes"]["title"], "对话 037｜Exact approved wording")
                 self.assertEqual(client.episode["attributes"]["number"], 532)
                 self.assertTrue(all(p["title"] == "对话 037｜Exact approved wording" for p in client.updates))
-                self.assertTrue(all("number" not in p for p in client.updates))
+                self.assertTrue(all(p["number"] == 532 for p in client.updates))
                 if not draft:
                     self.assertEqual(client.creates[0]["title"], "对话 037｜Exact approved wording")
-                    self.assertTrue(client.creates[0]["increment_number"])
+                    self.assertEqual(client.creates[0]["number"], 532)
+                    self.assertNotIn("increment_number", client.creates[0])
 
     def test_missing_or_ambiguous_frozen_titles_fail_before_remote_effects(self) -> None:
         for mode in ("missing", "blank", "duplicate", "historical_row", "second_target_missing"):

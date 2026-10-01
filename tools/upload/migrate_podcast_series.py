@@ -12,12 +12,12 @@ from collections import Counter
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from tools.podcast.core import (atomic_write_json, canonical_json, extract_video_id,
+from tools.podcast.core import (atomic_write_json, canonical_json, episode_video_id,
     load_env, require_transistor_config, sha256_text, utc_now, strip_episode_number)
 from tools.podcast.series import episode_series_title, load_catalog, SERIES_LABELS, SERIES_PREFIX_RE
 from tools.podcast.transistor_client import TransistorClient
 
-PROTECTED_FIELDS = ("number", "status", "published_at", "video_url", "description", "media_url",
+PROTECTED_FIELDS = ("number", "status", "published_at", "video_url", "youtube_url", "description", "media_url",
     "image_url", "slug", "share_url", "transcript_url", "duration", "season", "type", "explicit",
     "summary", "alternate_url")
 
@@ -44,7 +44,7 @@ def build_plan(episodes: list[dict], show_id: str, catalog: dict) -> dict:
             continue
         if show_of(episode) != show_id:
             raise ValueError(f"Wrong show for {episode['id']}")
-        vid = extract_video_id(a.get("video_url"))
+        vid = episode_video_id(a)
         if not vid or episode["id"] in seen_ids or vid in seen_videos:
             raise ValueError("Missing/duplicate episode identity")
         seen_ids.add(episode["id"]); seen_videos.add(vid)
@@ -96,7 +96,7 @@ def assert_remote(episode: dict, row: dict, show_id: str) -> None:
         raise ValueError(f"Remote identity drift: {row['episode_id']}")
     if protected_attributes(episode) != row["protected"]:
         raise ValueError(f"Protected episode fields changed: {row['episode_id']}")
-    if extract_video_id(episode["attributes"].get("video_url")) != row["video_id"]:
+    if episode_video_id(episode["attributes"]) != row["video_id"]:
         raise ValueError("Remote video identity drift")
     if not any(title_matches(episode["attributes"]["title"], title)
                for title in (row["before_title"], row["after_title"])):

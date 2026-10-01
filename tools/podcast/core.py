@@ -12,6 +12,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
+from urllib.parse import parse_qs, urlsplit
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -110,18 +111,50 @@ def utc_now() -> str:
 
 
 def extract_video_id(value: str | None) -> str | None:
-    if not value:
+    """Parse a YouTube ID or recognized URL; never infer an ID from media tails."""
+    if not isinstance(value, str) or not value:
         return None
     if VIDEO_ID_RE.fullmatch(value):
         return value
-    if "v=" in value:
-        candidate = value.split("v=", 1)[1].split("&", 1)[0].strip()
-        return candidate if VIDEO_ID_RE.fullmatch(candidate) else None
-    if "youtu.be/" in value:
-        candidate = value.split("youtu.be/", 1)[1].split("?", 1)[0].strip("/")
-        return candidate if VIDEO_ID_RE.fullmatch(candidate) else None
-    candidate = value[-11:]
+    try:
+        parsed = urlsplit(value)
+    except ValueError:
+        return None
+    if parsed.scheme not in {"http", "https"} or parsed.username or parsed.password:
+        return None
+    host = (parsed.hostname or "").lower()
+    parts = parsed.path.strip("/").split("/")
+    candidate = ""
+    if host in {"youtu.be", "www.youtu.be"} and len(parts) == 1:
+        candidate = parts[0]
+    elif host in {"youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com"}:
+        if parsed.path == "/watch":
+            ids = parse_qs(parsed.query).get("v", [])
+            if len(ids) == 1:
+                candidate = ids[0]
+        elif len(parts) == 2 and parts[0] in {"shorts", "embed", "live"}:
+            candidate = parts[1]
     return candidate if VIDEO_ID_RE.fullmatch(candidate) else None
+
+
+def episode_youtube_url(attributes: dict[str, Any]) -> str | None:
+    """Read modern and legacy API associations, refusing conflicting identities."""
+    urls: list[tuple[str, str]] = []
+    for field in ("youtube_url", "video_url"):
+        value = attributes.get(field)
+        # Remote association fields must be URLs, not a coincidental bare ID.
+        if not isinstance(value, str) or not value.startswith(("https://", "http://")):
+            continue
+        video_id = extract_video_id(value)
+        if video_id:
+            urls.append((value, video_id))
+    if len({video_id for _, video_id in urls}) > 1:
+        raise ValueError("Conflicting Transistor youtube_url and legacy video_url identities")
+    return urls[0][0] if urls else None
+
+
+def episode_video_id(attributes: dict[str, Any]) -> str | None:
+    return extract_video_id(episode_youtube_url(attributes))
 
 
 def published_at_from_yyyymmdd(value: str) -> str | None:

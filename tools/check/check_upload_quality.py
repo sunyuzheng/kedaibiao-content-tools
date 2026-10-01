@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -16,7 +15,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from tools.check.build_library_manifest import local_records  # noqa: E402
 from tools.podcast.core import (  # noqa: E402
     choose_transcript_path,
-    extract_video_id,
+    episode_video_id,
+    episode_youtube_url,
     load_env,
     published_at_from_yyyymmdd,
     require_transistor_config,
@@ -29,11 +29,6 @@ from tools.podcast.series import (  # noqa: E402
     episode_series_title,
     get_assignment,
     load_catalog,
-)
-
-
-YOUTUBE_URL_RE = re.compile(
-    r"^https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[A-Za-z0-9_-]{11}"
 )
 
 
@@ -67,7 +62,7 @@ def check_episode(
     number = attrs.get("number")
     status = attrs.get("status") or ""
     published_at = attrs.get("published_at") or ""
-    video_url = attrs.get("video_url") or ""
+    video_url = episode_youtube_url(attrs)
     description = attrs.get("description") or ""
     image_url = attrs.get("image_url") or ""
     transcript = attrs.get("transcript_text")
@@ -75,7 +70,7 @@ def check_episode(
 
     if isinstance(number, bool) or not isinstance(number, int) or number <= 0:
         issues.append(f"episode.number 必须为正整数：{number!r}")
-    video_id = extract_video_id(video_url) or ""
+    video_id = episode_video_id(attrs) or ""
     try:
         assignment = get_assignment(video_id, catalog=catalog)
         expected_title = episode_series_title(title, video_id, catalog=catalog)
@@ -93,8 +88,8 @@ def check_episode(
         issues.append(f"状态不是 published：{status!r}")
     if status == "published" and not published_at:
         issues.append("published_at 为空")
-    if not video_url or not YOUTUBE_URL_RE.match(video_url):
-        issues.append(f"video_url 缺失或格式异常：{video_url!r}")
+    if not video_url:
+        issues.append("YouTube 关联 URL 缺失或格式异常")
     if not description.strip():
         issues.append("description 为空")
     if not image_url:
@@ -158,7 +153,7 @@ def main() -> int:
             episodes = [
                 episode
                 for episode in all_episodes
-                if extract_video_id(episode.get("attributes", {}).get("video_url")) == args.video_id
+                if episode_video_id(episode.get("attributes", {})) == args.video_id
             ]
         else:
             published = [
@@ -183,7 +178,7 @@ def main() -> int:
         # default quality source; collection-only is an explicit fast metadata view.
         exact = episode if args.collection_only else client.get_episode(episode_id)
         attrs = exact.get("attributes", {})
-        video_id = extract_video_id(attrs.get("video_url"))
+        video_id = episode_video_id(attrs)
         issues = check_episode(
             exact,
             expectations.get(video_id or ""),

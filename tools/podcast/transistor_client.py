@@ -11,11 +11,15 @@ from typing import Any, Callable
 
 import requests
 
-from .core import TRANSISTOR_API_BASE, extract_video_id
+from .core import TRANSISTOR_API_BASE, episode_video_id
 
 
 class TransistorError(RuntimeError):
     pass
+
+
+class AmbiguousMutationError(TransistorError):
+    """The server may have applied a write; reconcile before another attempt."""
 
 
 class TransistorClient:
@@ -58,6 +62,7 @@ class TransistorClient:
     ) -> requests.Response:
         url = path if path.startswith("http") else f"{self.base_url}/{path.lstrip('/')}"
         kwargs.setdefault("timeout", (10, 60))
+        read_only = method.upper() in {"GET", "HEAD", "OPTIONS"}
         last_error: Exception | None = None
         for attempt in range(1, self.max_attempts + 1):
             self._throttle()
@@ -65,6 +70,11 @@ class TransistorClient:
                 response = self.session.request(method, url, **kwargs)
                 self._last_request_at = self.monotonic()
             except requests.RequestException as exc:
+                if not read_only:
+                    raise AmbiguousMutationError(
+                        f"{method} {path} had an ambiguous {type(exc).__name__}; "
+                        "not replayed. Refresh remote state and rebuild the plan."
+                    ) from exc
                 last_error = exc
                 if attempt == self.max_attempts:
                     break
@@ -85,6 +95,11 @@ class TransistorClient:
                     wait = 10.0
                 self.sleep(wait + random.uniform(0, 0.5))
                 continue
+            if response.status_code >= 500 and not read_only:
+                raise AmbiguousMutationError(
+                    f"{method} {path} had an ambiguous HTTP {response.status_code}; "
+                    "not replayed. Refresh remote state and rebuild the plan."
+                )
             if response.status_code >= 500 and attempt < self.max_attempts:
                 self.sleep(min(30.0, 2 ** (attempt - 1)) + random.uniform(0, 0.25))
                 continue
@@ -123,7 +138,7 @@ class TransistorClient:
         mapping: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for episode in episodes:
             attrs = episode.get("attributes", {})
-            video_id = extract_video_id(attrs.get("video_url"))
+            video_id = episode_video_id(attrs)
             if video_id:
                 mapping[video_id].append(episode)
         return episodes, dict(mapping)

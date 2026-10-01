@@ -11,7 +11,11 @@ from unittest import mock
 from tools.automation import update_yt_dlp
 from tools.automation.email_notification import build_message, send_report
 from tools.check.build_draft_cleanup_plan import build_cleanup_plan
-from tools.check.build_podcast_sync_plan import local_payload
+from tools.check.build_podcast_sync_plan import (
+    incremental_candidate_block_reason,
+    incremental_publish_baseline,
+    local_payload,
+)
 from tools.podcast.core import (
     PROJECT_ROOT,
     atomic_write_json,
@@ -21,7 +25,12 @@ from tools.podcast.core import (
     sha256_text,
     timed_text_to_text,
 )
-from tools.podcast.show_notes import validate_show_notes
+
+from tools.podcast.show_notes import (
+    PORTABLE_HTML_FORMAT,
+    render_portable_show_notes_html,
+    validate_show_notes,
+)
 from tools.podcast.transistor_client import TransistorClient
 from tools.upload.apply_podcast_sync_plan import (
     PlanPreconditionError,
@@ -70,22 +79,27 @@ class FakeSession:
 
 
 class EmailNotificationTests(unittest.TestCase):
-    def test_attention_message_contains_counts_and_approval_boundary(self) -> None:
+    def test_action_message_contains_concrete_action_and_location(self) -> None:
         message = build_message(
             {
-                "status": "attention",
-                "publish_count": 2,
-                "transcript_count": 3,
-                "blocked_count": 4,
+                "status": "action_required",
                 "started_at": "2026-07-27T09:15:00+00:00",
                 "finished_at": "2026-07-27T09:20:00+00:00",
-                "youtube_snapshot_fresh": True,
                 "plan_hash": "abc",
                 "plan_path": "logs/podcast_sync/plans/example.json",
+                "action_items": [
+                    {
+                        "context": "YouTube 候选证据已过期。",
+                        "impact": "本期不会自动发布。",
+                        "action": "重新运行 bounded verification。",
+                        "location": "tools/youtube/podcast_candidate_verification.json",
+                    }
+                ],
             }
         )
-        self.assertIn("发布 2 / 字幕 3 / 阻止 4", message["subject"])
-        self.assertIn("不会自动发布或修改 Transistor", message["text"])
+        self.assertIn("1 项具体问题", message["subject"])
+        self.assertIn("重新运行 bounded verification", message["text"])
+        self.assertIn("podcast_candidate_verification.json", message["text"])
 
     def test_send_report_is_idempotent_and_does_not_return_credentials(self) -> None:
         session = FakeSession([FakeResponse(200, {"id": "email-one"})])
@@ -111,7 +125,7 @@ class EmailNotificationTests(unittest.TestCase):
         headers = session.calls[0][2]["headers"]
         self.assertEqual(
             headers["Idempotency-Key"],
-            "kedaibiao-podcast-sync/2026-07-27T09:15:00+00:00",
+            "kedaibiao-podcast-sync/2026-07-27T09:15:00+00:00/healthy/unknown",
         )
         self.assertNotIn("test-secret", json.dumps(result))
 
@@ -207,6 +221,72 @@ class TranscriptTests(unittest.TestCase):
 
 
 class ShowNotesTests(unittest.TestCase):
+    def test_portable_html_renderer_preserves_structure_and_escapes_text(self) -> None:
+        source = (
+            "产品 & 销售。\n\n"
+            "这期你会听到\n\n"
+            "- 为什么 A < B？\n"
+            "- 第二个问题？\n\n"
+            "章节\n\n"
+            "00:00 — 开场\n"
+            "01:23 — 深入\n\n"
+            "观看本期视频版：\n"
+            "{{video | title: '观看本期视频版'}}\n\n"
+            "资源：\n"
+            "https://example.com/a?x=1&y=2"
+        )
+
+        rendered = render_portable_show_notes_html(source)
+
+        self.assertIn("<p>产品 &amp; 销售。</p>", rendered)
+        self.assertEqual(
+            render_portable_show_notes_html('他说 "保持原样"。'),
+            '<p>他说 "保持原样"。</p>',
+        )
+        self.assertIn("<p><strong>这期你会听到</strong></p>", rendered)
+        self.assertIn("<p>• 为什么 A &lt; B？</p>", rendered)
+        self.assertIn("<p>\n00:00 — 开场\n</p>", rendered)
+        self.assertIn(
+            "<p>{{video | title: '观看本期视频版'}}</p>",
+            rendered,
+        )
+        self.assertNotIn("观看本期视频版：</p>", rendered)
+        self.assertIn(
+            '<a href="https://example.com/a?x=1&amp;y=2">'
+            "https://example.com/a?x=1&amp;y=2</a>",
+            rendered,
+        )
+
+    def test_portable_html_renderer_rejects_preformatted_input(self) -> None:
+        with self.assertRaisesRegex(ValueError, "requires plain-text"):
+            render_portable_show_notes_html("<p>already rendered</p>")
+
+    def test_portable_html_renderer_preserves_noncollapsed_placeholders(self) -> None:
+        rendered = render_portable_show_notes_html(
+            "自定义视频标签：\n"
+            "{{video | title: '观看本期视频版'}}\n\n"
+            "{{chapters}}"
+        )
+
+        self.assertIn("<p>自定义视频标签：</p>", rendered)
+        self.assertIn(
+            "<p>{{video | title: '观看本期视频版'}}</p>",
+            rendered,
+        )
+        self.assertIn("<p>{{chapters}}</p>", rendered)
+
+    def test_portable_html_renderer_rejects_unsafe_or_embedded_placeholders(
+        self,
+    ) -> None:
+        unsafe = "{{video | title: '<script>x</script>'}}"
+        self.assertIn(
+            "unsafe_placeholder_title",
+            validate_show_notes(unsafe)["errors"],
+        )
+        for source in (unsafe, "正文 {{video}}", "{{unknown}}"):
+            with self.subTest(source=source), self.assertRaises(ValueError):
+                render_portable_show_notes_html(source)
+
     def test_valid_show_notes_accepts_long_minutes_and_transistor_tags(self) -> None:
         text = (
             "这是足够长的节目简介。" * 20
@@ -244,8 +324,82 @@ class ShowNotesTests(unittest.TestCase):
             result["warnings"],
         )
 
+    def test_show_notes_rejects_malformed_tags_and_invalid_clock_values(self) -> None:
+        base = "内容" * 160 + "\nhttps://www.superlinear.academy/\n"
+        cases = (
+            ("{{Video}}", "malformed_placeholder"),
+            ("}} 错序 {{", "unbalanced_placeholder_braces"),
+            ("{{video | title: 'x' junk}}", "malformed_placeholder"),
+            ("99:99 — 非法时间", "invalid_timestamp:99:99"),
+            ("01:60:00 — 非法时间", "invalid_timestamp:01:60:00"),
+        )
+        for suffix, expected in cases:
+            with self.subTest(suffix=suffix):
+                result = validate_show_notes(base + suffix)
+                self.assertIn(expected, result["errors"])
+
 
 class PlanTests(unittest.TestCase):
+    @staticmethod
+    def remote_episode(status: str = "published") -> dict:
+        return {"id": "episode", "attributes": {"status": status}}
+
+    def test_incremental_baseline_only_allows_newer_listing_positions(self) -> None:
+        youtube_state = {
+            "new": {"playlist_index": 2},
+            "baseline": {"playlist_index": 5},
+            "historical-gap": {"playlist_index": 8},
+        }
+        baseline = incremental_publish_baseline(
+            youtube_state,
+            {
+                "baseline": [self.remote_episode()],
+                "historical-gap": [self.remote_episode("draft")],
+            },
+        )
+
+        self.assertEqual(
+            baseline,
+            {
+                "available": True,
+                "video_id": "baseline",
+                "playlist_index": 5,
+                "linked_published_count": 1,
+            },
+        )
+        self.assertIsNone(
+            incremental_candidate_block_reason("new", youtube_state, baseline)
+        )
+        self.assertEqual(
+            incremental_candidate_block_reason(
+                "historical-gap",
+                youtube_state,
+                baseline,
+            ),
+            "historical_gap_requires_backfill_mode",
+        )
+
+    def test_incremental_candidate_fails_closed_without_position_or_baseline(
+        self,
+    ) -> None:
+        unavailable = incremental_publish_baseline({}, {})
+        self.assertEqual(
+            incremental_candidate_block_reason("new", {}, unavailable),
+            "incremental_baseline_unavailable",
+        )
+        self.assertEqual(
+            incremental_candidate_block_reason(
+                "new",
+                {},
+                {
+                    "available": True,
+                    "video_id": "baseline",
+                    "playlist_index": 5,
+                },
+            ),
+            "incremental_position_unavailable",
+        )
+
     def test_modified_plan_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
             path = Path(directory) / "plan.json"
@@ -310,15 +464,42 @@ class PlanTests(unittest.TestCase):
             self.assertEqual(payload["description_source"], "youtube_snapshot")
             self.assertEqual(payload["description_text"], "YouTube description")
             self.assertEqual(payload["description_path"], None)
+            self.assertEqual(payload["description_format"], PORTABLE_HTML_FORMAT)
             self.assertNotIn("missing_description", warnings)
             self.assertEqual(
                 read_description(
                     payload["description_path"],
                     payload["description_sha256"],
                     payload["description_text"],
+                    source_sha256=payload["description_source_sha256"],
+                    description_format=payload["description_format"],
                 ),
-                "YouTube description",
+                "<p>YouTube description</p>",
             )
+
+    def test_youtube_fallback_preserves_paragraphs_as_portable_html(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            folder = Path(directory)
+            relative_folder = str(folder.relative_to(PROJECT_ROOT))
+            payload, _ = local_payload(
+                {
+                    "video_id": "video-one",
+                    "folder": relative_folder,
+                    "title": "Episode",
+                    "upload_date": "20260727",
+                    "transcript_status": "missing",
+                },
+                {"description": "第一段。\n\n第二段。"},
+            )
+
+            rendered = read_description(
+                None,
+                payload["description_sha256"],
+                payload["description_text"],
+                source_sha256=payload["description_source_sha256"],
+                description_format=payload["description_format"],
+            )
+            self.assertEqual(rendered, "<p>第一段。</p>\n\n<p>第二段。</p>")
 
     def test_inline_description_hash_change_fails_closed(self) -> None:
         with self.assertRaises(PlanPreconditionError):
@@ -352,14 +533,37 @@ class PlanTests(unittest.TestCase):
 
             self.assertEqual(payload["description_source"], "podcast_sidecar")
             self.assertEqual(payload["description_path"], str(sidecar.relative_to(PROJECT_ROOT)))
+            self.assertEqual(payload["description_format"], PORTABLE_HTML_FORMAT)
             self.assertEqual(
                 read_description(
                     payload["description_path"],
                     payload["description_sha256"],
+                    source_sha256=payload["description_source_sha256"],
+                    description_format=payload["description_format"],
                 ),
-                "Podcast-first show notes",
+                "<p>Podcast-first show notes</p>",
             )
             self.assertNotIn("missing_description", warnings)
+
+    def test_portable_description_source_hash_change_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:
+            source = Path(directory) / "episode.podcast-description.txt"
+            source.write_text("Approved source", encoding="utf-8")
+            relative_source = str(source.relative_to(PROJECT_ROOT))
+            rendered = render_portable_show_notes_html("Approved source")
+            source_hash = sha256_text("Approved source")
+            source.write_text("Changed source", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                PlanPreconditionError,
+                "Description source changed since approval",
+            ):
+                read_description(
+                    relative_source,
+                    sha256_text(rendered),
+                    source_sha256=source_hash,
+                    description_format=PORTABLE_HTML_FORMAT,
+                )
 
     def test_description_apply_updates_exact_episode_and_reads_back(self) -> None:
         with tempfile.TemporaryDirectory(dir=PROJECT_ROOT / "logs") as directory:

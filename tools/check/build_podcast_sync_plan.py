@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build one immutable, approval-gated YouTube -> Transistor sync plan.
+"""Build one immutable, integrity-locked YouTube -> Transistor sync plan.
 
 This command is read-only with respect to YouTube and Transistor. It fetches the
 Transistor collection once, combines it with the canonical local manifest
@@ -32,6 +32,7 @@ from tools.podcast.core import (  # noqa: E402
     atomic_write_json,
     canonical_json,
     choose_transcript_path,
+    episode_youtube_url,
     first_existing,
     load_env,
     plan_hash,
@@ -46,7 +47,12 @@ from tools.podcast.core import (  # noqa: E402
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
 from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
-from tools.podcast.show_notes import validate_show_notes  # noqa: E402
+from tools.podcast.show_notes import (  # noqa: E402
+    MAX_SHOW_NOTES_CHARS,
+    PORTABLE_HTML_FORMAT,
+    render_portable_show_notes_html,
+    validate_show_notes,
+)
 
 
 DEFAULT_OUT_DIR = PROJECT_ROOT / "logs" / "podcast_sync" / "plans"
@@ -69,7 +75,8 @@ def compact_episode(episode: dict[str, Any]) -> dict[str, Any]:
         "status": attrs.get("status"),
         "number": attrs.get("number"),
         "title": attrs.get("title"),
-        "video_url": attrs.get("video_url"),
+        # Keep the frozen-plan schema while reading the current API field.
+        "video_url": episode_youtube_url(attrs),
         "published_at": attrs.get("published_at"),
         "updated_at": attrs.get("updated_at"),
         "duration_seconds": attrs.get("duration"),
@@ -130,11 +137,11 @@ def current_youtube_state(
     oauth = file_snapshot_info(YOUTUBE_SNAPSHOT, max_age_hours)
     public_listing = file_snapshot_info(PUBLIC_YOUTUBE_SNAPSHOT, max_age_hours)
     oauth_records = load_youtube_snapshot()
-    if public_listing["fresh"]:
+    public_records: dict[str, dict[str, Any]] = {}
+    if public_listing["exists"]:
         payload = json.loads(PUBLIC_YOUTUBE_SNAPSHOT.read_text(encoding="utf-8"))
         if payload.get("channel_id") != "UC_5lJHgnMP_lb_VpIiXV0hQ":
             raise RuntimeError("Public YouTube listing channel id mismatch")
-        public_records: dict[str, dict[str, Any]] = {}
         for item in payload.get("videos", []):
             video_id = item.get("video_id")
             if not video_id:
@@ -146,14 +153,35 @@ def current_youtube_state(
                 "published_at": previous.get("published_at"),
                 "description": previous.get("description"),
                 "privacy": "public",
+                # The channel listing is newest-first. Its stable position is
+                # the daily incremental baseline; without it, historical gaps
+                # can be mistaken for new uploads.
+                "playlist_index": item.get("playlist_index"),
             }
+    if public_listing["fresh"]:
         selected = public_records
         source = "anonymous_current_listing"
     elif oauth["fresh"]:
-        selected = oauth_records
+        selected = {
+            video_id: {
+                **record,
+                "playlist_index": (
+                    public_records.get(video_id, {}).get("playlist_index")
+                ),
+            }
+            for video_id, record in oauth_records.items()
+        }
         source = "oauth_full_snapshot"
     else:
-        selected = oauth_records
+        selected = {
+            video_id: {
+                **record,
+                "playlist_index": (
+                    public_records.get(video_id, {}).get("playlist_index")
+                ),
+            }
+            for video_id, record in oauth_records.items()
+        }
         source = "stale_oauth_snapshot"
     return selected, {
         "source": source,
@@ -167,6 +195,64 @@ def current_youtube_state(
         "oauth_snapshot": oauth,
         "public_listing_snapshot": public_listing,
     }
+
+
+def incremental_publish_baseline(
+    youtube_state: dict[str, dict[str, Any]],
+    episodes_by_video: dict[str, list[dict[str, Any]]],
+) -> dict[str, Any]:
+    """Return the newest public-list position already published remotely.
+
+    YouTube's uploads listing is newest-first (position 1 is newest). Daily
+    publication may only consider absent/draft videos before this position.
+    Older missing records remain visible as quarantined historical gaps.
+    """
+    linked: list[tuple[int, str]] = []
+    for video_id, remote_items in episodes_by_video.items():
+        if not any(
+            item.get("attributes", {}).get("status") == "published"
+            for item in remote_items
+        ):
+            continue
+        raw_position = (youtube_state.get(video_id) or {}).get("playlist_index")
+        try:
+            position = int(raw_position)
+        except (TypeError, ValueError):
+            continue
+        if position > 0:
+            linked.append((position, video_id))
+    if not linked:
+        return {
+            "available": False,
+            "video_id": None,
+            "playlist_index": None,
+            "linked_published_count": 0,
+        }
+    position, video_id = min(linked)
+    return {
+        "available": True,
+        "video_id": video_id,
+        "playlist_index": position,
+        "linked_published_count": len(linked),
+    }
+
+
+def incremental_candidate_block_reason(
+    video_id: str,
+    youtube_state: dict[str, dict[str, Any]],
+    baseline: dict[str, Any],
+) -> str | None:
+    """Classify a publication candidate against the trusted daily baseline."""
+    if not baseline.get("available"):
+        return "incremental_baseline_unavailable"
+    raw_position = (youtube_state.get(video_id) or {}).get("playlist_index")
+    try:
+        position = int(raw_position)
+    except (TypeError, ValueError):
+        return "incremental_position_unavailable"
+    if position >= int(baseline["playlist_index"]):
+        return "historical_gap_requires_backfill_mode"
+    return None
 
 
 def candidate_verification_state(
@@ -215,7 +301,7 @@ def local_payload(
     )
     youtube_description_path = first_existing(folder, ("*.description",))
     transcript_path = choose_transcript_path(folder, record)
-    podcast_description = (
+    podcast_description_source = (
         podcast_description_path.read_text(
             encoding="utf-8",
             errors="replace",
@@ -234,26 +320,46 @@ def local_payload(
     youtube_description = str(
         (youtube_record or {}).get("description") or ""
     ).strip()
-    if podcast_description:
-        description = podcast_description
+    description_format = None
+    description_source_sha256 = None
+    description_source_chars = None
+    description_render_error: str | None = None
+    if podcast_description_source:
+        description_source_text = podcast_description_source
         description_source = "podcast_sidecar"
         description_text = None
         description_path = podcast_description_path
     elif local_youtube_description:
-        description = local_youtube_description
+        description_source_text = local_youtube_description
         description_source = "local_youtube_file"
         description_text = None
         description_path = youtube_description_path
     elif youtube_description:
-        description = youtube_description
+        description_source_text = youtube_description
         description_source = "youtube_snapshot"
         description_text = youtube_description
         description_path = None
     else:
+        description_source_text = ""
         description = ""
         description_source = "empty"
         description_text = None
         description_path = None
+    if description_source_text:
+        # Every plain-text source, including the YouTube fallback, goes through
+        # the same deterministic feed-safe renderer. This prevents podcast apps
+        # from collapsing raw newlines into one dense paragraph.
+        description_format = PORTABLE_HTML_FORMAT
+        description_source_sha256 = sha256_text(description_source_text)
+        description_source_chars = len(description_source_text)
+        try:
+            description = render_portable_show_notes_html(description_source_text)
+        except ValueError as exc:
+            # Preserve the exact source and a fail-closed plan record. The auto
+            # gate will surface an actionable renderer error; the executor will
+            # also refuse to use this source.
+            description = ""
+            description_render_error = str(exc)
     transcript = timed_text_to_text(transcript_path) if transcript_path else ""
     base_title = strip_episode_number(record.get("title") or folder.name)
     warnings: list[str] = []
@@ -262,18 +368,31 @@ def local_payload(
     if not description:
         warnings.append("missing_description")
     description_quality = (
-        validate_show_notes(description)
-        if description_source == "podcast_sidecar"
+        validate_show_notes(description_source_text)
+        if description_source_text
         else None
     )
+    if description_quality is not None and description_render_error:
+        description_quality["errors"].append(
+            f"portable_renderer:{description_render_error}"
+        )
+    if (
+        description_quality
+        and len(description) > MAX_SHOW_NOTES_CHARS
+        and "rendered_over_10000_chars" not in description_quality["errors"]
+    ):
+        description_quality["errors"].append("rendered_over_10000_chars")
     if description_quality:
-        warnings.extend(
-            f"podcast_description_error:{item}"
-            for item in description_quality["errors"]
+        prefix = (
+            "podcast_description"
+            if description_source == "podcast_sidecar"
+            else "description"
         )
         warnings.extend(
-            f"podcast_description_warning:{item}"
-            for item in description_quality["warnings"]
+            f"{prefix}_error:{item}" for item in description_quality["errors"]
+        )
+        warnings.extend(
+            f"{prefix}_warning:{item}" for item in description_quality["warnings"]
         )
     if not transcript:
         warnings.append("missing_transcript")
@@ -283,12 +402,22 @@ def local_payload(
 
     payload = {
         "video_id": video_id,
+        # Persist the canonical policy inputs in the immutable plan.  The
+        # unattended execution gate verifies these values explicitly instead
+        # of assuming that presence in publish_actions is sufficient proof.
+        "youtube_privacy": record.get("youtube_privacy"),
+        "content_class": record.get("content_class"),
+        "podcast_policy": record.get("podcast_policy"),
+        "playlist_index": (youtube_record or {}).get("playlist_index"),
         "folder": record["folder"],
         "audio_path": relative_to_project(audio),
         "audio_sha256": sha256_file(audio) if audio else None,
         "audio_bytes": audio.stat().st_size if audio else 0,
         "description_path": relative_to_project(description_path),
         "description_source": description_source,
+        "description_format": description_format,
+        "description_source_sha256": description_source_sha256,
+        "description_source_chars": description_source_chars,
         "description_text": description_text,
         "description_sha256": sha256_text(description),
         "description_chars": len(description),
@@ -327,6 +456,10 @@ def build_plan(
         youtube_state,
         remote_map,
     )
+    incremental_baseline = incremental_publish_baseline(
+        youtube_state,
+        episodes_by_video,
+    )
     if manifest_out_dir is not None:
         manifest_out_dir.mkdir(parents=True, exist_ok=True)
         manifest_summary = summarize(records)
@@ -344,6 +477,7 @@ def build_plan(
     description_actions: list[dict[str, Any]] = []
     transcript_actions: list[dict[str, Any]] = []
     blocked: list[dict[str, Any]] = []
+    historical_publish_gap_count = 0
 
     for record in sorted(records, key=lambda item: (item.get("upload_date") or "", item.get("video_id") or "")):
         video_id = record.get("video_id")
@@ -358,6 +492,21 @@ def build_plan(
         )
 
         if record.get("action_needed") == "publish_to_transistor":
+            incremental_reason = incremental_candidate_block_reason(
+                video_id,
+                youtube_state,
+                incremental_baseline,
+            )
+            if incremental_reason:
+                if incremental_reason == "historical_gap_requires_backfill_mode":
+                    historical_publish_gap_count += 1
+                blocked.append({
+                    "scope": "publish",
+                    "video_id": video_id,
+                    "title": payload["base_title"],
+                    "reasons": [incremental_reason],
+                })
+                continue
             # Description/transcript quality is reported but is not a publish
             # policy gate. Only safety/idempotency preconditions block.
             reasons: list[str] = []
@@ -449,6 +598,13 @@ def build_plan(
                         "episode_title": target["title"],
                         "description_path": payload["description_path"],
                         "description_source": payload["description_source"],
+                        "description_format": payload["description_format"],
+                        "description_source_sha256": payload[
+                            "description_source_sha256"
+                        ],
+                        "description_source_chars": payload[
+                            "description_source_chars"
+                        ],
                         "description_sha256": payload["description_sha256"],
                         "description_chars": payload["description_chars"],
                         "remote_description_sha256": target["description_sha256"],
@@ -616,6 +772,8 @@ def build_plan(
         "generated_at": utc_now(),
         "show_id": show_id,
         "youtube_snapshot": youtube_snapshot,
+        "incremental_publish_baseline": incremental_baseline,
+        "historical_publish_gap_count": historical_publish_gap_count,
         "remote_episode_count": len(episodes),
         "remote_by_status": dict(Counter(
             episode.get("attributes", {}).get("status") or "unknown"
@@ -640,13 +798,15 @@ def build_plan(
 
 def write_summary(path: Path, plan: dict[str, Any]) -> None:
     lines = [
-        "# Podcast sync approval plan",
+        "# Podcast sync immutable plan",
         "",
         f"- Generated: `{plan['generated_at']}`",
         f"- Plan hash: `{plan['plan_hash']}`",
         f"- Transistor show: `{plan['show_id']}`",
         f"- Remote episodes: `{plan['remote_episode_count']}` `{json.dumps(plan['remote_by_status'], ensure_ascii=False)}`",
         f"- YouTube snapshot fresh: `{plan['youtube_snapshot']['fresh']}` (age `{plan['youtube_snapshot']['age_hours']}`h)",
+        f"- Incremental baseline: `{json.dumps(plan['incremental_publish_baseline'], ensure_ascii=False)}`",
+        f"- Historical publish gaps quarantined: `{plan['historical_publish_gap_count']}`",
         f"- Publication candidates: `{len(plan['candidate_publish_actions'])}`",
         f"- Publish actions: `{len(plan['publish_actions'])}`",
         f"- Projected reorder actions: `{len(plan['projected_reorder_actions'])}`",
@@ -654,9 +814,9 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         f"- Podcast description actions: `{len(plan['description_actions'])}`",
         f"- Transcript actions: `{len(plan['transcript_actions'])}`",
         f"- Blocked records: `{len(plan['blocked'])}`",
-        f"- Publish approval hash: `{plan['publish_approval_hash']}`",
-        f"- Description approval hash: `{plan['description_approval_hash']}`",
-        f"- Transcript approval hash: `{plan['transcript_approval_hash']}`",
+        f"- Publish scope hash: `{plan['publish_approval_hash']}`",
+        f"- Description scope hash: `{plan['description_approval_hash']}`",
+        f"- Transcript scope hash: `{plan['transcript_approval_hash']}`",
         "",
         "## Publish payload",
         "",
@@ -760,6 +920,8 @@ def main() -> int:
         "transcript_count": len(plan["transcript_actions"]),
         "blocked_count": len(plan["blocked"]),
         "youtube_snapshot_fresh": plan["youtube_snapshot"]["fresh"],
+        "incremental_publish_baseline": plan["incremental_publish_baseline"],
+        "historical_publish_gap_count": plan["historical_publish_gap_count"],
         "publish_approval_hash": plan["publish_approval_hash"],
         "description_approval_hash": plan["description_approval_hash"],
         "transcript_approval_hash": plan["transcript_approval_hash"],

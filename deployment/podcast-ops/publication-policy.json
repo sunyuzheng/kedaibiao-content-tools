@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "show_id": "71709",
+  "channel_id": "UC_5lJHgnMP_lb_VpIiXV0hQ",
+  "scope": "new_public_normal_only",
+  "max_items": 3,
+  "local_writer_disabled": false,
+  "approved_by": null,
+  "approved_at": null
+}

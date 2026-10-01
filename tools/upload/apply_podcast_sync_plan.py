@@ -24,7 +24,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from tools.podcast.core import (  # noqa: E402
     atomic_write_json,
     canonical_json,
-    extract_video_id,
+    episode_video_id,
     load_env,
     plan_hash,
     require_transistor_config,
@@ -37,6 +37,10 @@ from tools.podcast.core import (  # noqa: E402
 from tools.podcast.transistor_client import (  # noqa: E402
     TransistorClient,
     TransistorError,
+)
+from tools.podcast.show_notes import (  # noqa: E402
+    PORTABLE_HTML_FORMAT,
+    render_portable_show_notes_html,
 )
 
 
@@ -140,20 +144,62 @@ def read_description(
     path_value: str | None,
     expected_hash: str,
     inline_text: str | None = None,
+    source_sha256: str | None = None,
+    description_format: str | None = None,
 ) -> str:
     if inline_text is not None:
         if path_value:
             raise PlanPreconditionError(
                 "Description plan must use either a source path or inline text"
             )
-        description = inline_text.strip()
+        source = inline_text.strip()
+        if source_sha256 and sha256_text(source) != source_sha256:
+            raise PlanPreconditionError(
+                "Inline description source changed since approval"
+            )
+        if description_format == PORTABLE_HTML_FORMAT:
+            if not source_sha256:
+                raise PlanPreconditionError(
+                    "Portable HTML descriptions require a source hash"
+                )
+            description = render_portable_show_notes_html(source)
+        elif description_format:
+            raise PlanPreconditionError(
+                f"Unsupported description format: {description_format}"
+            )
+        elif source_sha256:
+            raise PlanPreconditionError(
+                "Inline source hash requires a declared renderer"
+            )
+        else:
+            description = source
     elif not path_value:
         description = ""
     else:
         path = resolve_project_path(path_value)
         if not path or not path.exists():
             raise PlanPreconditionError(f"Description source is missing: {path_value}")
-        description = path.read_text(encoding="utf-8", errors="replace").strip()
+        source = path.read_text(encoding="utf-8", errors="replace").strip()
+        if source_sha256:
+            observed_source_hash = sha256_text(source)
+            if observed_source_hash != source_sha256:
+                raise PlanPreconditionError(
+                    "Description source changed since approval: "
+                    f"{path_value} expected={source_sha256} "
+                    f"actual={observed_source_hash}"
+                )
+        if description_format == PORTABLE_HTML_FORMAT:
+            if not source_sha256:
+                raise PlanPreconditionError(
+                    "Portable HTML descriptions require a source hash"
+                )
+            description = render_portable_show_notes_html(source)
+        elif description_format:
+            raise PlanPreconditionError(
+                f"Unsupported description format: {description_format}"
+            )
+        else:
+            description = source
     actual = sha256_text(description)
     if actual != expected_hash:
         raise PlanPreconditionError(
@@ -176,7 +222,10 @@ def verify_audio(path_value: str | None, expected_hash: str | None) -> Path:
 
 def verify_episode_video(episode: dict[str, Any], video_id: str) -> dict[str, Any]:
     attrs = episode.get("attributes", {})
-    observed = extract_video_id(attrs.get("video_url"))
+    try:
+        observed = episode_video_id(attrs)
+    except ValueError as exc:
+        raise PlanPreconditionError(f"Episode {episode.get('id')} has conflicting YouTube identity") from exc
     if observed != video_id:
         raise PlanPreconditionError(
             f"Episode {episode.get('id')} video changed: expected={video_id} observed={observed}"
@@ -282,6 +331,8 @@ def apply_descriptions(
         description = read_description(
             item.get("description_path"),
             item["description_sha256"],
+            source_sha256=item.get("description_source_sha256"),
+            description_format=item.get("description_format"),
         )
         episode = client.get_episode(episode_id)
         attrs = verify_episode_video(episode, video_id)
@@ -366,11 +417,13 @@ def desired_episode_fields(local: dict[str, Any]) -> dict[str, Any]:
         local.get("description_path"),
         local["description_sha256"],
         local.get("description_text"),
+        source_sha256=local.get("description_source_sha256"),
+        description_format=local.get("description_format"),
     )
     desired: dict[str, Any] = {
         "title": local["base_title"],
         "description": description,
-        "video_url": local["video_url"],
+        "youtube_url": local["video_url"],
         "image_url": local["image_url"],
     }
     if local.get("transcript_path"):
@@ -392,6 +445,53 @@ def readback_matches(
             raise PlanPreconditionError(
                 f"Episode {episode.get('id')} readback mismatch for {key}"
             )
+    if "number" in desired and (
+        type(attrs.get("number")) is not int or attrs["number"] != desired["number"]
+    ):
+        raise PlanPreconditionError(
+            f"Episode {episode.get('id')} readback mismatch for number"
+        )
+
+
+def verify_published_feed_preconditions(
+    episodes: list[dict[str, Any]],
+    projected_feed: list[dict[str, Any]],
+) -> None:
+    """Check the entire historical feed before the first upload or API write."""
+    expected: dict[str, dict[str, Any]] = {}
+    for row in projected_feed:
+        if row.get("planned_publish"):
+            continue
+        video_id = row.get("video_id")
+        if not video_id or video_id in expected:
+            raise PlanPreconditionError("Frozen historical feed contains missing or duplicate identities")
+        expected[video_id] = row
+
+    observed: dict[str, dict[str, Any]] = {}
+    for episode in episodes:
+        attrs = episode.get("attributes", {})
+        if attrs.get("status") != "published":
+            continue
+        try:
+            video_id = episode_video_id(attrs)
+        except ValueError as exc:
+            raise PlanPreconditionError("Published feed has conflicting YouTube identities") from exc
+        if not video_id or video_id in observed:
+            raise PlanPreconditionError("Published feed contains missing or duplicate YouTube identities")
+        observed[video_id] = episode
+    if set(observed) != set(expected):
+        raise PlanPreconditionError("Published feed identities changed since planning; rebuild the plan")
+    for video_id, row in expected.items():
+        episode = observed[video_id]
+        attrs = episode.get("attributes", {})
+        if (
+            str(episode.get("id") or "") != str(row.get("episode_id") or "")
+            or attrs.get("number") != row.get("current_number")
+            or (attrs.get("title") or "") != row.get("current_title")
+        ):
+            raise PlanPreconditionError(
+                f"Historical episode {video_id} changed since planning; rebuild the plan"
+            )
 
 
 def apply_publish(
@@ -409,8 +509,16 @@ def apply_publish(
 
     publish_ids = {item["local"]["video_id"] for item in plan["publish_actions"]}
     frozen_titles: dict[str, str] = {}
+    frozen_numbers: dict[str, int] = {}
+    seen_numbers: set[int] = set()
     for row in plan.get("projected_feed", []):
         video_id = row.get("video_id")
+        number = row.get("target_number")
+        if type(number) is not int or number <= 0 or number in seen_numbers:
+            raise PlanPreconditionError(
+                f"Invalid or duplicate frozen episode number for {video_id}"
+            )
+        seen_numbers.add(number)
         if video_id not in publish_ids:
             continue
         title = row.get("target_title")
@@ -424,19 +532,22 @@ def apply_publish(
                 f"Invalid or duplicate frozen publish title for {video_id}"
             )
         frozen_titles[video_id] = title
+        frozen_numbers[video_id] = number
     missing_titles = publish_ids - frozen_titles.keys()
     if missing_titles:
         raise PlanPreconditionError(
             f"Missing frozen publish titles in projected_feed: {sorted(missing_titles)}"
         )
 
-    _, current_by_video = client.episodes_by_video_id(show_id)
+    current_episodes, current_by_video = client.episodes_by_video_id(show_id)
+    verify_published_feed_preconditions(current_episodes, plan.get("projected_feed", []))
     published = repaired = 0
     for item in plan["publish_actions"]:
         local = item["local"]
         video_id = local["video_id"]
         desired = desired_episode_fields(local)
         desired["title"] = frozen_titles[video_id]
+        desired["number"] = frozen_numbers[video_id]
         current = current_by_video.get(video_id, [])
 
         if item["action"] == "create_draft_then_publish":
@@ -453,7 +564,6 @@ def apply_publish(
             )
             create_payload = {
                 "show_id": show_id,
-                "increment_number": True,
                 "audio_url": authorization["audio_url"],
                 **desired,
             }
@@ -461,13 +571,12 @@ def apply_publish(
             episode_id = str(episode.get("id") or "")
             if not episode_id:
                 raise TransistorError(f"Create response for {video_id} had no episode id")
-            number = episode.get("attributes", {}).get("number")
             episode = client.update_episode(episode_id, desired)
             ledger.write(
                 "draft_created",
                 episode_id=episode_id,
                 video_id=video_id,
-                number=number,
+                number=desired["number"],
             )
         elif item["action"] == "update_draft_then_publish":
             if len(current) != 1:
@@ -486,7 +595,6 @@ def apply_publish(
                 raise PlanPreconditionError(
                     f"Draft identity changed for {video_id}: expected={expected_id} observed={episode_id}"
                 )
-            number = attrs.get("number")
             if not attrs.get("media_url"):
                 audio = verify_audio(local.get("audio_path"), local.get("audio_sha256"))
                 authorization = client.authorize_upload(audio.name)
@@ -502,7 +610,7 @@ def apply_publish(
                 "draft_repaired",
                 episode_id=episode_id,
                 video_id=video_id,
-                number=number,
+                number=desired["number"],
             )
         else:
             raise PlanPreconditionError(f"Unknown publish action: {item['action']}")
@@ -520,6 +628,7 @@ def apply_publish(
             transcript_verification = "not_requested"
         client.publish_episode(episode_id, local["published_at"])
         final = client.get_episode(episode_id)
+        readback_matches(final, video_id, desired)
         final_attrs = verify_episode_video(final, video_id)
         if final_attrs.get("status") != "published":
             raise PlanPreconditionError(
@@ -560,7 +669,7 @@ def apply_projected_reorder(
     by_video: dict[str, list[dict[str, Any]]] = {}
     for episode in episodes:
         attrs = episode.get("attributes", {})
-        video_id = extract_video_id(attrs.get("video_url"))
+        video_id = episode_video_id(attrs)
         if video_id:
             by_video.setdefault(video_id, []).append(episode)
     projected_feed = plan.get("projected_feed", [])

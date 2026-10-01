@@ -24,7 +24,7 @@ from tools.check.build_library_manifest import local_records  # noqa: E402
 from tools.podcast.core import (  # noqa: E402
     atomic_write_json,
     canonical_json,
-    extract_video_id,
+    episode_video_id,
     load_env,
     require_transistor_config,
     sha256_text,
@@ -69,7 +69,7 @@ def build_reorder_plan(
     seen_video_ids: list[str] = []
     for episode in episodes:
         attrs = episode.get("attributes", {})
-        video_id = extract_video_id(attrs.get("video_url"))
+        video_id = episode_video_id(attrs)
         date = local_dates.get(video_id or "")
         if not video_id or not date:
             missing.append({
@@ -171,7 +171,7 @@ def apply_plan(
     for action in plan["actions"]:
         episode = client.get_episode(action["episode_id"])
         attrs = episode.get("attributes", {})
-        observed_video_id = extract_video_id(attrs.get("video_url"))
+        observed_video_id = episode_video_id(attrs)
         precondition = (
             attrs.get("status") == "published"
             and observed_video_id == action["video_id"]
@@ -217,6 +217,11 @@ def main() -> int:
         action="store_true",
         help="Compatibility alias; planning is already the default.",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print one machine-readable plan summary for post-publish checks.",
+    )
     args = parser.parse_args()
 
     load_env()
@@ -230,14 +235,24 @@ def main() -> int:
         path = args.out_dir / f"reorder-plan-{stamp}.json"
         atomic_write_json(path, plan)
         atomic_write_json(args.out_dir / "latest.json", plan)
-        print(f"Plan: {path}")
+        if not args.json:
+            print(f"Plan: {path}")
 
     if str(plan.get("show_id")) != str(show_id):
         raise RuntimeError("Plan show id does not match configured Transistor show")
-    print(f"Published episodes: {plan['published_episode_count']}")
-    print(f"Actions: {len(plan['actions'])}")
-    print(f"Blocked: {plan['blocked_reasons']}")
-    print(f"Approval hash: {plan['approval_hash']}")
+    if args.json:
+        print(json.dumps({
+            "plan_path": str(path) if not args.plan else str(args.plan),
+            "published_episode_count": plan["published_episode_count"],
+            "action_count": len(plan["actions"]),
+            "blocked_reasons": plan["blocked_reasons"],
+            "approval_hash": plan["approval_hash"],
+        }, ensure_ascii=False))
+    else:
+        print(f"Published episodes: {plan['published_episode_count']}")
+        print(f"Actions: {len(plan['actions'])}")
+        print(f"Blocked: {plan['blocked_reasons']}")
+        print(f"Approval hash: {plan['approval_hash']}")
     if args.apply:
         updated = apply_plan(client, plan, args.approval_hash)
         print(f"Updated: {updated}")

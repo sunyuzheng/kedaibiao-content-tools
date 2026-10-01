@@ -16,16 +16,17 @@ def main():
     parser.add_argument("--series", choices=("dialogue", "solo"), required=True)
     parser.add_argument("--date", required=True, help="Original YouTube date, YYYYMMDD")
     parser.add_argument("--basis", required=True, help="Evidence checked in the description/transcript")
+    parser.add_argument("--catalog", type=Path, default=CATALOG_PATH, help="Private operational catalog after cloud cutover")
     args = parser.parse_args()
-    data = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
-    entries = load_catalog()
+    data = json.loads(args.catalog.read_text(encoding="utf-8"))
+    entries = load_catalog(args.catalog)
     if args.video_id in entries:
         raise ValueError("Assignment already exists; changing history requires a separate reviewed migration")
     assignment = next_assignment(entries, args.series, args.date, args.basis)
     entries[args.video_id] = assignment
     validate_catalog(entries)
     data["episodes"] = entries
-    atomic_write_json(CATALOG_PATH, data)
+    atomic_write_json(args.catalog, data)
     print(json.dumps({"video_id": args.video_id, **assignment}, ensure_ascii=False))
 
 
