@@ -113,6 +113,42 @@ def verify_probe(video_id: str, info: dict) -> str:
     return "public"
 
 
+def classify_youtube_error(stderr: str) -> str:
+    """Return only a fixed diagnostic label; never retain service text or URLs."""
+    from tools.youtube.verify_podcast_candidates import MEMBER_RE
+
+    # Signed URL paths/query strings are not diagnostic evidence.
+    text = re.sub(r"https?://\S+", "", stderr.lower())
+    if any(message in text for message in (
+        "not a bot", "sign in to confirm", "sign in to verify", "login required",
+        "please sign in", "sign in required",
+    )):
+        return "bot_or_sign_in_challenge"
+    if re.search(r"\b429\b", text) and ("http" in text or "too many requests" in text):
+        return "http_429_rate_limit"
+    if re.search(r"\b403\b", text) and ("http" in text or "forbidden" in text):
+        return "http_403_forbidden"
+    if MEMBER_RE.search(text):
+        return "member_only"
+    if any(message in text for message in (
+        "javascript runtime", "challenge solver", "challenge solving failed", "[jsc]",
+        "signature extraction failed", "nsig extraction failed", "signature solving failed",
+    )):
+        return "javascript_runtime_or_challenge_solver"
+    if any(message in text for message in (
+        "requested format is not available", "no video formats found", "no formats found",
+        "only images are available", "no suitable formats",
+    )):
+        return "format_unavailable"
+    if any(message in text for message in (
+        "timed out", "timeout", "connection refused", "connection reset", "connection aborted",
+        "temporary failure in name resolution", "name or service not known", "nodename nor servname",
+        "network is unreachable", "remote end closed connection", "certificate verify failed",
+    )):
+        return "network_error"
+    return "unclassified_extraction_error"
+
+
 def probe(video_id: str) -> dict:
     result = subprocess.run([sys.executable, "-m", "yt_dlp", "--ignore-config", "--no-playlist", "--no-warnings",
         "--socket-timeout", "30", "--retries", "3", "--extractor-retries", "3",
@@ -124,7 +160,8 @@ def probe(video_id: str) -> dict:
             match = ERROR_RE.match(line)
             if match and match.group(1) == video_id and MEMBER_RE.search(match.group(2)):
                 return {"id": video_id, "channel_id": CHANNEL_ID, "availability": "subscriber_only"}
-        raise CloudBlocked(f"YouTube probe failed: {video_id}; authentication, rate-limit and extraction errors require investigation")
+        label = classify_youtube_error(result.stderr)
+        raise CloudBlocked(f"YouTube probe failed: {video_id}; diagnostic={label}")
     return json.loads(result.stdout)
 
 
@@ -138,7 +175,8 @@ def download(info: dict) -> None:
         "--output", str(folder / "source.%(ext)s"), f"https://www.youtube.com/watch?v={info['id']}",
     ], cwd=ROOT, text=True, capture_output=True, timeout=5400)
     if result.returncode:
-        raise CloudBlocked(f"Cloud audio download failed: {info['id']}; inspect YouTube availability or provide original audio")
+        label = classify_youtube_error(result.stderr)
+        raise CloudBlocked(f"Cloud audio download failed: {info['id']}; diagnostic={label}")
     audio = folder / "source.m4a"
     if not audio.is_file() or not audio.stat().st_size:
         raise CloudBlocked(f"No usable audio after download: {info['id']}")

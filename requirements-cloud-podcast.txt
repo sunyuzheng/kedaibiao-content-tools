@@ -1,3 +1,6 @@
 requests==2.32.5
 # PyPI's exact version includes .dev0; the display version omits that suffix.
 yt-dlp==2026.9.16.232951.dev0
+
+# Exact companion version required by the pinned yt-dlp distribution.
+yt-dlp-ejs==0.8.0
