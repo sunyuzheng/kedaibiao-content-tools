@@ -45,6 +45,11 @@ from tools.youtube.build_incremental_download_queue import (
 )
 
 
+def setUpModule() -> None:
+    # A fresh checkout has no ignored runtime directories yet.
+    (PROJECT_ROOT / "logs").mkdir(parents=True, exist_ok=True)
+
+
 class FakeResponse:
     def __init__(
         self,
