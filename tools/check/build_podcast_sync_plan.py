@@ -825,11 +825,12 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
     ]
     for item in plan["publish_actions"]:
         local = item["local"]
+        title = local["base_title"].replace("|", "\\|")[:100]
         lines.append(
             f"| {item['action']} | {local['published_at'][:10]} | `{local['video_id']}` | "
             f"{local['description_chars']} chars / {local['description_source']} | "
             f"{local['transcript_chars']} | {','.join(item['warnings']) or 'none'} | "
-            f"{local['base_title'].replace('|', '\\|')[:100]} |"
+            f"{title} |"
         )
     lines += [
         "",
@@ -839,10 +840,11 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         "|---|---|---:|---:|---|",
     ]
     for item in plan["projected_reorder_actions"]:
+        title = item["target_title"].replace("|", "\\|")[:100]
         lines.append(
             f"| `{item['video_id']}` | {item['planned_publish']} | "
             f"{item['current_number'] if item['current_number'] is not None else ''} | "
-            f"{item['target_number']} | {item['target_title'].replace('|', '\\|')[:100]} |"
+            f"{item['target_number']} | {title} |"
         )
     lines += [
         "",
@@ -852,11 +854,12 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         "|---|---|---|---:|---:|---|---|",
     ]
     for item in plan["description_actions"]:
+        title = (item["episode_title"] or "").replace("|", "\\|")[:100]
         lines.append(
             f"| `{item['episode_id']}` | {item['episode_status']} | `{item['video_id']}` | "
             f"{item['remote_description_chars']} | {item['description_chars']} | "
             f"`{item['description_path']}` | "
-            f"{(item['episode_title'] or '').replace('|', '\\|')[:100]} |"
+            f"{title} |"
         )
     lines += [
         "",
@@ -866,10 +869,11 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         "|---|---|---|---:|---|---|",
     ]
     for item in plan["transcript_actions"]:
+        title = (item["episode_title"] or "").replace("|", "\\|")[:100]
         lines.append(
             f"| `{item['episode_id']}` | {item['episode_status']} | `{item['video_id']}` | "
             f"{item['transcript_chars']} | `{item['transcript_path']}` | "
-            f"{(item['episode_title'] or '').replace('|', '\\|')[:100]} |"
+            f"{title} |"
         )
     lines += [
         "",
@@ -879,9 +883,10 @@ def write_summary(path: Path, plan: dict[str, Any]) -> None:
         "|---|---|---|---|",
     ]
     for item in plan["blocked"]:
+        title = item["title"].replace("|", "\\|")[:100]
         lines.append(
             f"| {item['scope']} | `{item['video_id']}` | `{','.join(item['reasons'])}` | "
-            f"{item['title'].replace('|', '\\|')[:100]} |"
+            f"{title} |"
         )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
