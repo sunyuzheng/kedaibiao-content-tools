@@ -83,9 +83,13 @@ class PlannerSeriesTests(unittest.TestCase):
             }
             for name, value in mocks.items():
                 stack.enter_context(patch.object(planner, name, return_value=value))
+            def frozen_local_payload(record, _, **kwargs):
+                self.assertEqual(kwargs["include_promotion"], record["video_id"] not in by_video)
+                return local_payload(record["video_id"], record["title"]), []
+
             stack.enter_context(patch.object(
                 planner, "local_payload",
-                side_effect=lambda record, _: (local_payload(record["video_id"], record["title"]), []),
+                side_effect=frozen_local_payload,
             ))
             return planner.build_plan(72)
 

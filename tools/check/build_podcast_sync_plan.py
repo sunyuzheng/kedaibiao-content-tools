@@ -47,6 +47,12 @@ from tools.podcast.core import (  # noqa: E402
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
 from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
+from tools.podcast.promotion import (  # noqa: E402
+    PROMOTION_HTML_FORMAT,
+    promotion_render_inputs,
+    render_promoted_show_notes_html,
+    validate_promotion_source,
+)
 from tools.podcast.show_notes import (  # noqa: E402
     MAX_SHOW_NOTES_CHARS,
     PORTABLE_HTML_FORMAT,
@@ -283,6 +289,8 @@ def candidate_verification_state(
 def local_payload(
     record: dict[str, Any],
     youtube_record: dict[str, Any] | None = None,
+    *,
+    include_promotion: bool = False,
 ) -> tuple[dict[str, Any], list[str]]:
     folder = PROJECT_ROOT / record["folder"]
     video_id = record["video_id"]
@@ -320,7 +328,9 @@ def local_payload(
     youtube_description = str(
         (youtube_record or {}).get("description") or ""
     ).strip()
+    base_title = strip_episode_number(record.get("title") or folder.name)
     description_format = None
+    description_renderer_inputs = None
     description_source_sha256 = None
     description_source_chars = None
     description_render_error: str | None = None
@@ -343,34 +353,39 @@ def local_payload(
         description_source_text = ""
         description = ""
         description_source = "empty"
-        description_text = None
+        description_text = "" if include_promotion else None
         description_path = None
-    if description_source_text:
+    if description_source_text or include_promotion:
         # Every plain-text source, including the YouTube fallback, goes through
         # the same deterministic feed-safe renderer. This prevents podcast apps
         # from collapsing raw newlines into one dense paragraph.
-        description_format = PORTABLE_HTML_FORMAT
+        description_format = PROMOTION_HTML_FORMAT if include_promotion else PORTABLE_HTML_FORMAT
         description_source_sha256 = sha256_text(description_source_text)
         description_source_chars = len(description_source_text)
         try:
-            description = render_portable_show_notes_html(description_source_text)
-        except ValueError as exc:
+            if include_promotion:
+                description_renderer_inputs = promotion_render_inputs(base_title, PROJECT_ROOT)
+                description = render_promoted_show_notes_html(
+                    description_source_text, description_renderer_inputs, PROJECT_ROOT,
+                )
+            else:
+                description = render_portable_show_notes_html(description_source_text)
+        except (OSError, ValueError) as exc:
             # Preserve the exact source and a fail-closed plan record. The auto
             # gate will surface an actionable renderer error; the executor will
             # also refuse to use this source.
             description = ""
             description_render_error = str(exc)
     transcript = timed_text_to_text(transcript_path) if transcript_path else ""
-    base_title = strip_episode_number(record.get("title") or folder.name)
     warnings: list[str] = []
     if not audio:
         warnings.append("missing_audio")
     if not description:
         warnings.append("missing_description")
     description_quality = (
-        validate_show_notes(description_source_text)
-        if description_source_text
-        else None
+        validate_promotion_source(description_source_text)
+        if include_promotion
+        else (validate_show_notes(description_source_text) if description_source_text else None)
     )
     if description_quality is not None and description_render_error:
         description_quality["errors"].append(
@@ -416,6 +431,7 @@ def local_payload(
         "description_path": relative_to_project(description_path),
         "description_source": description_source,
         "description_format": description_format,
+        "description_renderer_inputs": description_renderer_inputs,
         "description_source_sha256": description_source_sha256,
         "description_source_chars": description_source_chars,
         "description_text": description_text,
@@ -489,6 +505,7 @@ def build_plan(
         payload, local_warnings = local_payload(
             record,
             youtube_state.get(video_id),
+            include_promotion=not bool(published),
         )
 
         if record.get("action_needed") == "publish_to_transistor":

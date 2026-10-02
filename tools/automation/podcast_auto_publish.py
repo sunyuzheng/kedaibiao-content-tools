@@ -25,6 +25,9 @@ from tools.podcast.show_notes import (
     render_portable_show_notes_html,
     validate_show_notes,
 )
+from tools.podcast.promotion import (
+    PROMOTION_HTML_FORMAT, render_promoted_show_notes_html, validate_promotion_source,
+)
 
 
 DEFAULT_MAX_AUTO_PUBLISH_ITEMS = 3
@@ -159,6 +162,12 @@ def _description_text(
         if expected_source_hash and sha256_text(source) != expected_source_hash:
             raise ValueError("inline description source hash changed")
         description_format = local.get("description_format")
+        if description_format == PROMOTION_HTML_FORMAT:
+            if not expected_source_hash:
+                raise ValueError("promotion inline description is missing source hash")
+            return render_promoted_show_notes_html(
+                source, local.get("description_renderer_inputs"), project_root,
+            ), source
         if description_format == PORTABLE_HTML_FORMAT:
             if not expected_source_hash:
                 raise ValueError("portable inline description is missing source hash")
@@ -176,6 +185,12 @@ def _description_text(
     if expected_source_hash and sha256_text(source) != expected_source_hash:
         raise ValueError("description source hash changed")
     description_format = local.get("description_format")
+    if description_format == PROMOTION_HTML_FORMAT:
+        if not expected_source_hash:
+            raise ValueError("promotion description is missing source hash")
+        return render_promoted_show_notes_html(
+            source, local.get("description_renderer_inputs"), project_root,
+        ), source
     if description_format == PORTABLE_HTML_FORMAT:
         if not expected_source_hash:
             raise ValueError("portable description is missing source hash")
@@ -236,8 +251,12 @@ def _verify_description(
             )
         ], []
 
-    validation_source = source if local.get("description_format") == PORTABLE_HTML_FORMAT else description
-    quality = validate_show_notes(validation_source or description)
+    validation_source = source if local.get("description_format") in {PORTABLE_HTML_FORMAT, PROMOTION_HTML_FORMAT} else description
+    quality = (
+        validate_promotion_source(validation_source)
+        if local.get("description_format") == PROMOTION_HTML_FORMAT
+        else validate_show_notes(validation_source if validation_source is not None else description)
+    )
     errors = list(quality.get("errors", []))
     if len(description) > 10_000 and "rendered_over_10000_chars" not in errors:
         errors.append("rendered_over_10000_chars")

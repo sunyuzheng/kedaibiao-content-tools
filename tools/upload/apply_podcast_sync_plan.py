@@ -42,6 +42,10 @@ from tools.podcast.show_notes import (  # noqa: E402
     PORTABLE_HTML_FORMAT,
     render_portable_show_notes_html,
 )
+from tools.podcast.promotion import (  # noqa: E402
+    PROMOTION_HTML_FORMAT,
+    render_promoted_show_notes_html,
+)
 
 
 DEFAULT_PLAN = PROJECT_ROOT / "logs" / "podcast_sync" / "plans" / "latest.json"
@@ -146,6 +150,7 @@ def read_description(
     inline_text: str | None = None,
     source_sha256: str | None = None,
     description_format: str | None = None,
+    renderer_inputs: dict[str, Any] | None = None,
 ) -> str:
     if inline_text is not None:
         if path_value:
@@ -157,7 +162,14 @@ def read_description(
             raise PlanPreconditionError(
                 "Inline description source changed since approval"
             )
-        if description_format == PORTABLE_HTML_FORMAT:
+        if description_format == PROMOTION_HTML_FORMAT:
+            if not source_sha256:
+                raise PlanPreconditionError("Promotion descriptions require a source hash")
+            try:
+                description = render_promoted_show_notes_html(source, renderer_inputs, PROJECT_ROOT)
+            except (OSError, ValueError) as exc:
+                raise PlanPreconditionError(f"Promotion renderer rejected the plan: {exc}") from exc
+        elif description_format == PORTABLE_HTML_FORMAT:
             if not source_sha256:
                 raise PlanPreconditionError(
                     "Portable HTML descriptions require a source hash"
@@ -188,7 +200,14 @@ def read_description(
                     f"{path_value} expected={source_sha256} "
                     f"actual={observed_source_hash}"
                 )
-        if description_format == PORTABLE_HTML_FORMAT:
+        if description_format == PROMOTION_HTML_FORMAT:
+            if not source_sha256:
+                raise PlanPreconditionError("Promotion descriptions require a source hash")
+            try:
+                description = render_promoted_show_notes_html(source, renderer_inputs, PROJECT_ROOT)
+            except (OSError, ValueError) as exc:
+                raise PlanPreconditionError(f"Promotion renderer rejected the plan: {exc}") from exc
+        elif description_format == PORTABLE_HTML_FORMAT:
             if not source_sha256:
                 raise PlanPreconditionError(
                     "Portable HTML descriptions require a source hash"
@@ -333,6 +352,7 @@ def apply_descriptions(
             item["description_sha256"],
             source_sha256=item.get("description_source_sha256"),
             description_format=item.get("description_format"),
+            renderer_inputs=item.get("description_renderer_inputs"),
         )
         episode = client.get_episode(episode_id)
         attrs = verify_episode_video(episode, video_id)
@@ -419,6 +439,7 @@ def desired_episode_fields(local: dict[str, Any]) -> dict[str, Any]:
         local.get("description_text"),
         source_sha256=local.get("description_source_sha256"),
         description_format=local.get("description_format"),
+        renderer_inputs=local.get("description_renderer_inputs"),
     )
     desired: dict[str, Any] = {
         "title": local["base_title"],

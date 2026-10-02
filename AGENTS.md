@@ -49,7 +49,7 @@ The scheduled task may automatically publish at most three genuinely new episode
 
 The executor's existing scope hash remains an integrity lock, not a claim of per-run human approval. Existing-episode Show Notes/transcript updates, historical backfills, duplicate-draft cleanup, and any change to a historical episode number/title remain separate reviewable scopes and must never be swept into scheduled auto-publish.
 
-All plain-text descriptions, including the YouTube/local fallback, must use the deterministic `portable_html_v1` renderer before publication so RSS clients do not collapse raw newlines. A versioned `podcast_show_notes/<video_id>.txt` sidecar remains the preferred high-quality source; its absence alone does not block a new episode.
+All new-episode descriptions, including the YouTube/local fallback, must use the deterministic `promotion_html_v1` renderer before publication. It renders the episode body with the unchanged `portable_html_v1` renderer and adds the exact approved `podcast_show_notes/PROMOTION.json` template. Source, config, fallback-title and rendered hashes are immutable execution inputs; missing or changed config fails closed. Existing v1 plans and separately approved historical sidecar maintenance retain v1 behavior. A versioned `podcast_show_notes/<video_id>.txt` sidecar remains the preferred high-quality source; its absence alone does not block a new episode.
 
 Scheduled owner notifications send completion receipts only after all post-publish checks pass. New or changed real blockers must include human context, impact, exact action, and location. Maintenance uses a separate fingerprint. Quarantined historical gaps and unchanged blockers stay silent.
 
