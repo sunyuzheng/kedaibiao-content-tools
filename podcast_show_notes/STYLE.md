@@ -41,8 +41,9 @@ Show Notes 不是 YouTube description 的副本，也不是关键词清单。它
 ## 技术约束
 
 - 权威 sidecar 保持为 UTF-8 纯文本，不超过 10,000 字符；不要手写 HTML。
-- immutable plan 会把 sidecar 确定性渲染为 `portable_html_v1`：每个信息单元使用
-  简单 `<p>`，小标题使用 `<strong>`，问题列表使用字面 `•`，URL 使用 `<a>`。
+- 新期次 immutable plan 使用 `promotion_html_v1` 添加统一推广；本期正文仍由
+  未改变的 `portable_html_v1` 确定性渲染：信息单元使用简单 `<p>`，小标题使用
+  `<strong>`，问题列表使用字面 `•`，URL 使用 `<a>`。旧v1计划保留原语义。
   这是发布 payload，不改变权威源稿。不要依赖 RSS 中的裸换行；小宇宙会把它们压平。
 - 视频版与文字稿的动态标签独立成段，不再在前一行重复同名标签；避免客户端显示
   “观看本期视频版：观看本期视频版”。
@@ -59,5 +60,5 @@ Show Notes 不是 YouTube description 的副本，也不是关键词清单。它
 
 2026-10-02审阅稿位于`logs/show-notes-refresh-20261002/`。历史节目仅按锁定
 快照替换明确的通用推广；原正文、章节、人物、完整版链接、合作披露继续保留。
-云端YouTube回退简介也应在下一次代码版本切换中采用同一模板，发布前先核对
-新期次的准确描述payload；不会自动覆盖历史简介。
+云端YouTube回退简介已接入同一模板；配置、来源、回退标题和渲染结果均由
+immutable plan锁定。配置漂移阻断执行，不会自动覆盖历史简介。
