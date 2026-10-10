@@ -30,6 +30,12 @@ The validator checks Circle-specific nulls, source URL, title, dates and thumbna
 
 The website models this as a Circle episode with a nullable video ID. It shows the real source title, recording date, companion publication date and a Superlinear CTA. It emits a `CreativeWork` source link, not a made-up `VideoObject`, upload identity, embed or viewing count. A root-relative thumbnail becomes an absolute `www.lizheng.ai` URL in SEO metadata.
 
+## Community resources and YouTube playlists
+
+Optional `community_resources` in `guests.json` links related Circle content separately from the interview list. Each entry has `kind` (`guest_post`, `student_resource`, or `event`), verified `title`, `url`, and `summary`, plus an optional `author` (required for student resources). The validator checks the Superlinear destination, event path, unique URLs, and attribution. Resources do not change `episode_count`, video membership, or the featured video. Keep source access permissions in Circle; this index does not copy private attachments or recording URLs.
+
+Optional `youtube_playlist_url` stores the verified guest playlist URL. The website's existing roster snapshot generator preserves both fields; the guest page displays the playlist shortcut and grouped community links. The same resources appear in the prerendered fallback and structured data. The content roster remains authoritative.
+
 ## Review and release
 
 Local isolated worktrees may be synchronized by setting `KEDAIBIAO_CHANNEL_DIR` to this content worktree before running the website’s `pnpm sync:guest-video-metadata`. This generates the deployment snapshots. Run the upstream validator and website typecheck/build before review.

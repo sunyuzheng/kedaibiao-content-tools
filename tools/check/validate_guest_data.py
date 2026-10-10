@@ -58,6 +58,49 @@ def main() -> int:
         all_urls = guest.get("all_urls") or []
         all_video_ids = guest.get("all_video_ids") or []
 
+        playlist_url = guest.get("youtube_playlist_url")
+        if playlist_url is not None:
+            if not isinstance(playlist_url, str):
+                errors.append(f"{guest_name}: youtube_playlist_url 必须是字符串")
+            parsed_playlist = urlparse(playlist_url if isinstance(playlist_url, str) else "")
+            playlist_id = parse_qs(parsed_playlist.query).get("list", [""])[0]
+            if (parsed_playlist.scheme != "https" or parsed_playlist.netloc != "www.youtube.com"
+                    or parsed_playlist.path != "/playlist" or parsed_playlist.fragment
+                    or set(parse_qs(parsed_playlist.query)) != {"list"}
+                    or not re.fullmatch(r"PL[A-Za-z0-9_-]+", playlist_id)):
+                errors.append(f"{guest_name}: 非法 YouTube playlist URL")
+        resources = guest.get("community_resources", [])
+        if not isinstance(resources, list):
+            errors.append(f"{guest_name}: community_resources 必须是数组")
+            resources = []
+        seen_resource_urls = set()
+        for resource in resources:
+            if not isinstance(resource, dict):
+                errors.append(f"{guest_name}: 非法社区资料条目")
+                continue
+            kind = resource.get("kind")
+            if kind not in ("guest_post", "student_resource", "event"):
+                errors.append(f"{guest_name}: 非法社区资料类型 -> {kind}")
+            url = resource.get("url", "")
+            parsed = urlparse(url) if isinstance(url, str) else urlparse("")
+            if (parsed.scheme != "https" or parsed.netloc != "www.superlinear.academy"
+                    or not parsed.path.startswith("/c/") or parsed.query or parsed.fragment
+                    or (kind == "event" and not parsed.path.startswith("/c/events/"))
+                    or (kind != "event" and parsed.path.startswith("/c/events/"))):
+                errors.append(f"{guest_name}: 非法社区资料 URL -> {url}")
+            if not isinstance(url, str) or url in seen_resource_urls:
+                errors.append(f"{guest_name}: 重复或非法社区资料 URL")
+            else:
+                seen_resource_urls.add(url)
+            if any(not isinstance(resource.get(field), str) or not resource[field].strip()
+                   for field in ("title", "summary")):
+                errors.append(f"{guest_name}: 社区资料缺少标题或摘要")
+            author = resource.get("author")
+            if "author" in resource and (not isinstance(author, str) or not author.strip()):
+                errors.append(f"{guest_name}: 社区资料作者必须是非空字符串")
+            if kind == "student_resource" and (not isinstance(author, str) or not author.strip()):
+                errors.append(f"{guest_name}: 学员资料须注明作者")
+
         source_type = guest.get("primary_source_type", "youtube")
         if source_type == "circle":
             primary_url = guest.get("primary_url") or ""

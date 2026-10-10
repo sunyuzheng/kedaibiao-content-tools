@@ -328,6 +328,89 @@
       "https://www.youtube.com/watch?v=DW24krQCXM4",
       "https://www.youtube.com/watch?v=TqC-zoGI9-A",
       "https://www.youtube.com/watch?v=wgr5z9VM1rs"
+    ],
+    "youtube_playlist_url": "https://www.youtube.com/playlist?list=PLeLRTYRHb3xo",
+    "community_resources": [
+      {
+        "kind": "guest_post",
+        "title": "大家好，我是yc，支持课代表~",
+        "url": "https://www.superlinear.academy/c/say-hello/yc",
+        "summary": "自我介绍及LinkedIn入口。",
+        "author": "YC"
+      },
+      {
+        "kind": "guest_post",
+        "title": "yc读简历",
+        "url": "https://www.superlinear.academy/c/main/yc",
+        "summary": "三份真实简历点评的社区原帖，可继续看评论区里的提问与讨论。",
+        "author": "YC"
+      },
+      {
+        "kind": "guest_post",
+        "title": "YC改简历 - 不只是简历, 更是rethink职业成长",
+        "url": "https://www.superlinear.academy/c/main/yc-rethink",
+        "summary": "从“好简历→好面试→理想岗位→工作中的成长”出发，讨论怎样把简历提升变成职业成长的正循环。",
+        "author": "YC"
+      },
+      {
+        "kind": "guest_post",
+        "title": "YC职业咨询热线(免费, AI Avatar), 欢迎测试~",
+        "url": "https://www.superlinear.academy/c/collaborate/yc-ai-avatar",
+        "summary": "用过往访谈与个人笔记搭建语音职业咨询AI分身的实验，原帖记录了当时的测试和更新。",
+        "author": "YC"
+      },
+      {
+        "kind": "guest_post",
+        "title": "yc终于辞职创业了，来和大家聊聊，AMA~",
+        "url": "https://www.superlinear.academy/c/main/yc-ama",
+        "summary": "离职创业后的AMA，讨论AI产品、增长、融资和团队。",
+        "author": "YC"
+      },
+      {
+        "kind": "guest_post",
+        "title": "YC在湾区见了近百位投资人：他们真正关心的七类问题，以及我学到的几件事",
+        "url": "https://www.superlinear.academy/c/main/yc-1e8f8b",
+        "summary": "投资人怎样看创业者与方向的匹配、护城河、GTM、早期信号、融资计划、合规和双方协作，以及有超的融资复盘。",
+        "author": "YC"
+      },
+      {
+        "kind": "student_resource",
+        "title": "YC改简历-心得体会分享",
+        "url": "https://www.superlinear.academy/c/posts/yc-5a8c8c",
+        "summary": "结合简历反馈，讨论如何突出最有价值的经历，以及招聘者对不同资历的期待。",
+        "author": "Nana"
+      },
+      {
+        "kind": "student_resource",
+        "title": "分享一份被YC改过的简历模板，可能对你有点帮助",
+        "url": "https://www.superlinear.academy/c/posts/yc-1a640b",
+        "summary": "含Google Docs可编辑模板和PDF；原帖建议用Google Docs打开。",
+        "author": "Eddie"
+      },
+      {
+        "kind": "event",
+        "title": "大师课04，董有超：当答案变便宜，什么能力更值钱？：从超级执行者到AI-Native Owner",
+        "url": "https://www.superlinear.academy/c/events/masterclass-04",
+        "summary": "2026年11月6日美西晚间的Stay Superlinear会员线上大师课，讨论人与Agent的工作边界、结果责任，以及AI Native公司的简历。"
+      },
+      {
+        "kind": "event",
+        "title": "YC改简历",
+        "url": "https://www.superlinear.academy/c/events/yc",
+        "summary": "有超发起的2024年简历工作坊，每人简历反馈加集体问答。"
+      },
+      {
+        "kind": "event",
+        "title": "YC改简历 - 不只是简历, 更是rethink职业成长",
+        "url": "https://www.superlinear.academy/c/events/yc-rethink",
+        "summary": "有超发起的进阶工作坊，围绕简历、面试、机会选择与职业发展做深入讨论。"
+      },
+      {
+        "kind": "event",
+        "title": "首场直播：AI有PMF吗？｜YC、M小姐、indigo",
+        "url": "https://www.superlinear.academy/c/events/ai-pmf-feat-yc-m-indigo",
+        "summary": "有超参与的2024年社区直播活动记录。"
+      }
     ]
   },
   {
