@@ -1,11 +1,5 @@
-# 嘉宾身份与节目关联
+# 本地身份核对记录
 
-本目录是嘉宾身份修正的owner入口。历史`guests.json`及字幕原稿保留；网站和Open Context消费明确的公开投影，不直接发布本地证据库。
+公开人物、别名和节目关系统一维护在[Open Context](https://github.com/sunyuzheng/lizheng-open-context)的`catalog/guests.json`，个人网站和问问立正从该仓库消费。
 
-当前已发布版本由[`public-release.json`](public-release.json)绑定。`public-identity-overlay.pending-v2.json`是此次已批准并发布的准确元数据快照；文件名及其中的发布前状态作为冻结记录保留，消费时以发布记录中的文件与SHA256为准。它完整绑定当前网站的140条来源记录，记录3组人物合并、1组同一人物的展示标签合并、旧链接、13个补充公开参与者和45条经原节目核对的公开节目关联。网站为149个展示条目；13条补充记录可能属于同一期节目，不能当作13个新节目。旧`public-identity-overlay.pending.json`保留为不可变父版本。
-
-身份已核对的合并：Cooper竹子与卢蔚、Rachel与王然、许博士与许辉。AutoKeras嘉宾与金海峰在本地已是同一人物ID，网站重复展示标签另作合并，不创建自环人物重定向。原节目自我介绍、明确返场关系和作者链接为依据；旧英文标签仅保留为检索别名，不认证为法定姓名。Rockhood节目的Monica独立登记，不与其他Monica自动合并。星瞳为虚拟角色，多人组合保留组合类型。
-
-名字、岗位和发言分别管理。职位保留为带节目日期的来源断言，未确认当前任职时不输出当前`jobTitle`或`worksFor`。节目关联不分配说话人，也不证明主持人赞同嘉宾。会员及未公开的新文字仍仅存本地。
-
-完整证据、不可变修订链和本地项目图保存在本轮Open Context工作区的`guest-reconciliation-20261011`证据目录。新发布以准确overlay、消费者补丁、公开内容manifest和线上回执共同为准；入口是`public-release.json`，不能仅凭`.pending`文件名或冻结前状态判断发布情况。
+本目录保留本地核对的历史输入、修订链和既有发布记录。原节目自我介绍、作者链接和制作记录用于核对；媒体和完整证据随本地素材库保存。公开目录的日常更新和消费者合同见[资料架构](https://github.com/sunyuzheng/lizheng-open-context/blob/main/docs/conversation-architecture.md)。

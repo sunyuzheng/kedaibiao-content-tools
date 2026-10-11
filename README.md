@@ -161,15 +161,8 @@ pip install faster-whisper    # CPU/CUDA Whisper
 
 ---
 
-## 网站 Guests 页
+## 公开嘉宾资料与网站
 
-如果你是在维护 `https://www.lizheng.ai/guests`：
+公开人物、节目关系和伴读链接统一维护在[Open Context](https://github.com/sunyuzheng/lizheng-open-context)的`catalog/guests.json`与`catalog/guest-articles.json`。个人网站和问问立正从固定release消费。
 
-- 嘉宾 roster / 嘉宾-视频映射的唯一权威来源是 [`guests.json`](guests.json)
-- Guest 页面视频 metadata 的权威来源是 [`guest_video_metadata.json`](guest_video_metadata.json)
-- `tools/youtube/all_videos_full.json` 是更大的本地全量视频元数据表，用来生成上面的 guest metadata
-- 更新 guest 视频 metadata 时先跑 `python3 tools/youtube/build_guest_video_metadata.py`
-- 低频刷新时可直接跑 `./tools/youtube/refresh_guest_page_data.sh`
-- 更新 `guests.json` 或 guest 相关视频 metadata 后先跑 `python3 tools/check/validate_guest_data.py`
-- GitHub 上也会在 push / PR 时自动跑 `Validate Guest Data`
-- 详细说明见 [docs/网站嘉宾数据说明.md](docs/网站嘉宾数据说明.md)
+本项目负责本地媒体归档、转写、校对和证据留存。`guests.json`与`guest_video_metadata.json`保留为频道工具兼容输入；采集结果在核对后更新到Open Context的公开目录。网站维护入口见[数据说明](docs/网站嘉宾数据说明.md)。
