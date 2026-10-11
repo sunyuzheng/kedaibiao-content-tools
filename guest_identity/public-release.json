@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "kind": "approved-guest-identity-public-release",
+  "published_date": "2026-10-11",
+  "status": "published",
+  "overlay": {
+    "file": "public-identity-overlay.pending-v2.json",
+    "sha256": "95842315bb31a036daf1f6ae03e5f881817dc6976ff0991779682a035776fff4",
+    "payload_commit": "583e68d3278fefb788463cc1e4b6ea3f2194d5fa",
+    "frozen_proposal_status_retained": true
+  },
+  "public_consumers": {
+    "open_context": {
+      "repository": "https://github.com/sunyuzheng/lizheng-open-context",
+      "source_commit": "bc28aa936ae414bae2117bad4e08069fdb0115bc",
+      "release_sha256": "88de89e4a021130e897da6a0751604c852f430145b1206238f76aff476660751",
+      "architecture": "https://github.com/sunyuzheng/lizheng-open-context/blob/bc28aa936ae414bae2117bad4e08069fdb0115bc/docs/conversation-architecture.md"
+    },
+    "ask": {
+      "repository": "https://github.com/sunyuzheng/ask-lizheng",
+      "data_release_commit": "cca86cf0279b9ac581e20d5e57b3c49c8725760c",
+      "url": "https://ask.lizheng.ai"
+    },
+    "website": {
+      "repository": "https://github.com/sunyuzheng/lizheng-personal-site",
+      "identity_payload_commit": "829a613bd178ada57129c50a4d6630fe714252e6",
+      "url": "https://www.lizheng.ai/guests"
+    }
+  },
+  "scope": "Previously reviewed public identity metadata; no new transcript text, private evidence or current-job claims.",
+  "quality": {
+    "full_precision_certified": false,
+    "current_jobs_certified": false,
+    "participant_metadata_assigns_speaker": false
+  }
+}
