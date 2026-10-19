@@ -47,6 +47,7 @@ from tools.podcast.core import (  # noqa: E402
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
 from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
+from tools.podcast.numbering import project_global_numbers  # noqa: E402
 from tools.podcast.promotion import (  # noqa: E402
     PROMOTION_HTML_FORMAT,
     promotion_render_inputs,
@@ -729,8 +730,13 @@ def build_plan(
     projected_feed: list[dict[str, Any]] = []
     projected_reorder_actions: list[dict[str, Any]] = []
     if not publish_blocked_reasons:
-        projected_rows.sort(key=lambda row: (row["date"], row["video_id"]))
-        for target_number, row in enumerate(projected_rows, 1):
+        try:
+            numbered_rows = project_global_numbers(projected_rows)
+        except ValueError as exc:
+            publish_blocked_reasons.append(str(exc))
+            numbered_rows = []
+        for row in numbered_rows:
+            target_number = row["target_number"]
             try:
                 target_title = episode_series_title(
                     row["base_title"], row["video_id"], catalog=series_catalog
