@@ -32,6 +32,7 @@ from tools.podcast.core import (  # noqa: E402
 )
 from tools.podcast.transistor_client import TransistorClient  # noqa: E402
 from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
+from tools.podcast.numbering import project_global_numbers  # noqa: E402
 
 
 DEFAULT_OUT_DIR = PROJECT_ROOT / "logs" / "podcast_sync" / "plans" / "reorder"
@@ -100,8 +101,13 @@ def build_reorder_plan(
     actions: list[dict[str, Any]] = []
     series_errors: list[dict[str, str]] = []
     if not blocked_reasons:
-        records.sort(key=lambda item: (item["date"], item["video_id"]))
-        for target_number, record in enumerate(records, 1):
+        try:
+            numbered_records = project_global_numbers(records)
+        except ValueError as exc:
+            blocked_reasons.append(str(exc))
+            numbered_records = []
+        for record in numbered_records:
+            target_number = record["target_number"]
             try:
                 target_title = episode_series_title(
                     record["current_title"], record["video_id"], catalog=series_catalog

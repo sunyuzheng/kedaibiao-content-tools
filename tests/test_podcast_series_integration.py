@@ -56,14 +56,18 @@ def local_payload(video_id: str, title: str = "New conversation") -> dict:
 
 
 class PlannerSeriesTests(unittest.TestCase):
-    def make_plan(self, catalog: dict, *, new_published: bool = False) -> dict:
-        episodes = [episode(A, 1, "对话 001｜已编辑的对话"), episode(B, 2, "立正说 001｜独白")]
+    def make_plan(
+        self, catalog: dict, *, new_published: bool = False,
+        historical_numbers: tuple = (1, 2), new_date: str = "20260918",
+    ) -> dict:
+        episodes = [episode(A, historical_numbers[0], "对话 001｜已编辑的对话"),
+                    episode(B, historical_numbers[1], "立正说 001｜独白")]
         if new_published:
-            episodes.append(episode(C, 3, "对话 002｜New conversation"))
+            episodes.append(episode(C, max(historical_numbers) + 1, "对话 002｜New conversation"))
         records = [
             {"video_id": A, "upload_date": "20260916", "title": "Old local wording"},
             {"video_id": B, "upload_date": "20260917", "title": "Old local solo"},
-            {"video_id": C, "upload_date": "20260918", "title": "New conversation",
+            {"video_id": C, "upload_date": new_date, "title": "New conversation",
              "action_needed": "none" if new_published else "publish_to_transistor"},
         ]
         by_video = {item["attributes"]["video_url"][-11:]: [item] for item in episodes}
@@ -85,7 +89,10 @@ class PlannerSeriesTests(unittest.TestCase):
                 stack.enter_context(patch.object(planner, name, return_value=value))
             def frozen_local_payload(record, _, **kwargs):
                 self.assertEqual(kwargs["include_promotion"], record["video_id"] not in by_video)
-                return local_payload(record["video_id"], record["title"]), []
+                payload = local_payload(record["video_id"], record["title"])
+                date = record["upload_date"]
+                payload["published_at"] = f"{date[:4]}-{date[4:6]}-{date[6:]}T00:00:00Z"
+                return payload, []
 
             stack.enter_context(patch.object(
                 planner, "local_payload",
@@ -109,6 +116,35 @@ class PlannerSeriesTests(unittest.TestCase):
         self.assertEqual(plan["projected_reorder_actions"], [])
         self.assertEqual(plan["publish_blocked_reasons"], [])
 
+    def test_gap_preserves_history_and_new_episode_uses_highest_number_plus_one(self) -> None:
+        catalog = catalog_fixture()
+        catalog[A]["global_number"], catalog[B]["global_number"] = 556, 560
+        plan = self.make_plan(catalog, historical_numbers=(556, 560))
+        self.assertEqual(plan["publish_blocked_reasons"], [])
+        rows = {row["video_id"]: row for row in plan["projected_feed"]}
+        self.assertEqual([rows[v]["target_number"] for v in (A, B, C)], [556, 560, 561])
+        self.assertEqual([r["video_id"] for r in plan["projected_reorder_actions"]], [C])
+        self.assertEqual(plan["publish_actions"][0]["local"]["video_id"], C)
+
+    def test_invalid_duplicate_or_reversed_history_has_no_executable_projection(self) -> None:
+        for numbers, reason in (
+            ((1, 1), "duplicate_published_episode_numbers"),
+            ((2, 1), "published_episode_numbers_out_of_order"),
+            *((numbers, "published_episode_number_invalid") for numbers in
+              ((0, 2), (None, 2), (True, 2), ("1", 2), (1.5, 2))),
+        ):
+            with self.subTest(numbers=numbers):
+                plan = self.make_plan(catalog_fixture(), historical_numbers=numbers)
+                self.assertIn(reason, plan["publish_blocked_reasons"])
+                self.assertEqual(plan["projected_feed"], [])
+                self.assertEqual(plan["projected_reorder_actions"], [])
+
+    def test_new_episode_cannot_be_inserted_before_published_history(self) -> None:
+        plan = self.make_plan(catalog_fixture(), new_date="20260915")
+        self.assertIn("new_episode_not_after_published_history", plan["publish_blocked_reasons"])
+        self.assertEqual(plan["projected_feed"], [])
+        self.assertEqual(plan["projected_reorder_actions"], [])
+
     def test_unclassified_new_video_is_blocked_instead_of_defaulting_to_solo(self) -> None:
         catalog = catalog_fixture()
         del catalog[C]
@@ -127,6 +163,42 @@ class PlannerSeriesTests(unittest.TestCase):
 
 
 class ReorderSeriesTests(unittest.TestCase):
+    def plan_for_numbers(self, numbers: tuple, *, legacy_titles: bool = False) -> tuple[dict, Mock]:
+        client = Mock()
+        titles = ("E556. Dialogue", "E560. Solo") if legacy_titles else (
+            "对话 001｜Dialogue", "立正说 001｜Solo")
+        client.list_episodes.return_value = [episode(A, numbers[0], titles[0]), episode(B, numbers[1], titles[1]),
+                                             episode(C, 557, "Withdrawn", status="draft")]
+        with patch.object(reorder, "load_catalog", return_value=catalog_fixture()), patch.object(
+            reorder, "build_local_date_map", return_value={A: "20260916", B: "20260917"}
+        ):
+            return reorder.build_reorder_plan(client, "show"), client
+
+    def test_gap_and_withdrawn_draft_do_not_generate_historical_number_changes(self) -> None:
+        plan, client = self.plan_for_numbers((556, 560))
+        self.assertEqual(plan["published_episode_count"], 2)
+        self.assertEqual(plan["blocked_reasons"], [])
+        self.assertEqual(plan["actions"], [])
+        client.update_episode.assert_not_called()
+
+        plan, _ = self.plan_for_numbers((556, 560), legacy_titles=True)
+        self.assertEqual(plan["blocked_reasons"], [])
+        self.assertEqual([r["target_number"] for r in plan["actions"]], [556, 560])
+        self.assertTrue(all(r["current_number"] == r["target_number"] for r in plan["actions"]))
+
+    def test_invalid_duplicate_or_reversed_numbers_block_reorder_instead_of_repairing(self) -> None:
+        for numbers, reason in (
+            ((1, 1), "duplicate_published_episode_numbers"),
+            ((2, 1), "published_episode_numbers_out_of_order"),
+            *((numbers, "published_episode_number_invalid") for numbers in
+              ((0, 2), (None, 2), (True, 2), ("1", 2), (1.5, 2))),
+        ):
+            with self.subTest(numbers=numbers):
+                plan, client = self.plan_for_numbers(numbers)
+                self.assertIn(reason, plan["blocked_reasons"])
+                self.assertEqual(plan["actions"], [])
+                client.update_episode.assert_not_called()
+
     def test_series_titles_preserve_global_numbers_and_current_body(self) -> None:
         client = Mock()
         client.list_episodes.return_value = [episode(A, 1, "E1. Edited dialogue"), episode(B, 2, "E2. Solo")]
