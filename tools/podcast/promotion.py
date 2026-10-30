@@ -29,9 +29,11 @@ CONFIG_FILES = {
     "legacy": "tools/podcast/config/legacy-promotion.json",
 }
 # Changing the unattended public payload requires a new reviewed config pin.
+# Each copy a change replaces stays in the legacy config's previous_promotions,
+# only so that descriptions published with it are still recognized.
 APPROVED_CONFIG_HASHES = {
-    "promotion": "fb89b8571cd6d8b0241c3c45653cf94659e456e55154b091bb8a07651abe172a",
-    "legacy": "052363b3882a6db616c129d050be0940bbf1016c8586f4470abd66c284e58b5e",
+    "promotion": "9b81f5ab7059747f6ebd1bfd2561417b9da5c3e8652d7749a7e6f3f47c92a4ef",
+    "legacy": "6043c6d79245b3995f7a947e7124ae6ee15c8f2736e11836dc99841eb99baffe",
 }
 HOST = "孙煜征（课代表立正），康奈尔大学经济学博士、Superlinear Academy创始人。曾任Amazon经济学家、Meta数据科学家和腾讯IEG副总监，也是OpenAI收购团队早期成员。"
 PROGRAM = "《课代表立正》关注AI如何改变工作、职业与商业，以及人在变化中最需要保留的判断力。"
@@ -138,9 +140,20 @@ def _unwrap_content_first(blocks: list[str], key, promotion: dict) -> tuple[list
     return None
 
 
-def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict) -> tuple[list[str], str, bool] | None:
-    """Recognize only a complete approved wrapper, anchored at both ends (v1) or
-    at the end (v2). Returns the episode blocks, its community question, and
+def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict,
+                     previous: list[dict] | tuple = ()) -> tuple[list[str], str, bool, dict] | None:
+    """Recognize the current approved wrapper, or one written with a copy it
+    superseded. Also returns the copy that matched."""
+    for approved in (promotion, *previous):
+        wrapped = _unwrap_copy(blocks, is_html, approved)
+        if wrapped:
+            return (*wrapped, approved)
+    return None
+
+
+def _unwrap_copy(blocks: list[str], is_html: bool, promotion: dict) -> tuple[list[str], str, bool] | None:
+    """Recognize only a complete wrapper of this copy, anchored at both ends (v1)
+    or at the end (v2). Returns the episode blocks, its community question, and
     whether the wrapper was content-first."""
     if not is_html and blocks and blocks[0] == promotion["intro"]:
         # The owned batch writer keeps label/URL and footer text/URL pairs in
@@ -190,17 +203,19 @@ def refresh(description: str, title: str, promotion: dict, legacy: dict,
     if quality["errors"]:
         raise ValueError("Invalid Show Notes: " + ", ".join(quality["errors"]))
     blocks, is_html = blocks_of(description)
-    wrapped = _unwrap_template(blocks, is_html, promotion)
+    previous = legacy.get("previous_promotions", [])
+    wrapped = _unwrap_template(blocks, is_html, promotion, previous)
     if is_html and wrapped is None:
         # Plain-text inputs remain fail-closed. Only a complete, byte-approved
         # wrapper may arrive as HTML; arbitrary HTML was never a valid source.
         raise ValueError("Promotion renderer requires plain-text Show Notes or the approved wrapper")
     if wrapped:
-        blocks, community_cta, wrapped_content_first = wrapped
+        blocks, community_cta, wrapped_content_first, wrapper = wrapped
     else:
-        community_cta, wrapped_content_first = "", None
+        community_cta, wrapped_content_first, wrapper = "", None, None
     # A wrapper part left in the episode itself would print the introduction twice.
-    if any((text_of(b) if is_html else b) == promotion["intro"] for b in blocks):
+    intros = {p["intro"] for p in (promotion, *previous)}
+    if any((text_of(b) if is_html else b) in intros for b in blocks):
         raise ValueError("Unrecognized or incomplete approved promotion wrapper")
     exact = {b["text"] for b in legacy["blocks"]}
     lines = set(legacy["lines"])
@@ -266,15 +281,16 @@ def refresh(description: str, title: str, promotion: dict, legacy: dict,
     intro, footer = promotion_parts(promotion, community_cta)
     after = compose(intro, body, footer, content_first)
     # A composed HTML source must remain exactly as reviewed, including spacing.
-    # One in the other layout only has its wrapper moved around the stored episode.
+    # One in the other layout, or written with a superseded copy, only has its
+    # wrapper replaced around the stored episode.
     if is_html and wrapped:
         expected = compose(intro, "\n\n".join(blocks), footer, content_first)
         if after != expected:
             raise ValueError("Approved wrapper contains unrefreshed legacy promotion")
-        if wrapped_content_first == content_first:
+        if wrapper is promotion and wrapped_content_first == content_first:
             after = description
         else:
-            first = 0 if wrapped_content_first else len(blocks_of(intro)[0]) + 1
+            first = 0 if wrapped_content_first else len(blocks_of(promotion_parts(wrapper)[0])[0]) + 1
             after = compose(intro, _stored_blocks(description, first, len(blocks)), footer, content_first)
     before_tags, before_errors = placeholder_tokens(description)
     after_tags, after_errors = placeholder_tokens(after)
@@ -286,25 +302,27 @@ def refresh(description: str, title: str, promotion: dict, legacy: dict,
             "community_cta": community_cta}
 
 
-def move_wrapper_after_episode(description: str, promotion: dict) -> str:
-    """Give a published v1 description the v2 layout by moving its wrapper only.
+def rewrap_published(description: str, promotion: dict, previous: list[dict] | tuple = ()) -> str:
+    """Give a published description the current wrapper, after its episode.
 
     Unlike refresh(), the episode may hold any stored HTML: it is already public
-    and every one of its blocks keeps its bytes. Only the shared introduction moves
-    from the top to above the footer, and the episode-content heading goes.
+    and every one of its blocks keeps its bytes. Only the wrapper changes: a v1
+    introduction moves from the top to above the footer and the episode-content
+    heading goes; a wrapper written with a superseded copy gets the current one
+    and keeps the episode's own community question.
     """
     blocks, is_html = blocks_of(description)
-    wrapped = _unwrap_template(blocks, is_html, promotion) if is_html else None
+    wrapped = _unwrap_template(blocks, is_html, promotion, previous) if is_html else None
     if not wrapped:
         raise ValueError("No approved promotion wrapper")
-    episode, community_cta, content_first = wrapped
-    if content_first:
+    episode, community_cta, content_first, wrapper = wrapped
+    if content_first and wrapper is promotion:
         return description
     intro, footer = promotion_parts(promotion, community_cta)
-    first = len(blocks_of(intro)[0]) + 1
+    first = 0 if content_first else len(blocks_of(promotion_parts(wrapper)[0])[0]) + 1
     after = compose(intro, _stored_blocks(description, first, len(episode)), footer, True)
-    if sorted(blocks_of(after)[0]) != sorted(b for b in blocks if b != EPISODE_HEADING):
-        raise ValueError("Reordering changed the description's blocks")
+    if blocks_of(after)[0] != episode + blocks_of(intro)[0] + blocks_of(footer)[0]:
+        raise ValueError("Rewrapping changed the episode's blocks")
     if placeholder_tokens(after) != placeholder_tokens(description):
         raise ValueError("Dynamic placeholder validation/preservation failed")
     if len(after) > 10000:

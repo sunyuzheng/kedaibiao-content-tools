@@ -27,10 +27,12 @@ episode with its own opening (v1 put the shared intro and an episode-content
 heading first; frozen v1 plans keep those bytes). It removes only exact legacy
 fragments from the versioned allowlist and preserves episode resources,
 chapters, dynamic tags, and specific community questions. Already-composed
-approved templates are recognized without a second wrapper. An explicitly
-empty new-episode source is hash-locked as empty and uses the locked episode
-title for its body, with an `empty_source` quality warning. Invalid sources
-and missing or changed renderer inputs stay fail-closed.
+approved templates are recognized without a second wrapper, including one
+written with a superseded copy: the legacy config keeps each replaced copy in
+`previous_promotions` only for this recognition, and such a wrapper gets the
+current copy. An explicitly empty new-episode source is hash-locked as empty
+and uses the locked episode title for its body, with an `empty_source` quality
+warning. Invalid sources and missing or changed renderer inputs stay fail-closed.
 
 Each immutable payload locks the source hash, config hashes, fallback title,
 and rendered hash. The unattended gate and executor reproduce those same
@@ -41,5 +43,7 @@ update. Config comes from the pinned source checkout, not a runtime bundle.
 Existing `portable_html_v1` plans retain their original meaning and need no
 promotion config. Published-episode sidecar maintenance continues to use v1
 and its separate description approval scope; selecting the new renderer does
-not automatically apply a historical refresh. The technical format described
-in STYLE.md remains the portable body renderer inside the new wrapper.
+not automatically apply a historical refresh. Published descriptions get a new
+copy only through `tools/podcast/reorder_show_notes_promotion.py`, as its own
+reviewed description scope. The technical format described in STYLE.md remains
+the portable body renderer inside the new wrapper.
