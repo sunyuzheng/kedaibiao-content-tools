@@ -13,7 +13,8 @@ from tools.check import build_podcast_sync_plan as planner
 from tools.automation.podcast_auto_publish import _description_text, _verify_description
 from tools.podcast.core import PROJECT_ROOT, plan_hash, sha256_text
 from tools.podcast.promotion import (
-    CONFIG_FILES, PROMOTION_HTML_FORMAT, blocks_of, promotion_render_inputs,
+    CONFIG_FILES, CONTENT_FIRST_HTML_FORMAT, EPISODE_HEADING, PROMOTION_HTML_FORMAT, blocks_of,
+    move_wrapper_after_episode, promotion_parts, promotion_render_inputs,
     render_promoted_show_notes_html, text_of,
 )
 from tools.podcast.show_notes import PORTABLE_HTML_FORMAT, render_portable_show_notes_html
@@ -26,6 +27,8 @@ SOURCE = (
 )
 # Captured from the separately reviewed historical-refresh reference renderer.
 APPROVED_SAMPLE_SHA256 = "31c7066c85901b3af8f73eb476837529d66cb47fa74d74a5a03a2955b1c1cb0f"
+# The same sample in the content-first layout new plans use (approved 2026-10-30).
+APPROVED_CONTENT_FIRST_SHA256 = "76d54d719a493bf67700bfbea4458224f1fb9bad6585a25baa6673173b7e6e32"
 
 
 class PromotionTests(unittest.TestCase):
@@ -76,12 +79,15 @@ class PromotionTests(unittest.TestCase):
                     versioned.write_text(SOURCE, encoding="utf-8")
                     (self.folder / "episode.podcast-description.txt").write_text("lower priority", encoding="utf-8")
                 payload = self.payload()
-                self.assertEqual(payload["description_format"], PROMOTION_HTML_FORMAT)
+                self.assertEqual(payload["description_format"], CONTENT_FIRST_HTML_FORMAT)
                 expected_kind = "podcast_sidecar" if source_kind == "versioned" else source_kind
                 self.assertEqual(payload["description_source"], expected_kind)
-                self.assertEqual(payload["description_sha256"], APPROVED_SAMPLE_SHA256)
+                self.assertEqual(payload["description_sha256"], APPROVED_CONTENT_FIRST_SHA256)
                 description = self.execute_description(payload)
-                self.assertEqual(sha256_text(description), APPROVED_SAMPLE_SHA256)
+                self.assertEqual(sha256_text(description), APPROVED_CONTENT_FIRST_SHA256)
+                # Podcast apps preview the opening: the episode's own words come first.
+                self.assertTrue(description.startswith("<p>节目正文：AI如何改变工作。</p>"))
+                self.assertNotIn(EPISODE_HEADING, description)
                 self.assertEqual(_description_text(payload, self.root)[0], description)
                 self.assertEqual(_verify_description(payload, self.root, "AAAAAAAAAAA")[0], [])
                 self.assertIn("00:00 — 开场", description)
@@ -90,19 +96,59 @@ class PromotionTests(unittest.TestCase):
                 self.assertIn("{{transcript}}", description)
 
     def test_already_composed_html_remains_byte_identical(self) -> None:
-        rendered = render_promoted_show_notes_html(SOURCE, self.inputs, self.root)
+        rendered = render_promoted_show_notes_html(SOURCE, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT)
         payload = self.payload(rendered)
         self.assertEqual(self.execute_description(payload), rendered)
-        self.assertEqual(payload["description_sha256"], APPROVED_SAMPLE_SHA256)
+        self.assertEqual(payload["description_sha256"], APPROVED_CONTENT_FIRST_SHA256)
+        # Frozen v1 bytes stay exactly as approved on 2026-10-02.
+        v1 = render_promoted_show_notes_html(SOURCE, self.inputs, self.root)
+        self.assertEqual(sha256_text(v1), APPROVED_SAMPLE_SHA256)
+        self.assertEqual(render_promoted_show_notes_html(v1, self.inputs, self.root), v1)
+
+    def test_published_v1_wrapper_moves_without_touching_the_episode(self) -> None:
+        v1 = render_promoted_show_notes_html(SOURCE, self.inputs, self.root)
+        v2 = render_promoted_show_notes_html(SOURCE, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT)
+        self.assertEqual(render_promoted_show_notes_html(v1, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT), v2)
+        self.assertEqual(render_promoted_show_notes_html(v2, self.inputs, self.root), v1)
+        stored_episode = v1.split(EPISODE_HEADING + "\n\n", 1)[1].split("\n\n<p><strong>问问立正", 1)[0]
+        self.assertTrue(v2.startswith(stored_episode + "\n\n<p>我是孙煜征"))
+        self.assertEqual(sorted(blocks_of(v1)[0]), sorted(blocks_of(v2)[0] + [EPISODE_HEADING]))
+
+    def test_published_episode_keeps_its_stored_html_when_the_wrapper_moves(self) -> None:
+        promotion = json.loads((self.root / CONFIG_FILES["promotion"]).read_text())
+        # Published bodies can hold HTML the portable renderer never makes; it stays as stored.
+        episode = '<p>正文第一句<br>第二行 <a href="https://example.test/x">链接</a></p>\n<p>章节：</p>'
+        for cta in ("", "你怎样在项目中核对AI的答案？"):
+            with self.subTest(cta=cta):
+                intro, footer = promotion_parts(promotion, cta)
+                v1 = intro + "\n\n" + EPISODE_HEADING + "\n\n" + episode + "\n\n" + footer
+                moved = move_wrapper_after_episode(v1, promotion)
+                self.assertTrue(moved.startswith(episode + "\n\n<p>我是孙煜征"))
+                self.assertTrue(moved.endswith(footer))
+                self.assertNotIn(EPISODE_HEADING, moved)
+                self.assertEqual(sorted(blocks_of(moved)[0]),
+                                 sorted(b for b in blocks_of(v1)[0] if b != EPISODE_HEADING))
+                self.assertEqual(move_wrapper_after_episode(moved, promotion), moved)
+        for unwrapped in (episode, "节目正文", intro + "\n\n" + episode):
+            with self.subTest(unwrapped=unwrapped[:12]), self.assertRaises(ValueError):
+                move_wrapper_after_episode(unwrapped, promotion)
+
+    def test_introduction_left_inside_the_episode_fails_closed(self) -> None:
+        promotion = json.loads((self.root / CONFIG_FILES["promotion"]).read_text())
+        for fmt in (PROMOTION_HTML_FORMAT, CONTENT_FIRST_HTML_FORMAT):
+            with self.subTest(fmt=fmt), self.assertRaisesRegex(ValueError, "incomplete approved promotion wrapper"):
+                render_promoted_show_notes_html(SOURCE + "\n\n" + promotion["intro"], self.inputs, self.root, fmt)
 
     def test_already_composed_plaintext_has_one_wrapper(self) -> None:
-        rendered = render_promoted_show_notes_html(SOURCE, self.inputs, self.root)
-        plain = "\n\n".join(text_of(block) for block in blocks_of(rendered)[0])
-        output = self.execute_description(self.payload(plain))
         promotion = json.loads((self.root / CONFIG_FILES["promotion"]).read_text())
-        self.assertEqual(output.count(promotion["intro"]), 1)
-        self.assertEqual(output.count(promotion["ask_heading"]), 1)
-        self.assertEqual(output.count("<strong>本期内容</strong>"), 1)
+        for fmt in (PROMOTION_HTML_FORMAT, CONTENT_FIRST_HTML_FORMAT):
+            with self.subTest(fmt=fmt):
+                rendered = render_promoted_show_notes_html(SOURCE, self.inputs, self.root, fmt)
+                plain = "\n\n".join(text_of(block) for block in blocks_of(rendered)[0])
+                output = self.execute_description(self.payload(plain))
+                self.assertEqual(output.count(promotion["intro"]), 1)
+                self.assertEqual(output.count(promotion["ask_heading"]), 1)
+                self.assertEqual(output.count("<strong>本期内容</strong>"), 0)
 
     def test_owned_batch_plaintext_wrapper_is_recognized(self) -> None:
         p = json.loads((self.root / CONFIG_FILES["promotion"]).read_text())
@@ -115,10 +161,11 @@ class PromotionTests(unittest.TestCase):
             output = self.execute_description(self.payload("\n\n".join(sections)))
             self.assertEqual(output.count(p["intro"]), 1)
             self.assertEqual(output.count(p["ask_heading"]), 1)
-            self.assertEqual(output.count("<strong>本期内容</strong>"), 1)
+            self.assertEqual(output.count("<strong>本期内容</strong>"), 0)
             if cta:
                 self.assertEqual(output.count(cta), 1)
-            self.assertEqual(render_promoted_show_notes_html(output, self.inputs, self.root), output)
+            self.assertEqual(render_promoted_show_notes_html(
+                output, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT), output)
 
     def test_exact_legacy_is_removed_and_episode_resources_stay(self) -> None:
         source = (SOURCE + "\n\n会员专属社区：www.superlinear.academy\n"
@@ -137,7 +184,8 @@ class PromotionTests(unittest.TestCase):
             SOURCE + "\n\n这次采访讨论旧课程：https://www.superlinear.academy/c/ai/")))
         combined = self.execute_description(self.payload(SOURCE + "\n\nAI Builders课程：\nhttps://ai-builders.com/"))
         self.assertNotIn("AI Builders课程：", combined)
-        self.assertEqual(render_promoted_show_notes_html(combined, self.inputs, self.root), combined)
+        self.assertEqual(render_promoted_show_notes_html(
+            combined, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT), combined)
 
     def test_legacy_community_preserves_episode_question(self) -> None:
         question = "你怎样核对AI生成的答案？"
@@ -146,7 +194,8 @@ class PromotionTests(unittest.TestCase):
             output = self.execute_description(self.payload(source))
             self.assertEqual(output.count(question), 1)
             self.assertGreater(output.index(question), output.index("Superlinear Academy｜免费AI社区"))
-            self.assertEqual(render_promoted_show_notes_html(output, self.inputs, self.root), output)
+            self.assertEqual(render_promoted_show_notes_html(
+                output, self.inputs, self.root, CONTENT_FIRST_HTML_FORMAT), output)
 
     def test_promotion_only_source_uses_locked_episode_title(self) -> None:
         legacy = json.loads((self.root / CONFIG_FILES["legacy"]).read_text())
@@ -222,7 +271,7 @@ class PromotionTests(unittest.TestCase):
         payload = self.payload("")
         self.assertEqual(payload["description_text"], "")
         self.assertEqual(payload["description_source"], "empty")
-        self.assertEqual(payload["description_format"], PROMOTION_HTML_FORMAT)
+        self.assertEqual(payload["description_format"], CONTENT_FIRST_HTML_FORMAT)
         self.assertEqual(payload["description_source_sha256"], sha256_text(""))
         self.assertEqual(payload["description_source_chars"], 0)
         self.assertEqual(payload["description_quality"]["errors"], [])

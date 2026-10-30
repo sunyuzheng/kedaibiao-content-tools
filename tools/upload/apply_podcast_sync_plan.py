@@ -43,7 +43,7 @@ from tools.podcast.show_notes import (  # noqa: E402
     render_portable_show_notes_html,
 )
 from tools.podcast.promotion import (  # noqa: E402
-    PROMOTION_HTML_FORMAT,
+    PROMOTION_FORMATS,
     render_promoted_show_notes_html,
 )
 
@@ -162,11 +162,13 @@ def read_description(
             raise PlanPreconditionError(
                 "Inline description source changed since approval"
             )
-        if description_format == PROMOTION_HTML_FORMAT:
+        if description_format in PROMOTION_FORMATS:
             if not source_sha256:
                 raise PlanPreconditionError("Promotion descriptions require a source hash")
             try:
-                description = render_promoted_show_notes_html(source, renderer_inputs, PROJECT_ROOT)
+                description = render_promoted_show_notes_html(
+                    source, renderer_inputs, PROJECT_ROOT, description_format,
+                )
             except (OSError, ValueError) as exc:
                 raise PlanPreconditionError(f"Promotion renderer rejected the plan: {exc}") from exc
         elif description_format == PORTABLE_HTML_FORMAT:
@@ -200,11 +202,13 @@ def read_description(
                     f"{path_value} expected={source_sha256} "
                     f"actual={observed_source_hash}"
                 )
-        if description_format == PROMOTION_HTML_FORMAT:
+        if description_format in PROMOTION_FORMATS:
             if not source_sha256:
                 raise PlanPreconditionError("Promotion descriptions require a source hash")
             try:
-                description = render_promoted_show_notes_html(source, renderer_inputs, PROJECT_ROOT)
+                description = render_promoted_show_notes_html(
+                    source, renderer_inputs, PROJECT_ROOT, description_format,
+                )
             except (OSError, ValueError) as exc:
                 raise PlanPreconditionError(f"Promotion renderer rejected the plan: {exc}") from exc
         elif description_format == PORTABLE_HTML_FORMAT:

@@ -49,7 +49,7 @@ from tools.podcast.transistor_client import TransistorClient  # noqa: E402
 from tools.podcast.series import episode_series_title, load_catalog  # noqa: E402
 from tools.podcast.numbering import project_global_numbers  # noqa: E402
 from tools.podcast.promotion import (  # noqa: E402
-    PROMOTION_HTML_FORMAT,
+    CONTENT_FIRST_HTML_FORMAT,
     promotion_render_inputs,
     render_promoted_show_notes_html,
     validate_promotion_source,
@@ -360,7 +360,7 @@ def local_payload(
         # Every plain-text source, including the YouTube fallback, goes through
         # the same deterministic feed-safe renderer. This prevents podcast apps
         # from collapsing raw newlines into one dense paragraph.
-        description_format = PROMOTION_HTML_FORMAT if include_promotion else PORTABLE_HTML_FORMAT
+        description_format = CONTENT_FIRST_HTML_FORMAT if include_promotion else PORTABLE_HTML_FORMAT
         description_source_sha256 = sha256_text(description_source_text)
         description_source_chars = len(description_source_text)
         try:
@@ -368,6 +368,7 @@ def local_payload(
                 description_renderer_inputs = promotion_render_inputs(base_title, PROJECT_ROOT)
                 description = render_promoted_show_notes_html(
                     description_source_text, description_renderer_inputs, PROJECT_ROOT,
+                    description_format,
                 )
             else:
                 description = render_portable_show_notes_html(description_source_text)

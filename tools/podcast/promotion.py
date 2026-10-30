@@ -18,6 +18,12 @@ from tools.podcast.show_notes import (
 )
 
 PROMOTION_HTML_FORMAT = "promotion_html_v1"
+# The same approved copy with the episode's own content first and the host
+# introduction after it: podcast apps preview each episode with the opening of
+# its Show Notes, so v1's shared introduction made every preview identical
+# (owner decision 2026-10-30). New plans use v2; frozen v1 plans keep v1 bytes.
+CONTENT_FIRST_HTML_FORMAT = "promotion_html_v2"
+PROMOTION_FORMATS = frozenset({PROMOTION_HTML_FORMAT, CONTENT_FIRST_HTML_FORMAT})
 CONFIG_FILES = {
     "promotion": "podcast_show_notes/PROMOTION.json",
     "legacy": "tools/podcast/config/legacy-promotion.json",
@@ -64,16 +70,24 @@ def text_of(fragment: str) -> str:
     return html.unescape(re.sub(r"<[^>]+>", "", fragment)).strip()
 
 
+BLOCK = re.compile(r"<(p|div)\b[^>]*>.*?</\1>", re.S | re.I)
+
+
 def blocks_of(description: str) -> tuple[list[str], bool]:
     if not re.search(r"<(?:p|div)\b", description, re.I):
         if re.search(r"<\w+\b", description):
             raise ValueError("Unrecognized HTML description structure")
         return [b.strip() for b in re.split(r"\n\s*\n", description) if b.strip()], False
-    pattern = re.compile(r"<(p|div)\b[^>]*>.*?</\1>", re.S | re.I)
-    matches = list(pattern.finditer(description))
-    if pattern.sub("", description).strip():
+    matches = list(BLOCK.finditer(description))
+    if BLOCK.sub("", description).strip():
         raise ValueError("Content outside recognized HTML blocks")
     return [m.group() for m in matches], True
+
+
+def _stored_blocks(description: str, first: int, count: int) -> str:
+    """Blocks exactly as stored, including the spacing between them."""
+    matches = list(BLOCK.finditer(description))[first:first + count]
+    return description[matches[0].start():matches[-1].end()]
 
 
 def _link_paragraph(label: str, url: str) -> str:
@@ -103,8 +117,31 @@ def validate_promotion_source(source: str) -> dict[str, Any]:
     return quality
 
 
-def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict) -> tuple[list[str], str] | None:
-    """Recognize only the complete approved wrapper, anchored at both ends."""
+def compose(intro: str, body: str, footer: str, content_first: bool) -> str:
+    if content_first:
+        return body + "\n\n" + intro + "\n\n" + footer
+    return intro + "\n\n" + EPISODE_HEADING + "\n\n" + body + "\n\n" + footer
+
+
+def _unwrap_content_first(blocks: list[str], key, promotion: dict) -> tuple[list[str], str] | None:
+    """The v2 wrapper: introduction and footer anchored at the end, after the episode."""
+    intro_blocks = blocks_of(promotion_parts(promotion)[0])[0]
+    for cta_count in (0, 1):
+        size = len(intro_blocks) + len(blocks_of(promotion_parts(promotion)[1])[0]) + cta_count
+        if len(blocks) < size + 1:
+            continue
+        tail = blocks[-size:]
+        cta = text_of(tail[len(intro_blocks) + 5]) if cta_count else ""
+        expected = intro_blocks + blocks_of(promotion_parts(promotion, cta)[1])[0]
+        if [key(b) for b in tail] == [key(b) for b in expected]:
+            return blocks[:-size], cta
+    return None
+
+
+def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict) -> tuple[list[str], str, bool] | None:
+    """Recognize only a complete approved wrapper, anchored at both ends (v1) or
+    at the end (v2). Returns the episode blocks, its community question, and
+    whether the wrapper was content-first."""
     if not is_html and blocks and blocks[0] == promotion["intro"]:
         # The owned batch writer keeps label/URL and footer text/URL pairs in
         # one plain-text block. Split only those exact wrapper pairs so its
@@ -132,7 +169,8 @@ def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict) -> tuple
     suffix = blocks_of(footer)[0]
     key = (lambda block: block) if is_html else text_of
     if not blocks or key(blocks[0]) != key(prefix[0]):
-        return None
+        content_first = _unwrap_content_first(blocks, key, promotion)
+        return (*content_first, True) if content_first else None
     for cta_count in (0, 1):
         if len(blocks) < len(prefix) + len(suffix) + cta_count + 1:
             continue
@@ -141,11 +179,12 @@ def _unwrap_template(blocks: list[str], is_html: bool, promotion: dict) -> tuple
         expected_suffix = blocks_of(promotion_parts(promotion, cta)[1])[0]
         if ([key(b) for b in blocks[:4]] == [key(b) for b in prefix]
                 and [key(b) for b in tail] == [key(b) for b in expected_suffix]):
-            return blocks[4:-(len(suffix) + cta_count)], cta
+            return blocks[4:-(len(suffix) + cta_count)], cta, False
     raise ValueError("Unrecognized or incomplete approved promotion wrapper")
 
 
-def refresh(description: str, title: str, promotion: dict, legacy: dict) -> dict:
+def refresh(description: str, title: str, promotion: dict, legacy: dict,
+            content_first: bool = False) -> dict:
     """Keep episode content and remove only finite, approved legacy fragments."""
     quality = validate_promotion_source(description)
     if quality["errors"]:
@@ -157,9 +196,12 @@ def refresh(description: str, title: str, promotion: dict, legacy: dict) -> dict
         # wrapper may arrive as HTML; arbitrary HTML was never a valid source.
         raise ValueError("Promotion renderer requires plain-text Show Notes or the approved wrapper")
     if wrapped:
-        blocks, community_cta = wrapped
+        blocks, community_cta, wrapped_content_first = wrapped
     else:
-        community_cta = ""
+        community_cta, wrapped_content_first = "", None
+    # A wrapper part left in the episode itself would print the introduction twice.
+    if any((text_of(b) if is_html else b) == promotion["intro"] for b in blocks):
+        raise ValueError("Unrecognized or incomplete approved promotion wrapper")
     exact = {b["text"] for b in legacy["blocks"]}
     lines = set(legacy["lines"])
     kept, removed = [], []
@@ -222,26 +264,60 @@ def refresh(description: str, title: str, promotion: dict, legacy: dict) -> dict
     if not plain_body.strip():
         body = f"<p>{html.escape(title)}</p>"
     intro, footer = promotion_parts(promotion, community_cta)
-    after = intro + "\n\n" + EPISODE_HEADING + "\n\n" + body + "\n\n" + footer
+    after = compose(intro, body, footer, content_first)
+    # A composed HTML source must remain exactly as reviewed, including spacing.
+    # One in the other layout only has its wrapper moved around the stored episode.
+    if is_html and wrapped:
+        expected = compose(intro, "\n\n".join(blocks), footer, content_first)
+        if after != expected:
+            raise ValueError("Approved wrapper contains unrefreshed legacy promotion")
+        if wrapped_content_first == content_first:
+            after = description
+        else:
+            first = 0 if wrapped_content_first else len(blocks_of(intro)[0]) + 1
+            after = compose(intro, _stored_blocks(description, first, len(blocks)), footer, content_first)
     before_tags, before_errors = placeholder_tokens(description)
     after_tags, after_errors = placeholder_tokens(after)
     if after_errors or before_errors or before_tags != after_tags:
         raise ValueError("Dynamic placeholder validation/preservation failed")
     if len(after) > 10000:
         raise ValueError("Description exceeds Transistor's 10,000 character limit")
-    # A composed HTML source must remain exactly as reviewed, including spacing.
-    if is_html and wrapped:
-        prefix = intro + "\n\n" + EPISODE_HEADING + "\n\n"
-        expected = prefix + "\n\n".join(blocks) + "\n\n" + footer
-        if after != expected:
-            raise ValueError("Approved wrapper contains unrefreshed legacy promotion")
-        after = description
     return {"description": after, "body": plain_body, "removed": removed,
             "community_cta": community_cta}
 
 
+def move_wrapper_after_episode(description: str, promotion: dict) -> str:
+    """Give a published v1 description the v2 layout by moving its wrapper only.
+
+    Unlike refresh(), the episode may hold any stored HTML: it is already public
+    and every one of its blocks keeps its bytes. Only the shared introduction moves
+    from the top to above the footer, and the episode-content heading goes.
+    """
+    blocks, is_html = blocks_of(description)
+    wrapped = _unwrap_template(blocks, is_html, promotion) if is_html else None
+    if not wrapped:
+        raise ValueError("No approved promotion wrapper")
+    episode, community_cta, content_first = wrapped
+    if content_first:
+        return description
+    intro, footer = promotion_parts(promotion, community_cta)
+    first = len(blocks_of(intro)[0]) + 1
+    after = compose(intro, _stored_blocks(description, first, len(episode)), footer, True)
+    if sorted(blocks_of(after)[0]) != sorted(b for b in blocks if b != EPISODE_HEADING):
+        raise ValueError("Reordering changed the description's blocks")
+    if placeholder_tokens(after) != placeholder_tokens(description):
+        raise ValueError("Dynamic placeholder validation/preservation failed")
+    if len(after) > 10000:
+        raise ValueError("Description exceeds Transistor's 10,000 character limit")
+    return after
+
+
 def render_promoted_show_notes_html(
     source: str, inputs: dict[str, Any] | None, project_root: Path = PROJECT_ROOT,
+    description_format: str = PROMOTION_HTML_FORMAT,
 ) -> str:
+    if description_format not in PROMOTION_FORMATS:
+        raise ValueError(f"Unsupported promotion format: {description_format}")
     promotion, legacy = _load_config(inputs, project_root)
-    return refresh(source, inputs["title"], promotion, legacy)["description"]
+    return refresh(source, inputs["title"], promotion, legacy,
+                   content_first=description_format == CONTENT_FIRST_HTML_FORMAT)["description"]

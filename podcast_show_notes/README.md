@@ -20,9 +20,11 @@ The sync planner prefers this directory over an archive-local
 YouTube snapshot. A versioned file can update an existing published episode
 only through the dedicated description plan and its exact approval hash.
 
-New-episode plans use the deterministic `promotion_html_v1` format for every
-nonempty description source. `tools/podcast/promotion.py` adds the approved
-intro, episode-content heading, and footer; it removes only exact legacy
+New-episode plans use the deterministic `promotion_html_v2` format for every
+nonempty description source. `tools/podcast/promotion.py` puts the episode
+content first, then the approved intro and footer, so podcast apps preview each
+episode with its own opening (v1 put the shared intro and an episode-content
+heading first; frozen v1 plans keep those bytes). It removes only exact legacy
 fragments from the versioned allowlist and preserves episode resources,
 chapters, dynamic tags, and specific community questions. Already-composed
 approved templates are recognized without a second wrapper. An explicitly
